@@ -1,4 +1,4 @@
-import { Nav } from "@/components/Nav";
+import { ModuleNav } from "@/components/ModuleNav";
 import { Card, Stat } from "@/components/ui";
 import { members, contributions, snapshots } from "@/lib/sample-data";
 import {
@@ -19,7 +19,7 @@ export default function MembersPage() {
 
   return (
     <div>
-      <Nav />
+      <ModuleNav crumb="Ownership" />
       <main className="mx-auto max-w-5xl px-5 py-8">
         <h1 className="text-xl font-semibold">Members &amp; ownership</h1>
         <p className="mt-1 text-sm text-foreground/60">

@@ -3,7 +3,16 @@ import type { NextRequest } from "next/server";
 import { AUTH_COOKIE } from "@/lib/auth";
 
 // Guard the members-only sections. The public track record ("/") stays open.
-const PROTECTED = ["/dashboard", "/members", "/proposals"];
+const PROTECTED = [
+  "/dashboard",
+  "/sentiment",
+  "/stress-test",
+  "/nova",
+  "/intra-exitus",
+  "/models",
+  "/members",
+  "/proposals",
+];
 
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -22,5 +31,14 @@ export function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/members/:path*", "/proposals/:path*"],
+  matcher: [
+    "/dashboard/:path*",
+    "/sentiment/:path*",
+    "/stress-test/:path*",
+    "/nova/:path*",
+    "/intra-exitus/:path*",
+    "/models/:path*",
+    "/members/:path*",
+    "/proposals/:path*",
+  ],
 };

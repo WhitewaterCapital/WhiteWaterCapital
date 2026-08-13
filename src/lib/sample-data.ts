@@ -19,6 +19,7 @@ export const members: Member[] = [
   { id: "m_james", name: "James", email: "james@example.com", role: "admin", joinedAt: "2026-01-31" },
   { id: "m_alan", name: "Alan", email: "alan@example.com", role: "member", joinedAt: "2026-01-31" },
   { id: "m_jt", name: "JT", email: "jt@example.com", role: "member", joinedAt: "2026-01-31" },
+  { id: "m_sam", name: "Sam", email: "sam@example.com", role: "member", joinedAt: "2026-01-31" },
   { id: "m_dana", name: "Dana", email: "dana@example.com", role: "member", joinedAt: "2026-03-14" },
 ];
 
@@ -42,10 +43,11 @@ const DEPOSITS: {
   amountUsd: number;
   note: string;
 }[] = [
-  { week: 0, memberId: "m_james", amountUsd: 3000, note: "Seed" },
-  { week: 0, memberId: "m_alan", amountUsd: 3000, note: "Seed" },
-  { week: 0, memberId: "m_jt", amountUsd: 2000, note: "Seed" },
-  { week: 6, memberId: "m_dana", amountUsd: 2000, note: "Joined" },
+  { week: 0, memberId: "m_james", amountUsd: 6000, note: "Seed" },
+  { week: 0, memberId: "m_alan", amountUsd: 5000, note: "Seed" },
+  { week: 0, memberId: "m_jt", amountUsd: 4000, note: "Seed" },
+  { week: 0, memberId: "m_sam", amountUsd: 5000, note: "Seed" },
+  { week: 6, memberId: "m_dana", amountUsd: 4000, note: "Joined" },
   { week: 14, memberId: "m_james", amountUsd: 1000, note: "Top-up" },
 ];
 
@@ -110,10 +112,10 @@ export const snapshots: Snapshot[] = sim.snaps;
 export const contributions: Contribution[] = sim.contributions;
 
 export const positions: Position[] = [
-  { symbol: "NVDA", quantity: 12, avgCostUsd: 118.4, lastPriceUsd: 141.2, marketValueUsd: 1694.4, unrealizedPnlUsd: 273.6, openedAt: "2026-03-02" },
-  { symbol: "MSFT", quantity: 4, avgCostUsd: 402.1, lastPriceUsd: 438.9, marketValueUsd: 1755.6, unrealizedPnlUsd: 147.2, openedAt: "2026-02-20" },
-  { symbol: "COST", quantity: 2, avgCostUsd: 872.0, lastPriceUsd: 905.3, marketValueUsd: 1810.6, unrealizedPnlUsd: 66.6, openedAt: "2026-04-11" },
-  { symbol: "AMD", quantity: 9, avgCostUsd: 154.7, lastPriceUsd: 149.1, marketValueUsd: 1341.9, unrealizedPnlUsd: -50.4, openedAt: "2026-05-01" },
+  { symbol: "NVDA", quantity: 36, avgCostUsd: 118.4, lastPriceUsd: 141.2, marketValueUsd: 5083.2, unrealizedPnlUsd: 820.8, openedAt: "2026-03-02" },
+  { symbol: "MSFT", quantity: 12, avgCostUsd: 402.1, lastPriceUsd: 438.9, marketValueUsd: 5266.8, unrealizedPnlUsd: 441.6, openedAt: "2026-02-20" },
+  { symbol: "COST", quantity: 6, avgCostUsd: 872.0, lastPriceUsd: 905.3, marketValueUsd: 5431.8, unrealizedPnlUsd: 199.8, openedAt: "2026-04-11" },
+  { symbol: "AMD", quantity: 27, avgCostUsd: 154.7, lastPriceUsd: 149.1, marketValueUsd: 4025.7, unrealizedPnlUsd: -151.2, openedAt: "2026-05-01" },
 ];
 
 export const proposals: Proposal[] = [

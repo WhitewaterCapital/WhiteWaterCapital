@@ -1,4 +1,4 @@
-import { Nav } from "@/components/Nav";
+import { ModuleNav } from "@/components/ModuleNav";
 import { Card, Badge } from "@/components/ui";
 import { proposals, members } from "@/lib/sample-data";
 import { usd } from "@/lib/format";
@@ -12,7 +12,7 @@ export default function ProposalsPage() {
 
   return (
     <div>
-      <Nav />
+      <ModuleNav crumb="Proposals" />
       <main className="mx-auto max-w-5xl px-5 py-8">
         <div className="flex items-center justify-between">
           <div>

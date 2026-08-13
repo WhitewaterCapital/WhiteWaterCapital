@@ -2,6 +2,7 @@ import Link from "next/link";
 import { LineChart } from "@/components/LineChart";
 import { ExposureGauge } from "@/components/ExposureGauge";
 import { HeroChart } from "@/components/HeroChart";
+import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { Stat, Card } from "@/components/ui";
 import { snapshots, members } from "@/lib/sample-data";
 import { computeMetrics } from "@/lib/metrics";
@@ -13,6 +14,9 @@ import { pct, shortDate } from "@/lib/format";
 export default function PublicPage() {
   const m = computeMetrics(snapshots);
   const labels = snapshots.map((s) => shortDate(s.date));
+  // Cumulative % increase from inception (indexed series start at 100).
+  const usPct = m.portIndexed.map((v) => v - 100);
+  const spyPct = m.spyIndexed.map((v) => v - 100);
 
   return (
     <div>
@@ -29,6 +33,9 @@ export default function PublicPage() {
             <a href="#track-record" className="hidden hover:text-white sm:inline">
               Track Record
             </a>
+            <Link href="/invest" className="hover:text-white">
+              Invest
+            </Link>
             <Link
               href="/dashboard"
               className="rounded-full border border-white/40 px-4 py-1.5 hover:border-white"
@@ -130,17 +137,17 @@ export default function PublicPage() {
         <div className="mx-auto max-w-5xl px-6 py-16">
           <p className="font-mono text-sm text-accent">// Track Record</p>
           <h2 className="display mt-3 text-3xl sm:text-5xl">
-            Every dollar, versus the index.
+            Our return, versus the index.
           </h2>
           <div className="mt-10 grid gap-6 lg:grid-cols-3">
             <div className="lg:col-span-2">
-              <Card title="Growth of $100 — us vs SPY">
+              <Card title="Cumulative return — us vs SPY">
                 <LineChart
                   labels={labels}
-                  yFormat={(v) => v.toFixed(0)}
+                  yFormat={(v) => `${v >= 0 ? "+" : ""}${v.toFixed(0)}%`}
                   series={[
-                    { values: m.portIndexed, color: "currentColor", label: "Four & Co." },
-                    { values: m.spyIndexed, color: "#9ca3af", label: "SPY" },
+                    { values: usPct, color: "currentColor", label: "Four & Co." },
+                    { values: spyPct, color: "#9ca3af", label: "SPY" },
                   ]}
                 />
               </Card>
@@ -154,18 +161,38 @@ export default function PublicPage() {
         </div>
       </section>
 
+      {/* NEWSLETTER */}
+      <section className="border-b border-hairline">
+        <div className="mx-auto max-w-5xl px-6 py-14">
+          <div className="grid gap-6 sm:grid-cols-[1fr_1fr] sm:items-center">
+            <div>
+              <p className="font-mono text-sm text-accent">// The Letters</p>
+              <h2 className="display mt-2 text-2xl sm:text-3xl">
+                Our thinking, now and then.
+              </h2>
+              <p className="mt-2 text-sm text-muted">
+                Theses and positioning notes. No spam.
+              </p>
+            </div>
+            <NewsletterSignup source="home" />
+          </div>
+        </div>
+      </section>
+
       {/* FOOTER */}
       <footer className="mx-auto max-w-5xl px-6 py-12">
         <div className="flex flex-col justify-between gap-4 sm:flex-row">
           <span className="text-sm font-semibold uppercase tracking-[0.18em]">
             Four &amp; Co.
           </span>
-          <Link
-            href="/dashboard"
-            className="text-xs uppercase tracking-[0.12em] text-muted hover:text-foreground"
-          >
-            Members portal →
-          </Link>
+          <div className="flex gap-6 text-xs uppercase tracking-[0.12em] text-muted">
+            <Link href="/invest" className="hover:text-foreground">
+              Invest →
+            </Link>
+            <Link href="/dashboard" className="hover:text-foreground">
+              Members portal →
+            </Link>
+          </div>
         </div>
         <p className="mt-6 max-w-2xl text-xs text-muted">
           Positions and holdings are private to members. Past performance is not
