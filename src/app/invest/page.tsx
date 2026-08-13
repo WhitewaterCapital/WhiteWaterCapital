@@ -4,8 +4,8 @@ import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { Card } from "@/components/ui";
 
 export const metadata = {
-  title: "Invest — Four & Co.",
-  description: "Register interest in Four & Co.",
+  title: "Invest — Whitewater",
+  description: "Register interest in Whitewater.",
 };
 
 // PUBLIC — Investors. A "register interest" page (not a solicitation). Captures
@@ -17,7 +17,7 @@ export default function InvestPage() {
       <header className="border-b border-hairline">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
           <Link href="/" className="text-sm font-semibold uppercase tracking-[0.18em]">
-            Four &amp; Co.
+            Whitewater
           </Link>
           <nav className="flex items-center gap-6 text-xs uppercase tracking-[0.12em] text-muted">
             <Link href="/" className="hover:text-foreground">Home</Link>

@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Four & Co. — Investment Club",
+  title: "Whitewater — Investment Club",
   description: "Track record and members portal for our investment club.",
 };
 

@@ -24,7 +24,7 @@ export default function PublicPage() {
       <header className="absolute inset-x-0 top-0 z-10">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5 text-white">
           <span className="text-sm font-semibold uppercase tracking-[0.18em]">
-            Four &amp; Co.
+            Whitewater
           </span>
           <nav className="flex items-center gap-6 text-xs uppercase tracking-[0.12em] text-white/80">
             <a href="#approach" className="hidden hover:text-white sm:inline">
@@ -63,7 +63,7 @@ export default function PublicPage() {
             public markets.
           </h1>
           <p className="rise rise-3 mt-8 max-w-xl text-lg text-white/85">
-            Four partners, one pooled book, one scorecard — measured against the
+            Five partners, one pooled book, one scorecard — measured against the
             benchmark that matters: the S&amp;P 500.
           </p>
           <div className="rise rise-4 mt-10 flex flex-wrap items-center gap-4">
@@ -146,7 +146,7 @@ export default function PublicPage() {
                   labels={labels}
                   yFormat={(v) => `${v >= 0 ? "+" : ""}${v.toFixed(0)}%`}
                   series={[
-                    { values: usPct, color: "currentColor", label: "Four & Co." },
+                    { values: usPct, color: "currentColor", label: "Whitewater" },
                     { values: spyPct, color: "#9ca3af", label: "SPY" },
                   ]}
                 />
@@ -183,7 +183,7 @@ export default function PublicPage() {
       <footer className="mx-auto max-w-5xl px-6 py-12">
         <div className="flex flex-col justify-between gap-4 sm:flex-row">
           <span className="text-sm font-semibold uppercase tracking-[0.18em]">
-            Four &amp; Co.
+            Whitewater
           </span>
           <div className="flex gap-6 text-xs uppercase tracking-[0.12em] text-muted">
             <Link href="/invest" className="hover:text-foreground">

@@ -12,7 +12,7 @@ export function ModuleNav({ crumb }: { crumb?: string }) {
             href="/dashboard"
             className="text-sm font-semibold uppercase tracking-[0.18em]"
           >
-            Four &amp; Co.
+            Whitewater
           </Link>
           {crumb ? (
             <span className="text-xs uppercase tracking-[0.12em] text-muted">

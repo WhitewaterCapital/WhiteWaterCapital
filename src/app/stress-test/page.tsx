@@ -2,7 +2,7 @@ import { ModuleNav } from "@/components/ModuleNav";
 import { StressTestClient } from "@/components/StressTestClient";
 
 export const metadata = {
-  title: "Strictus Testum — Four & Co.",
+  title: "Strictus Testum — Whitewater",
   description: "The rigorous test — the adversarial read before the book does.",
 };
 
