@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
       "./public/data/aurora/latest.json",
       "./public/data/incepta/latest.json",
     ],
+    "/intra-exitus": ["./public/data/intra-exitus/latest.json"],
     "/api/models/stress": ["./public/data/incepta/latest.json"],
   },
 };

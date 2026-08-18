@@ -121,6 +121,13 @@ function DistressePanel({ v }: { v: StressVerdict }) {
       title="Distresse — stress test"
       action={<Badge tone={ratingTone[v.rating]}>{v.rating.toUpperCase()}</Badge>}
     >
+      {v.generatedBy.includes("sample") && (
+        <div className="mb-4 border border-amber-500/50 bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-400">
+          ⚠ <strong>SAMPLE — placeholder scoring, not a real model.</strong> The
+          rating and conviction below are illustrative RNG, not analysis. Do not
+          use for real decisions until the Distresse model is built.
+        </div>
+      )}
       <div className="flex items-baseline justify-between">
         <span className="text-sm text-muted">{v.ticker} · {v.instrument}</span>
         <span className="text-sm text-muted">

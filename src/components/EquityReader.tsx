@@ -376,6 +376,11 @@ function StressAction({ ticker }: { ticker: string }) {
         </button>
       ) : (
         <div>
+          {verdict.generatedBy.includes("sample") && (
+            <p className="mb-2 text-[11px] text-amber-600 dark:text-amber-400">
+              ⚠ SAMPLE — placeholder scoring, not a real model.
+            </p>
+          )}
           <div className="flex items-center gap-2">
             <span className="eyebrow">Distresse</span>
             <Badge tone={ratingTone[verdict.rating]}>{verdict.rating}</Badge>
