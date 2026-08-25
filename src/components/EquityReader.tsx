@@ -58,7 +58,7 @@ export function EquityReader({ data }: { data: EquityExport }) {
 
       <AnalyzeTicker universe={data.universe} />
 
-      <RankingsTable rankings={data.rankings.quality} />
+      <RankingsTable rankings={data.rankings.quality} asOf={data.as_of} />
 
       <div>
         <h3 className="eyebrow mb-3">Securities · {data.securities.length}</h3>
@@ -153,13 +153,16 @@ function AnalyzeTicker({ universe }: { universe: string[] }) {
   );
 }
 
-function RankingsTable({ rankings }: { rankings: RankingEntry[] }) {
+function RankingsTable({ rankings, asOf }: { rankings: RankingEntry[]; asOf: string }) {
   return (
     <div>
       <h3 className="eyebrow mb-1">Quality ranking</h3>
       <p className="mb-3 text-xs text-muted">
-        Relative composite within this universe (percentile 0–100, z-score) — not
-        an absolute rating.
+        <strong className="text-foreground/70">Relative to the {rankings.length}-name universe below</strong>,
+        not the whole market. Percentile (0–100) and z-score of a composite of
+        fundamental-quality metrics (ROA, margins, leverage, revenue growth,
+        Piotroski F) at each name&apos;s latest filing. Cross-sectional, this
+        run only — not an absolute or time-series rating. As of {asOf}.
       </p>
       <div className="border border-hairline bg-paper">
         <table className="w-full text-sm">

@@ -94,4 +94,10 @@ class TiingoClient:
             except (KeyError, ValueError, TypeError):
                 continue
         bars.sort(key=lambda b: b.date)
+        # Trust fix: drop the in-progress (today's) bar. Tiingo's daily endpoint
+        # returns an UNSETTLED bar during market hours whose close is really the
+        # open/intraday snapshot — anchoring on it shows a wrong "last price" and
+        # contaminates momentum/vol. Use only settled EOD closes.
+        if bars and bars[-1].date >= date.today():
+            bars = bars[:-1]
         return bars
