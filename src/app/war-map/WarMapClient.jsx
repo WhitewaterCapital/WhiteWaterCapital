@@ -1000,18 +1000,73 @@ export default function WarMapClient() {
 
         {activeView === 'predictions' && (
           <div className="ww-view ww-section">
-            <p className="ww-eyebrow">Predictions</p>
-            <h1>7-day outlook</h1>
-            <p className="ww-muted">{predictions?.note || (predictions?.live ? 'Live AI-generated outlook.' : 'Loading…')}</p>
-            <div className="ww-card-list">
-              {Array.isArray(predictions?.items) &&
-                predictions.items.map((p) => (
-                  <div key={p.id || p.name} className="ww-card">
-                    <div className="ww-card-top"><span className="ww-card-name">{p.name}</span> <span className={`ww-pill ww-threat-${p.threat}`}>{p.threat}</span></div>
-                    <div className="ww-card-body">{p.outlook}</div>
-                  </div>
-                ))}
-              {predictions && !Array.isArray(predictions.items) && (
+            <p className="ww-eyebrow">Nova · Predictions</p>
+            <h1>{predictions?.horizon || '7-day'} outlook</h1>
+            <p className="ww-muted">
+              {predictions?.note
+                ? predictions.note
+                : predictions?.live
+                  ? `Live call on ${predictions.zones?.length || 0} zones — grounded in ${predictions.evidenceCount ?? 0} recent headlines. AI-generated (${predictions.model}); not investment advice.`
+                  : predictions
+                    ? 'Loading…'
+                    : 'Loading…'}
+            </p>
+            {predictions?.generatedAt && (
+              <p className="ww-muted-inline">
+                Generated {new Date(predictions.generatedAt).toLocaleString()}
+                {predictions.stale ? ' · showing last good analysis' : predictions.cached ? ' · cached (refreshes every 6h)' : ''}
+              </p>
+            )}
+
+            {predictions?.live && (
+              <div className="ww-pred-legend">
+                <span className="ww-call ww-call-escalating">↑ escalating</span>
+                <span className="ww-call ww-call-stable">→ stable</span>
+                <span className="ww-call ww-call-de-escalating">↓ de-escalating</span>
+                <span className="ww-call ww-call-irrelevant">• not market-moving</span>
+              </div>
+            )}
+
+            <div className="ww-card-list ww-spaced">
+              {/* New decisive shape: per-zone calls sorted by conviction. */}
+              {Array.isArray(predictions?.zones) &&
+                [...predictions.zones]
+                  .sort((a, b) => {
+                    const rank = { escalating: 0, 'de-escalating': 1, stable: 2, irrelevant: 3, null: 4 };
+                    const ra = rank[a.call] ?? 4;
+                    const rb = rank[b.call] ?? 4;
+                    if (ra !== rb) return ra - rb;
+                    return (b.conviction || 0) - (a.conviction || 0);
+                  })
+                  .map((z) => {
+                    const arrow = { escalating: '↑', stable: '→', 'de-escalating': '↓', irrelevant: '•' }[z.call] || '–';
+                    return (
+                      <div key={z.id || z.name} className="ww-card ww-pred-card">
+                        <div className="ww-card-top">
+                          <span className="ww-card-name">{z.name}</span>
+                          <span className="ww-pred-tags">
+                            {z.call && <span className={`ww-call ww-call-${z.call}`}>{arrow} {z.call}</span>}
+                            <span className={`ww-pill ww-threat-${z.threat}`}>{z.threat}</span>
+                          </span>
+                        </div>
+                        {z.thesis && <div className="ww-card-body">{z.thesis}</div>}
+                        {z.call && z.conviction != null && (
+                          <div className="ww-conviction">
+                            <div className="ww-conviction-bar">
+                              <div className={`ww-conviction-fill ww-call-fill-${z.call}`} style={{ width: `${z.conviction}%` }} />
+                            </div>
+                            <span className="ww-conviction-num">{z.conviction}%</span>
+                          </div>
+                        )}
+                        {z.watch && <div className="ww-pred-meta"><span className="ww-pred-label">Watch</span> {z.watch}</div>}
+                        {z.market && <div className="ww-pred-meta"><span className="ww-pred-label">Markets</span> {z.market}</div>}
+                        {!z.call && <div className="ww-card-body ww-muted">No call yet — {predictions?.note ? 'see note above.' : 'awaiting analysis.'}</div>}
+                        {z.evidenceCount === 0 && z.call && <div className="ww-pred-src">Reasoned from standing situation (no fresh headline).</div>}
+                      </div>
+                    );
+                  })}
+              {/* Back-compat: old text-blob shape, if ever returned. */}
+              {predictions && !predictions.zones && !Array.isArray(predictions?.items) && typeof predictions?.items === 'string' && (
                 <div className="ww-card"><pre className="ww-card-body">{predictions.items}</pre></div>
               )}
             </div>
@@ -1243,6 +1298,26 @@ const CSS = `
 .ww-pill.ww-threat-high { background: rgba(255,159,28,0.15); color: var(--ww-high); }
 .ww-pill.ww-threat-medium { background: rgba(255,217,61,0.15); color: var(--ww-medium); }
 .ww-pill.ww-threat-low { background: rgba(77,159,255,0.15); color: var(--ww-low); }
+/* Nova predictions — decisive call badges + conviction bars */
+.ww-pred-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.ww-pred-tags { display: inline-flex; align-items: center; gap: 6px; }
+.ww-call { font-family: ui-monospace, monospace; font-size: 9.5px; font-weight: 700; letter-spacing: 0.3px; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; border: 1px solid var(--ww-border); white-space: nowrap; }
+.ww-call-escalating { background: rgba(255,59,59,0.15); color: var(--ww-critical); border-color: rgba(255,59,59,0.4); }
+.ww-call-stable { background: rgba(255,217,61,0.13); color: var(--ww-medium); border-color: rgba(255,217,61,0.35); }
+.ww-call-de-escalating { background: rgba(34,197,94,0.15); color: #22c55e; border-color: rgba(34,197,94,0.4); }
+.ww-call-irrelevant { background: var(--ww-surface2); color: var(--ww-text-mute); }
+.ww-pred-card { border-left: 2px solid var(--ww-border); }
+.ww-conviction { display: flex; align-items: center; gap: 8px; margin-top: 9px; }
+.ww-conviction-bar { flex: 1; height: 5px; background: var(--ww-surface2); border-radius: 3px; overflow: hidden; }
+.ww-conviction-fill { height: 100%; border-radius: 3px; background: var(--ww-accent); }
+.ww-call-fill-escalating { background: var(--ww-critical); }
+.ww-call-fill-stable { background: var(--ww-medium); }
+.ww-call-fill-de-escalating { background: #22c55e; }
+.ww-call-fill-irrelevant { background: var(--ww-text-mute); }
+.ww-conviction-num { font-family: ui-monospace, monospace; font-size: 11px; font-weight: 700; color: var(--ww-text-dim); min-width: 34px; text-align: right; }
+.ww-pred-meta { font-size: 12px; color: var(--ww-text-dim); margin-top: 6px; line-height: 1.45; }
+.ww-pred-label { font-family: ui-monospace, monospace; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--ww-text-mute); margin-right: 6px; }
+.ww-pred-src { font-size: 10.5px; color: var(--ww-text-mute); margin-top: 7px; font-style: italic; }
 .ww-stat-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
 .ww-stat-pill { font-family: ui-monospace, monospace; font-size: 11px; padding: 8px 12px; border-radius: 6px; background: var(--ww-surface); border: 1px solid var(--ww-border); }
 .ww-dash-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
