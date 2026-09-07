@@ -1006,7 +1006,7 @@ export default function WarMapClient() {
               {predictions?.note
                 ? predictions.note
                 : predictions?.live
-                  ? `Live call on ${predictions.zones?.length || 0} zones — grounded in ${predictions.evidenceCount ?? 0} recent headlines. AI-generated (${predictions.model}); not investment advice.`
+                  ? `${predictions.engine === 'claude' ? 'AI' : 'Signal'} call on ${predictions.zones?.length || 0} zones — grounded in ${predictions.evidenceCount ?? 0} recent headlines (${predictions.model}); not investment advice.`
                   : predictions
                     ? 'Loading…'
                     : 'Loading…'}
@@ -1105,7 +1105,7 @@ export default function WarMapClient() {
               <DashCard title="Conflict zones tracked" value={conflicts.length} status={config?.acled ? 'ACLED live feed' : 'Curated dataset'} on={!!config?.acled} />
               <DashCard title="Countries measured" value={countriesLoaded ? '~180 (full coverage)' : 'Loading…'} status="world-atlas, bundled at build time" on={countriesLoaded} />
               <DashCard title="Map tiles" value={config?.mapbox ? 'Mapbox (HD)' : 'Free (CARTO/Esri)'} status={config?.mapbox ? 'Mapbox token set' : 'No key required'} on />
-              <DashCard title="AI Predictions" value={config?.anthropic ? 'Live' : 'Placeholder'} status={config?.anthropic ? 'ANTHROPIC_API_KEY set' : 'Add ANTHROPIC_API_KEY'} on={!!config?.anthropic} />
+              <DashCard title="Nova predictions" value="Live" status={config?.anthropic ? 'Signal engine + optional Claude path (key set)' : 'Rules-based signal engine — no key required, 6h refresh'} on />
               <DashCard title="Global indicators" value="Live" status="World Bank + IMF DataMapper + UNHCR — no key required" on />
               <DashCard title="Power plants" value={powerPlants ? `${powerPlants.count} tracked` : 'Live'} status="Global Power Plant Database (WRI, CC BY 4.0) — no key required" on />
               <DashCard title="Mines / Ports / Smelters / Refineries / Dams" value="Live" status="Wikidata + OpenStreetMap + USGS MRDS — no key required, refreshed every 6h" on />

@@ -1,13 +1,9 @@
-import { ModuleShell } from "@/components/ModuleShell";
+import { redirect } from "next/navigation";
 
-// NOVA — "new things." Empty shell; build the news/catalyst model.
+// Nova now lives on the WHITEWATCH war map (/war-map): the global threat map,
+// intel feed, and the decisive 7-day predictions engine. This route used to be
+// an empty placeholder; anyone who lands here (old link, typed URL) is sent to
+// the real thing.
 export default function NovaPage() {
-  return (
-    <ModuleShell
-      name="Nova"
-      latin="new things"
-      title="What's new, and what it means for us."
-      intro="Market news and catalysts that can move the book."
-    />
-  );
+  redirect("/war-map");
 }
