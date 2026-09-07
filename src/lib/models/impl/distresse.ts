@@ -1,5 +1,5 @@
 import type { EvaluatorModel, TradeIdea, StressVerdict, Rating, Dimension } from "../types";
-import { aiEnabled, seeded, pick } from "../shared";
+import { seeded, pick } from "../shared";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Distresse — an EvaluatorModel (the adversarial stress test).
@@ -135,7 +135,9 @@ export const distresse: EvaluatorModel = {
       devilsAdvocate: devils,
       tailRisks: tails,
       bottomLine: bottom,
-      generatedBy: (aiEnabled() ? "Distresse" : "Distresse (sample)") + evidenceTag,
+      // Always "(sample)": the scoring is placeholder RNG regardless of any AI
+      // key, so the honesty label must never depend on aiEnabled().
+      generatedBy: "Distresse (sample)" + evidenceTag,
     };
   },
 };

@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# dragged-in integration source package (has its own .env.local)
+whitewater-integration_1 2/

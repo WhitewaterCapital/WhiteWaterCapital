@@ -24,10 +24,10 @@ const MODULES = [
     blurb: "Pressure-test a trade — the adversarial read.",
   },
   {
-    href: "/nova",
+    href: "/war-map",
     name: "Nova",
     latin: "new things",
-    blurb: "Market news and catalysts that can move the book.",
+    blurb: "War map — conflict zones, intel feed, catalysts that move the book.",
   },
   {
     href: "/intra-exitus",
