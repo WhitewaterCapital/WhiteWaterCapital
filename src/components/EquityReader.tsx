@@ -9,6 +9,8 @@ import type {
 import type { StressVerdict } from "@/lib/models/types";
 import { Badge } from "@/components/ui";
 import { ScoreBar } from "@/components/ScoreBar";
+import { VerdictHeader, BandMeter, DefLabel } from "@/components/reads";
+import { equityVerdict } from "@/lib/models/equity-read";
 
 // ── Formatters. null → "—" ALWAYS (never 0, never a guess). ─────────────────
 const dash = "—";
@@ -39,21 +41,27 @@ const confTone = {
 export function EquityReader({ data }: { data: EquityExport }) {
   return (
     <div className="space-y-10">
-      {/* Framing — this is a risk-and-evidence display, not advice */}
+      {/* Framing — decisive reads, grounded in real filings */}
       <div>
         <div className="flex flex-wrap items-center gap-2">
-          <Badge tone="neutral">Risk &amp; evidence display</Badge>
+          <Badge tone="neutral">Bottom-up equity read</Badge>
           <span className="text-xs text-muted">
-            Not investment advice · not a buy/sell signal
+            Decisive reads on real SEC filings + prices · not personalised advice
           </span>
         </div>
-        <p className="mt-3 text-xs leading-relaxed text-muted">
-          {data.disclaimer}
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-foreground/80">
+          For each name the engine pulls the real numbers; the read then takes a
+          side — <strong className="text-foreground">own it / neutral / avoid</strong> —
+          from three questions: is the business <em>healthy</em>, is it{" "}
+          <em>cheap</em>, and is the <em>tape</em> with it. Hover any{" "}
+          <span className="border-b border-dotted border-foreground/40">term</span> for
+          what it means and why it matters.
         </p>
         <p className="mt-2 font-mono text-[11px] text-muted">
           Incepta {data.schema_version} · engine {data.engine_version} · as of{" "}
           {data.as_of} · {data.universe.length} names
         </p>
+        <p className="mt-2 text-[11px] leading-relaxed text-muted">{data.disclaimer}</p>
       </div>
 
       <AnalyzeTicker universe={data.universe} />
@@ -62,7 +70,7 @@ export function EquityReader({ data }: { data: EquityExport }) {
 
       <div>
         <h3 className="eyebrow mb-3">Securities · {data.securities.length}</h3>
-        <div className="space-y-4">
+        <div className="space-y-5">
           {data.securities.map((s) => (
             <SecurityCard key={s.ticker} s={s} />
           ))}
@@ -73,7 +81,6 @@ export function EquityReader({ data }: { data: EquityExport }) {
 }
 
 // Enter any ticker → the engine pulls its real SEC + price data on demand.
-// Never fabricates: on-demand result is real engine output, or an honest error.
 function AnalyzeTicker({ universe }: { universe: string[] }) {
   const [ticker, setTicker] = useState("");
   const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
@@ -209,9 +216,14 @@ function SecurityCard({ s }: { s: SecurityAnalysis }) {
     ...(s.valuation?.flags ?? []),
   ];
 
+  // The decisive read — computed from this name's real numbers.
+  const v = insufficient
+    ? null
+    : equityVerdict({ quality: s.quality, valuation: s.valuation, risk: s.risk });
+
   return (
     <section
-      className={`border border-hairline bg-paper p-5 ${greyed ? "opacity-60" : ""}`}
+      className={`border border-hairline bg-paper p-5 ${greyed ? "opacity-70" : ""}`}
     >
       {/* Header */}
       <div className="flex items-start justify-between">
@@ -251,61 +263,97 @@ function SecurityCard({ s }: { s: SecurityAnalysis }) {
         </p>
       ) : (
         <>
-          <div className="mt-5 grid gap-6 sm:grid-cols-3">
-            <MetricGroup
-              title="Risk"
-              empty={!s.risk && "No price history."}
-              rows={
-                s.risk && [
-                  ["12-1 momentum", pct(s.risk.mom_12_1, true)],
-                  ["1m return", pct(s.risk.ret_1m, true)],
-                  ["Realized vol", pct(s.risk.realized_vol)],
-                  ["Downside vol", pct(s.risk.downside_vol)],
-                  ["Max DD (1y)", pct(s.risk.max_dd_1y, true)],
-                  ["52w-high ratio", ratio(s.risk.high_52w_ratio)],
-                  ["Beta (mkt)", ratio(s.risk.beta_mkt)],
-                  ["Idio vol", pct(s.risk.idio_vol)],
-                  ["Est. spread", bps(s.risk.spread_bps)],
-                ]
-              }
-            />
-            <MetricGroup
-              title="Quality"
-              empty={!s.quality && "No fundamentals."}
-              rows={
-                s.quality && [
-                  ["ROA", pct(s.quality.roa)],
-                  ["ROE", pct(s.quality.roe)],
-                  ["Gross margin", pct(s.quality.gross_margin)],
-                  ["Net margin", pct(s.quality.net_margin)],
-                  ["FCF margin", pct(s.quality.fcf_margin)],
-                  ["Rev growth", pct(s.quality.rev_growth, true)],
-                  ["Leverage", ratio(s.quality.leverage)],
-                  [
-                    "Piotroski",
-                    s.quality.piotroski_f == null
-                      ? dash
-                      : `${s.quality.piotroski_f} / ${s.quality.piotroski_max ?? 9}`,
-                  ],
-                ]
-              }
-            />
-            <MetricGroup
-              title="Valuation"
-              empty={!s.valuation && "No valuation."}
-              rows={
-                s.valuation && [
-                  ["Market cap", money(s.valuation.market_cap)],
-                  ["P/E", ratio(s.valuation.pe, 1)],
-                  ["Earnings yield", pct(s.valuation.earnings_yield)],
-                  ["P/B", ratio(s.valuation.pb, 1)],
-                  ["P/S", ratio(s.valuation.ps, 1)],
-                  ["FCF yield", pct(s.valuation.fcf_yield)],
-                  ["EV/Sales", ratio(s.valuation.ev_sales, 1)],
-                ]
-              }
-            />
-          </div>
+          {/* THE CALL — decisive, up top */}
+          {v && (
+            <div className="mt-4">
+              <VerdictHeader
+                stance={v.stance}
+                conviction={v.conviction}
+                call={v.call}
+                reasons={v.reasons}
+              />
+              {/* the three questions, as decisive bands */}
+              <div className="mt-5 grid gap-5 sm:grid-cols-3">
+                <div>
+                  <div className="eyebrow mb-2">Health</div>
+                  <BandMeter score={v.health.score} band={v.health.band} coverage={v.health.coverage} bands={["distressed", "watch", "sound", "robust"]} />
+                  <p className="mt-2 text-xs text-muted">{v.health.headline}</p>
+                </div>
+                <div>
+                  <div className="eyebrow mb-2">Valuation</div>
+                  <BandMeter score={v.valuation.score} band={v.valuation.band} coverage={v.valuation.coverage} bands={["extreme", "rich", "fair", "cheap"]} />
+                  <p className="mt-2 text-xs text-muted">{v.valuation.headline}</p>
+                </div>
+                <div>
+                  <div className="eyebrow mb-2">Trend</div>
+                  <BandMeter score={v.trend.score} band={v.trend.band} coverage={v.trend.coverage} bands={["broken", "weak", "constructive", "strong"]} />
+                  <p className="mt-2 text-xs text-muted">{v.trend.headline}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* The numbers behind the call */}
+          <details className="mt-5 border-t border-hairline pt-4">
+            <summary className="cursor-pointer text-xs font-medium text-accent hover:underline">
+              The numbers behind the call
+            </summary>
+            <div className="mt-4 grid gap-6 sm:grid-cols-3">
+              <MetricGroup
+                title="Risk"
+                empty={!s.risk && "No price history."}
+                rows={
+                  s.risk && [
+                    ["12–1 momentum", pct(s.risk.mom_12_1, true)],
+                    ["1-month return", pct(s.risk.ret_1m, true)],
+                    ["Realized vol (ann.)", pct(s.risk.realized_vol)],
+                    ["Downside vol", pct(s.risk.downside_vol)],
+                    ["Max drawdown (1y)", pct(s.risk.max_dd_1y, true)],
+                    ["Distance to 52w high", ratio(s.risk.high_52w_ratio)],
+                    ["Market beta", ratio(s.risk.beta_mkt)],
+                    ["Idiosyncratic vol", pct(s.risk.idio_vol)],
+                    ["Est. spread", bps(s.risk.spread_bps)],
+                  ]
+                }
+              />
+              <MetricGroup
+                title="Quality"
+                empty={!s.quality && "No fundamentals."}
+                rows={
+                  s.quality && [
+                    ["ROA", pct(s.quality.roa)],
+                    ["ROE", pct(s.quality.roe)],
+                    ["Gross margin", pct(s.quality.gross_margin)],
+                    ["Net margin", pct(s.quality.net_margin)],
+                    ["FCF margin", pct(s.quality.fcf_margin)],
+                    ["Revenue growth", pct(s.quality.rev_growth, true)],
+                    ["Leverage (debt/assets)", ratio(s.quality.leverage)],
+                    [
+                      "Piotroski F-score",
+                      s.quality.piotroski_f == null
+                        ? dash
+                        : `${s.quality.piotroski_f} / ${s.quality.piotroski_max ?? 9}`,
+                    ],
+                  ]
+                }
+              />
+              <MetricGroup
+                title="Valuation"
+                empty={!s.valuation && "No valuation."}
+                rows={
+                  s.valuation && [
+                    ["Market cap", money(s.valuation.market_cap)],
+                    ["P/E", ratio(s.valuation.pe, 1)],
+                    ["Earnings yield (E/P)", pct(s.valuation.earnings_yield)],
+                    ["P/B", ratio(s.valuation.pb, 1)],
+                    ["P/S", ratio(s.valuation.ps, 1)],
+                    ["FCF yield", pct(s.valuation.fcf_yield)],
+                    ["EV / Sales", ratio(s.valuation.ev_sales, 1)],
+                  ]
+                }
+              />
+            </div>
+          </details>
 
           <StressAction ticker={s.ticker} />
         </>
@@ -328,10 +376,12 @@ function MetricGroup({
       <div className="eyebrow mb-2">{title}</div>
       {rows ? (
         <dl className="space-y-1.5">
-          {rows.map(([k, v]) => (
-            <div key={k} className="flex items-center justify-between text-sm">
-              <dt className="text-muted">{k}</dt>
-              <dd className="tabular-nums">{v}</dd>
+          {rows.map(([k, val]) => (
+            <div key={k} className="flex items-center justify-between gap-2 text-sm">
+              <dt className="text-muted">
+                <DefLabel term={k} />
+              </dt>
+              <dd className="tabular-nums">{val}</dd>
             </div>
           ))}
         </dl>
@@ -342,7 +392,8 @@ function MetricGroup({
   );
 }
 
-// Per-trade flow: feed this security into Distresse via /api/models/stress.
+// Per-trade flow: feed this security into Distresse (direction-aware) via
+// /api/models/stress. This is the adversarial, instrument-specific view.
 function StressAction({ ticker }: { ticker: string }) {
   const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [verdict, setVerdict] = useState<StressVerdict | null>(null);
@@ -375,21 +426,19 @@ function StressAction({ ticker }: { ticker: string }) {
         >
           {state === "loading"
             ? "Running Distresse…"
-            : "Stress-test this evidence in Distresse →"}
+            : "Stress-test this as a long in Distresse →"}
         </button>
       ) : (
         <div>
-          {verdict.generatedBy.includes("sample") && (
-            <p className="mb-2 text-[11px] text-amber-600 dark:text-amber-400">
-              ⚠ SAMPLE — placeholder scoring, not a real model.
-            </p>
-          )}
-          <div className="flex items-center gap-2">
-            <span className="eyebrow">Distresse</span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="eyebrow">Distresse · long</span>
             <Badge tone={ratingTone[verdict.rating]}>{verdict.rating}</Badge>
             <span className="text-xs text-muted">
               conviction {verdict.conviction}/100
             </span>
+            {verdict.healthBand && (
+              <span className="text-xs text-muted">· health: {verdict.healthBand}</span>
+            )}
           </div>
           <p className="mt-2 text-sm text-foreground/80">{verdict.bottomLine}</p>
           <p className="mt-2 text-[11px] text-muted">{verdict.generatedBy}</p>

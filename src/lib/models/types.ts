@@ -54,6 +54,23 @@ export type Dimension = {
   note: string;
 };
 
+// A concrete line of evidence behind the verdict — real number + read.
+export type EvidenceRow = {
+  label: string;
+  value: string; // pre-formatted (honours null → "—")
+  verdict: string; // decisive one-liner on this number
+  score: number | null; // 0..100 contribution, null if input missing
+};
+
+export type EvidenceGroup = {
+  group: string; // "Financial health", "Valuation", …
+  band: string | null; // e.g. "robust", "rich"
+  score: number | null; // 0..100 on the group's own axis
+  coverage: number; // fraction backed by real data
+  headline: string; // decisive conclusion for the group
+  rows: EvidenceRow[];
+};
+
 export type StressVerdict = {
   ticker: string;
   instrument: Instrument;
@@ -64,7 +81,14 @@ export type StressVerdict = {
   devilsAdvocate: string[]; // the strongest case against
   tailRisks: string[]; // low-probability, high-impact
   bottomLine: string; // straight-up call, in plain words
-  generatedBy: string; // "Distresse (sample)" or model id
+  generatedBy: string; // model id + evidence provenance
+  // --- concrete-evidence layer (present when real evidence was available) ----
+  healthScore?: number | null; // 0 (distressed) .. 100 (robust)
+  healthBand?: string | null;
+  coverage?: number; // overall fraction of the read backed by real data
+  asOf?: string; // as-of date of the underlying evidence
+  evidence?: EvidenceGroup[]; // the numbers, grouped and read
+  noEvidence?: boolean; // true when no real data exists for this name here
 };
 
 // --- Intra output: entry/exit plan -----------------------------------------
@@ -72,15 +96,20 @@ export type StressVerdict = {
 export type EntryExitPlan = {
   ticker: string;
   instrument: Instrument;
-  bias: "long" | "short";
-  entryZone: [number, number]; // buy/sell band
-  stop: number;
-  targets: number[]; // scale-out levels
-  sizingPct: number; // suggested % of book
+  bias: "long" | "short" | "none"; // "none" = no tradeable setup / abstain
+  entryZone: [number, number] | null; // buy/sell band (null when abstaining)
+  stop: number | null;
+  targets: number[]; // scale-out levels (empty when abstaining)
+  sizingPct: number | null; // suggested % of book
   timeStop: string; // "exit if thesis hasn't played by …"
   rationale: string;
   invalidations: string[]; // what kills the setup
   generatedBy: string;
+  // --- optional real-levels layer ------------------------------------------
+  confidence?: "actionable" | "watch" | "insufficient";
+  lastClose?: number | null; // the real anchor the levels are built from
+  riskReward?: string; // e.g. "risk 1R → targets 1.5R / 3R / 5R"
+  noSetup?: boolean; // true when there's no real price to place levels on
 };
 
 // --- Macro Tracker output: a dated reading ---------------------------------

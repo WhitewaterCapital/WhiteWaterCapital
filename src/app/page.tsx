@@ -1,23 +1,15 @@
 import Link from "next/link";
-import { LineChart } from "@/components/LineChart";
-import { ExposureGauge } from "@/components/ExposureGauge";
-import { HeroChart } from "@/components/HeroChart";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { Stat, Card } from "@/components/ui";
-import { snapshots, members } from "@/lib/sample-data";
-import { computeMetrics } from "@/lib/metrics";
-import { pct, shortDate } from "@/lib/format";
+import { members } from "@/lib/sample-data";
 
 // PUBLIC HOME PAGE — the shopfront.
-// Track record + who we are. Deliberately NO tickers, positions, or holdings —
-// only aggregate value, return, and exposure. Nothing here is copyable.
+// Track record + who we are. Deliberately NO tickers, positions, or holdings.
+// The pooled book isn't live yet, so there is NO real performance to show — the
+// track record is deliberately BLANK ("begins at launch") rather than backfilled
+// with placeholder numbers. Wire the IBKR adapter + real snapshots to populate
+// it; nothing here fabricates returns.
 export default function PublicPage() {
-  const m = computeMetrics(snapshots);
-  const labels = snapshots.map((s) => shortDate(s.date));
-  // Cumulative % increase from inception (indexed series start at 100).
-  const usPct = m.portIndexed.map((v) => v - 100);
-  const spyPct = m.spyIndexed.map((v) => v - 100);
-
   return (
     <div>
       {/* Transparent header overlaying the gradient hero */}
@@ -48,9 +40,6 @@ export default function PublicPage() {
 
       {/* HERO */}
       <section className="mesh relative overflow-hidden text-white">
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[300px] text-white/40">
-          <HeroChart values={m.portIndexed} />
-        </div>
         <div className="relative mx-auto max-w-5xl px-6 pb-24 pt-24 sm:pb-32 sm:pt-36">
           <p className="rise rise-1 font-mono text-sm text-white/80">
             // A concentrated, conviction-led investment club.
@@ -89,24 +78,9 @@ export default function PublicPage() {
       {/* STATS BAND */}
       <section className="border-b border-hairline">
         <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 px-6 py-12 sm:grid-cols-4">
-          <Stat
-            label="Total Return"
-            value={pct(m.portReturn)}
-            tone={m.portReturn >= 0 ? "up" : "down"}
-            sub="since inception"
-          />
-          <Stat
-            label="vs SPY"
-            value={pct(m.alpha)}
-            tone={m.alpha >= 0 ? "up" : "down"}
-            sub={`SPY ${pct(m.spyReturn)}`}
-          />
-          <Stat
-            label="Max Drawdown"
-            value={pct(-m.maxDrawdown)}
-            tone="down"
-            sub="worst peak-to-trough"
-          />
+          <Stat label="Total Return" value="—" sub="reported at launch" />
+          <Stat label="vs S&P 500" value="—" sub="reported at launch" />
+          <Stat label="Max Drawdown" value="—" sub="reported at launch" />
           <Stat label="Partners" value={members.length} sub="one pooled account" />
         </div>
       </section>
@@ -137,24 +111,20 @@ export default function PublicPage() {
         <div className="mx-auto max-w-5xl px-6 py-16">
           <p className="font-mono text-sm text-accent">// Track Record</p>
           <h2 className="display mt-3 text-3xl sm:text-5xl">
-            Our return, versus the index.
+            Measured against the index.
           </h2>
-          <div className="mt-10 grid gap-6 lg:grid-cols-3">
-            <div className="lg:col-span-2">
-              <Card title="Cumulative return — us vs SPY">
-                <LineChart
-                  labels={labels}
-                  yFormat={(v) => `${v >= 0 ? "+" : ""}${v.toFixed(0)}%`}
-                  series={[
-                    { values: usPct, color: "currentColor", label: "Whitewater" },
-                    { values: spyPct, color: "#9ca3af", label: "SPY" },
-                  ]}
-                />
-              </Card>
-            </div>
-            <Card title="How much is in trades">
-              <div className="flex h-full items-center justify-center py-4">
-                <ExposureGauge investedPct={m.exposure.investedPct} />
+          <div className="mt-10">
+            <Card title="Cumulative return — us vs S&P 500">
+              <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+                <span className="inline-flex items-center border border-foreground/25 px-3 py-1 text-[11px] font-medium uppercase tracking-wide text-muted">
+                  Begins at launch
+                </span>
+                <p className="text-lg font-semibold">No track record to show yet.</p>
+                <p className="max-w-md text-sm text-muted">
+                  Once the pooled book is live and reconciled to the brokerage, this shows our
+                  cumulative return against the S&amp;P 500 — reported from real statements, never
+                  estimates. We&apos;d rather show nothing than a number we can&apos;t stand behind.
+                </p>
               </div>
             </Card>
           </div>

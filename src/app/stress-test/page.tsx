@@ -19,7 +19,10 @@ export default function StrictusTestumPage() {
         </div>
         <h1 className="display mt-2 text-3xl sm:text-4xl">Pressure-test the idea.</h1>
         <p className="mt-3 max-w-2xl text-muted">
-          Take a trade and see it straight — the adversarial read before the book does.
+          Enter a name and Distresse pulls its real SEC filings + prices, scores
+          financial health, valuation, trend and volatility, and makes a blunt,
+          direction-aware call — the adversarial read before the book does. Real
+          numbers, no guesses; if there&apos;s no data for a name, it says so.
         </p>
 
         <div className="mt-8">

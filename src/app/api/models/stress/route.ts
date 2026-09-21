@@ -1,12 +1,19 @@
 import { NextResponse } from "next/server";
 import { models } from "@/lib/models/registry";
 import type { TradeIdea, Instrument, TradeEvidence } from "@/lib/models/types";
-import { getEquityExport, findSecurity } from "@/lib/incepta";
+import { resolveSecurity } from "@/lib/incepta-resolve";
 
 // Runs both Stress Test engines on one idea: Distresse (verdict) + Intra (plan).
-// If the ticker is covered by the Incepta equity engine, its risk/quality/
-// valuation read is attached as evidence and fed into Distresse — the engine is
-// the evidence source, Distresse is the judge on top.
+// It first resolves the ticker to REAL Incepta output (published universe, then
+// the live engine where reachable) and attaches that risk/quality/valuation
+// read as evidence — the engine is the evidence, Distresse is the judge on top.
+// If no real data exists for the name here, Distresse abstains honestly rather
+// than scoring nothing.
+//
+// The engine resolution can shell out to Python, so this needs the Node runtime.
+export const runtime = "nodejs";
+export const maxDuration = 120;
+
 export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));
 
@@ -18,15 +25,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Ticker is required." }, { status: 400 });
   }
 
-  // Look up engine evidence for this ticker (if the equity model covers it).
+  // Resolve real evidence for this ticker (universe → live engine).
   let evidence: TradeEvidence | undefined;
-  const equity = await getEquityExport();
-  if (equity) {
-    const sec = findSecurity(equity, ticker);
+  let evidenceNote: string | null = null;
+  const res = await resolveSecurity(ticker);
+  if (res.status === "ok") {
+    const sec = res.security;
     // Insufficient-confidence names carry no usable numbers — don't attach them.
-    if (sec && sec.confidence !== "insufficient") {
+    if (sec.confidence !== "insufficient") {
       evidence = {
-        source: `Incepta ${equity.schema_version}`,
+        source: `Incepta (${res.source})`,
         confidence: sec.confidence,
         asOf: sec.as_of,
         risk: sec.risk as TradeEvidence["risk"],
@@ -37,7 +45,11 @@ export async function POST(req: Request) {
           ...(sec.valuation?.flags ?? []),
         ],
       };
+    } else {
+      evidenceNote = "The engine has data for this name but abstains — insufficient confidence to attach numbers.";
     }
+  } else if (res.status !== "invalid") {
+    evidenceNote = res.message;
   }
 
   const idea: TradeIdea = {
@@ -54,5 +66,5 @@ export async function POST(req: Request) {
     models.intraExitus.plan(idea),
   ]);
 
-  return NextResponse.json({ idea, distresse, intra, evidence: evidence ?? null });
+  return NextResponse.json({ idea, distresse, intra, evidence: evidence ?? null, evidenceNote });
 }
