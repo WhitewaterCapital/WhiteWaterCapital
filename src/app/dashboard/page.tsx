@@ -3,6 +3,7 @@ import { ModuleNav } from "@/components/ModuleNav";
 import { LineChart } from "@/components/LineChart";
 import { ExposureGauge } from "@/components/ExposureGauge";
 import { Stat, Card } from "@/components/ui";
+import { StateOfBook } from "@/components/StateOfBook";
 import { getBroker } from "@/lib/broker";
 import { snapshots } from "@/lib/sample-data";
 import { computeMetrics } from "@/lib/metrics";
@@ -82,12 +83,17 @@ export default async function DeskPage() {
           Good to see you.
         </h1>
 
+        <StateOfBook isSample={broker.isSample} />
+
         {/* Module launcher */}
-        <div className="mt-8 flex justify-end">
-          <Link
-            href="/models"
-            className="text-xs uppercase tracking-[0.12em] text-muted hover:text-foreground"
-          >
+        <div className="mt-8 flex flex-wrap justify-end gap-x-5 gap-y-1 text-xs uppercase tracking-[0.12em]">
+          <Link href="/how-it-works" className="text-muted hover:text-foreground">
+            How it works →
+          </Link>
+          <Link href="/glossary" className="text-muted hover:text-foreground">
+            Glossary →
+          </Link>
+          <Link href="/models" className="text-muted hover:text-foreground">
             Model registry →
           </Link>
         </div>
