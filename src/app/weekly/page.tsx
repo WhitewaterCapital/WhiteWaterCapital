@@ -1,5 +1,6 @@
 import { ModuleNav } from "@/components/ModuleNav";
 import { Card, Badge } from "@/components/ui";
+import { Term, HowToRead, DemoNote } from "@/components/Explain";
 import { getWeeklyExport } from "@/lib/weekly";
 import type { WeeklyExport, WeeklyForecast } from "@/lib/models/weekly-export";
 import { pct } from "@/lib/format";
@@ -27,16 +28,34 @@ export default async function WeeklyPage() {
       <main className="mx-auto max-w-5xl px-6 py-8">
         <div className="flex items-baseline gap-3">
           <p className="font-mono text-sm text-accent">// Weekly Ranking</p>
-          <span className="font-mono text-xs text-muted">cross-sectional rank</span>
+          <span className="font-mono text-xs text-muted">the weekly read</span>
         </div>
         <h1 className="display mt-2 text-3xl sm:text-4xl">
-          This week&apos;s cross-sectional read.
+          Who the model likes this week.
         </h1>
         <p className="mt-3 max-w-2xl text-muted">
-          A ranked read across the universe — who&apos;s expected to lead, who&apos;s
-          expected to lag, and how confident the engine is in that ordering.
-          The ranking is the point; no single number here is a price target.
+          A ranked list across our universe — names the model expects to lead sit at the top,
+          names it expects to lag sit at the bottom. It&apos;s an ordering to guide research, not
+          a set of price targets.
         </p>
+
+        <div className="mt-6">
+          <HowToRead>
+            <p>
+              • <strong className="font-medium text-foreground">The list is sorted best-to-worst</strong> by
+              the model&apos;s <Term k="decile">rank</Term> — a 1-to-10 score where 10 is most preferred.
+            </p>
+            <p>
+              • <strong className="font-medium text-foreground">The &ldquo;likely range&rdquo; column</strong>{" "}
+              is the model&apos;s low-to-high guess for the name — a <Term k="quantile band">wider range</Term>{" "}
+              means it&apos;s less sure.
+            </p>
+            <p>
+              • <strong className="font-medium text-foreground">It ranks, it doesn&apos;t promise.</strong>{" "}
+              Use the top and bottom of the list to decide what to look into, not what to buy.
+            </p>
+          </HowToRead>
+        </div>
 
         <div className="mt-8">
           {data ? (
@@ -72,12 +91,15 @@ function WeeklyTable({ data }: { data: WeeklyExport }) {
         <div className="flex flex-wrap items-center gap-2">
           <Badge tone="neutral">Research read</Badge>
           <span className="text-xs text-muted">
-            Cross-sectional rank signal · not price targets · not investment advice
+            A ranking to guide research · not price targets · not investment advice
           </span>
-          <Badge tone={data.provenance.kind === "live" ? "up" : "warn"}>
-            {data.provenance.kind === "live" ? "Live data" : "Synthetic demo data"}
-          </Badge>
+          {data.provenance.kind === "live" && <Badge tone="up">Live data</Badge>}
         </div>
+        {data.provenance.kind !== "live" && (
+          <div className="mt-3">
+            <DemoNote />
+          </div>
+        )}
         <p className="mt-3 text-xs leading-relaxed text-muted">{data.disclaimer}</p>
         {/* Two distinct timestamps, never merged: data as-of vs. when this run was computed. */}
         <p className="mt-2 font-mono text-[11px] text-muted">
@@ -96,15 +118,21 @@ function WeeklyTable({ data }: { data: WeeklyExport }) {
           </p>
         </Card>
       ) : (
-        <Card title="Ranked forecast — sorted by decile">
+        <Card title="Ranked best to worst">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-left text-muted">
                   <th className="pb-2 font-medium">Symbol</th>
-                  <th className="pb-2 text-right font-medium">Expected relative return</th>
-                  <th className="pb-2 text-right font-medium">Quantile band (p10 – p90)</th>
-                  <th className="pb-2 text-right font-medium">Decile</th>
+                  <th className="pb-2 text-right font-medium">
+                    <Term k="expected relative return">Strength score</Term>
+                  </th>
+                  <th className="pb-2 text-right font-medium">
+                    <Term k="quantile band">Likely range</Term>
+                  </th>
+                  <th className="pb-2 text-right font-medium">
+                    <Term k="decile">Rank (1–10)</Term>
+                  </th>
                   <th className="pb-2 font-medium">Confidence</th>
                 </tr>
               </thead>

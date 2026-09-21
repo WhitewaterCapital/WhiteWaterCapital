@@ -1,6 +1,7 @@
 import { ModuleNav } from "@/components/ModuleNav";
 import { LineChart } from "@/components/LineChart";
 import { Card, Badge } from "@/components/ui";
+import { Term, HowToRead, DemoNote } from "@/components/Explain";
 import {
   snapshots,
   strategies,
@@ -72,13 +73,35 @@ export default function PerformancePage() {
           <span className="font-mono text-xs text-muted">IMP-01</span>
         </div>
         <h1 className="display mt-2 text-3xl sm:text-4xl">Where the return came from.</h1>
+        <p className="mt-3 max-w-2xl text-muted">
+          Not just how much the book made, but <em>which parts</em> of it did the work — split across our
+          strategies, and measured against the S&amp;P 500.
+        </p>
 
-        <div className="mt-4 border border-amber-500/50 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-400">
-          ⚠ <strong>SAMPLE DATA — no live multi-strategy ledger exists yet.</strong>{" "}
-          The equity curve below is the desk&apos;s real (simulated) blended
-          account. The per-strategy split is an illustrative synthetic
-          decomposition of that same series — see{" "}
-          <code>src/lib/sample-data.ts</code>&apos;s <code>strategyAttribution</code>.
+        <div className="mt-6">
+          <HowToRead>
+            <p>
+              • <strong className="font-medium text-foreground">The curve</strong> is our account vs. the S&amp;P
+              500 — above the line is beating the market.
+            </p>
+            <p>
+              • <strong className="font-medium text-foreground"><Term k="attribution">Attribution</Term></strong>{" "}
+              below shows how much each strategy actually contributed, so one good sleeve can&apos;t hide behind the
+              total.
+            </p>
+            <p>
+              • <Term k="sharpe">Sharpe</Term> rewards steady gains over lucky-but-wild ones;{" "}
+              <Term k="drawdown">drawdown</Term> is the worst dip you&apos;d have sat through.
+            </p>
+          </HowToRead>
+        </div>
+
+        <div className="mt-4">
+          <DemoNote>
+            <strong className="font-semibold">Illustrative figures.</strong> The account curve is the desk&apos;s
+            sample book (the same one on the Desk and public page); the per-strategy split is an illustrative
+            breakdown of it, until a real per-strategy ledger is wired in.
+          </DemoNote>
         </div>
 
         {/* v1.0 disclosures */}

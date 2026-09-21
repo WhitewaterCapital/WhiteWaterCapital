@@ -1,5 +1,6 @@
 import { ModuleNav } from "@/components/ModuleNav";
 import { Card, Badge } from "@/components/ui";
+import { Term, HowToRead } from "@/components/Explain";
 import { kalmanPairs, KALMAN_UNIVERSE } from "@/lib/models/impl/kalman-pairs";
 import { getKalmanExport } from "@/lib/kalman";
 import type { EquityReading, EquitySignal } from "@/lib/models/types";
@@ -22,16 +23,33 @@ export default async function KalmanPage() {
       <main className="mx-auto max-w-5xl px-6 py-8">
         <div className="flex items-baseline gap-3">
           <p className="font-mono text-sm text-accent">// Kalman Pairs</p>
-          <span className="font-mono text-xs text-muted">adaptive Kalman filter, pairs trading / stat-arb</span>
+          <span className="font-mono text-xs text-muted">the spread lens</span>
         </div>
-        <h1 className="display mt-2 text-3xl sm:text-4xl">A filter that re-estimates its own noise, as it runs.</h1>
+        <h1 className="display mt-2 text-3xl sm:text-4xl">Pairs of stocks that have drifted apart.</h1>
         <p className="mt-3 max-w-2xl text-muted">
-          Tests every pair in a fixed {KALMAN_UNIVERSE.length}-name universe ({KALMAN_UNIVERSE.join(", ")}) for real
-          cointegration (Engle-Granger two-step), then tracks a time-varying hedge ratio for every genuinely
-          cointegrated pair with a Kalman filter whose process- and observation-noise covariances are re-estimated
-          online from its own innovations — not fixed by a hand-set hyperparameter. A research read, not investment
-          advice.
+          Some stocks tend to move together. When two of them{" "}
+          <Term k="cointegration">that normally track each other</Term> pull unusually far apart, the bet is
+          that they snap back. This screen watches {KALMAN_UNIVERSE.length} names ({KALMAN_UNIVERSE.join(", ")})
+          for exactly that. A research read, not investment advice.
         </p>
+
+        <div className="mt-6">
+          <HowToRead>
+            <p>
+              • <strong className="font-medium text-foreground">Each row is a pair of stocks</strong> that
+              historically move together.
+            </p>
+            <p>
+              • The <Term k="z-score">stretch</Term> tells you how far apart they are right now — around{" "}
+              <strong className="font-medium text-foreground">±2 or more is unusually stretched</strong>, the
+              setup this screen is built to catch.
+            </p>
+            <p>
+              • <strong className="font-medium text-foreground">Stretched doesn&apos;t mean act.</strong>{" "}
+              It&apos;s a watchlist of dislocations to research, not a trade instruction.
+            </p>
+          </HowToRead>
+        </div>
         <SigNote />
 
         <div className="mt-8">

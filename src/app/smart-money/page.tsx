@@ -1,5 +1,6 @@
 import { ModuleNav } from "@/components/ModuleNav";
 import { Card, Badge } from "@/components/ui";
+import { Term, HowToRead } from "@/components/Explain";
 import { smartMoneyMomentum, SMART_MONEY_UNIVERSE } from "@/lib/models/impl/smart-money-momentum";
 import type { EquityReading, EquitySignal } from "@/lib/models/types";
 
@@ -20,15 +21,32 @@ export default async function SmartMoneyPage() {
       <main className="mx-auto max-w-5xl px-6 py-8">
         <div className="flex items-baseline gap-3">
           <p className="font-mono text-sm text-accent">// Smart Money Momentum</p>
-          <span className="font-mono text-xs text-muted">insider net-buying × momentum beta</span>
+          <span className="font-mono text-xs text-muted">the follow read</span>
         </div>
-        <h1 className="display mt-2 text-3xl sm:text-4xl">Who the insiders and the tape agree on.</h1>
+        <h1 className="display mt-2 text-3xl sm:text-4xl">Where the informed money is leaning.</h1>
         <p className="mt-3 max-w-2xl text-muted">
-          A cross-sectional screen over a fixed {SMART_MONEY_UNIVERSE.length}-name universe (
-          {SMART_MONEY_UNIVERSE.join(", ")}), combining WW-Insider&apos;s real SEC EDGAR net
-          buy/sell direction with WW-Factor&apos;s real momentum factor beta. A research read, not
-          a verdict — never fed into any single-name composite conviction score.
+          Two signals that tend to reward following, side by side across {SMART_MONEY_UNIVERSE.length} names
+          ({SMART_MONEY_UNIVERSE.join(", ")}): whether{" "}
+          <Term k="insider posture">company insiders have been buying or selling</Term> their own stock, and
+          whether the name has <Term k="momentum beta">momentum behind it</Term>. A research read, not a verdict.
         </p>
+
+        <div className="mt-6">
+          <HowToRead>
+            <p>
+              • <strong className="font-medium text-foreground">Green means the signals lean positive</strong>{" "}
+              (insiders buying, momentum firm); red means they lean negative.
+            </p>
+            <p>
+              • <strong className="font-medium text-foreground">It&apos;s about who&apos;s acting, not price
+              targets.</strong> Insiders buying with their own money is the signal worth noticing.
+            </p>
+            <p>
+              • A name with <strong className="font-medium text-foreground">both signals agreeing</strong> is
+              the strongest read here — still a starting point, not a buy order.
+            </p>
+          </HowToRead>
+        </div>
 
         <div className="mt-8">
           <SmartMoneyTable data={data} />

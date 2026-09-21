@@ -1,5 +1,6 @@
 import { ModuleNav } from "@/components/ModuleNav";
 import { Card, Badge } from "@/components/ui";
+import { Term, HowToRead, DemoNote } from "@/components/Explain";
 import { earningsMove, EARNINGS_MOVE_UNIVERSE } from "@/lib/models/impl/earnings-move";
 import { getEarningsExport } from "@/lib/earnings";
 import type { EquityReading, EquitySignal } from "@/lib/models/types";
@@ -30,24 +31,38 @@ export default async function EarningsPage() {
           <p className="font-mono text-sm text-accent">// Earnings Move</p>
           <span className="font-mono text-xs text-muted">upcoming prints × pre-print positioning</span>
         </div>
-        <h1 className="display mt-2 text-3xl sm:text-4xl">Who reports next, and what the real signals say going in.</h1>
+        <h1 className="display mt-2 text-3xl sm:text-4xl">Who reports earnings next — and how the desk is positioned going in.</h1>
         <p className="mt-3 max-w-2xl text-muted">
-          A fixed {EARNINGS_MOVE_UNIVERSE.length}-name universe ({EARNINGS_MOVE_UNIVERSE.join(", ")}), checked against
-          WW-EARNINGS&apos; calendar export. Not a surprise-direction or price-move prediction — this app has no
-          analyst-estimate data to base one on (see <code>earnings-engine/README.md</code>). Where a print is coming up,
-          this shows WW-Insider&apos;s real pre-print Form 4 positioning and WW-Factor&apos;s real momentum context, and
-          nothing else.
+          Upcoming earnings dates for {EARNINGS_MOVE_UNIVERSE.length} names ({EARNINGS_MOVE_UNIVERSE.join(", ")}).
+          This does <em>not</em> predict which way a stock will jump on its results — instead, for each name with a
+          print coming up, it shows whether{" "}
+          <Term k="insider posture">insiders have been buying or selling</Term> and whether the name has momentum
+          behind it. A research read, not a forecast.
         </p>
 
-        {calendarExport?.data_provenance === "synthetic-demo" ? (
-          <div className="mt-6 border border-hairline bg-paper px-5 py-4">
-            <Badge tone="warn">Synthetic-demo calendar</Badge>
-            <p className="mt-2 text-xs leading-relaxed text-muted">
-              No <code>FMP_API_KEY</code> is configured, so every date below comes from{" "}
-              <code>earnings-engine/ee/synthetic.py</code>&apos;s deterministic fixture generator, not a real
-              earnings calendar. Set the key and re-run <code>python -m ee.export</code> in{" "}
-              <code>earnings-engine/</code> to switch this to real print dates.
+        <div className="mt-6">
+          <HowToRead>
+            <p>
+              • <strong className="font-medium text-foreground">Each row is a name with earnings coming up</strong>,
+              and the date it reports.
             </p>
+            <p>
+              • The <Term k="lean">lean</Term> is a soft tilt going into the print — often
+              &ldquo;no lean&rdquo;, and that&apos;s honest: it&apos;s not a prediction of the result.
+            </p>
+            <p>
+              • <strong className="font-medium text-foreground">Earnings are high-risk events.</strong> This is
+              context to prepare with, not a bet on the outcome.
+            </p>
+          </HowToRead>
+        </div>
+
+        {calendarExport?.data_provenance === "synthetic-demo" ? (
+          <div className="mt-4">
+            <DemoNote>
+              <strong className="font-semibold">Example dates.</strong> These print dates are illustrative
+              placeholders while we connect a live earnings calendar — not confirmed report dates yet.
+            </DemoNote>
           </div>
         ) : null}
 
