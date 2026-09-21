@@ -6,6 +6,7 @@ import type { Snapshot, Trade } from "../types";
 // real IBKR credentials are configured, so the whole app is usable today.
 export class MockBroker implements BrokerAdapter {
   readonly name = "Mock (sample data)";
+  readonly isSample = true;
 
   async getAccount(): Promise<AccountState> {
     const latest = snapshots[snapshots.length - 1];

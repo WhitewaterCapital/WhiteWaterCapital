@@ -18,6 +18,9 @@ export interface AccountState {
 
 export interface BrokerAdapter {
   readonly name: string;
+  // True when the numbers are placeholder sample data, not the club's real
+  // book. The UI MUST surface this so no one mistakes it for live performance.
+  readonly isSample: boolean;
 
   // Live account snapshot: value, cash, and open positions.
   getAccount(): Promise<AccountState>;

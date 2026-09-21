@@ -8,8 +8,8 @@ import { snapshots } from "@/lib/sample-data";
 import { computeMetrics } from "@/lib/metrics";
 import { usd, pct, shortDate, num } from "@/lib/format";
 
-// THE DESK — the members launcher. Four modules up top (each a shell you fill
-// with its own algo backend), portfolio/holdings below.
+// THE DESK — the members launcher. Each module is a shell you fill with its
+// own algo backend; portfolio/holdings below.
 const MODULES = [
   {
     href: "/sentiment",
@@ -34,6 +34,24 @@ const MODULES = [
     name: "Intra / Exitus",
     latin: "enter · exit",
     blurb: "Entry and exit levels — where to get in, where to get out.",
+  },
+  {
+    href: "/weekly",
+    name: "Weekly Ranking",
+    latin: "the weekly read",
+    blurb: "Ranked cross-sectional forecast — who leads, who lags this week.",
+  },
+  {
+    href: "/kalman",
+    name: "Kalman Pairs",
+    latin: "the spread lens",
+    blurb: "Adaptive pairs / stat-arb screen — cointegrated spreads and their z-scores.",
+  },
+  {
+    href: "/earnings",
+    name: "Earnings Move",
+    latin: "the print read",
+    blurb: "Pre-earnings positioning context — momentum and insider posture into the print.",
   },
 ];
 
@@ -66,7 +84,11 @@ export default async function DeskPage() {
             <Link
               key={mod.href}
               href={mod.href}
-              className={`rise rise-${Math.min(i + 1, 4)} group relative bg-background p-7 transition hover:bg-paper`}
+              className={`rise rise-${Math.min(i + 1, 4)} group relative bg-background p-7 transition hover:bg-paper ${
+                i === MODULES.length - 1 && MODULES.length % 2 !== 0
+                  ? "sm:col-span-2"
+                  : ""
+              }`}
             >
               <div className="flex items-start justify-between">
                 <div>
@@ -87,10 +109,31 @@ export default async function DeskPage() {
 
         {/* Portfolio — the specifics */}
         <section className="mt-14">
+          {broker.isSample && (
+            <div className="mb-4 border border-amber-500/50 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-400">
+              <strong>Sample data — not the club&apos;s real book.</strong> Every number in this
+              section (account value, return, Sharpe, holdings, P&amp;L, the equity curve) is
+              placeholder data so the desk is usable before the brokerage is wired. Connect the
+              IBKR adapter (set <code>BROKER=ibkr</code> + gateway credentials) to show live
+              numbers — this banner disappears automatically once real data flows.
+            </div>
+          )}
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="eyebrow">Portfolio</h2>
+            <div className="flex items-baseline gap-3">
+              <h2 className="eyebrow">Portfolio</h2>
+              <Link
+                href="/performance"
+                className="text-xs text-accent hover:underline"
+              >
+                Performance breakdown →
+              </Link>
+            </div>
             <span className="text-xs text-muted">
-              Source: {broker.name} · synced just now
+              {broker.isSample ? (
+                <span className="text-amber-600 dark:text-amber-400">Source: {broker.name} — illustrative</span>
+              ) : (
+                <>Source: {broker.name} · synced just now</>
+              )}
             </span>
           </div>
 

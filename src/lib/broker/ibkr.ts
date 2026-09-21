@@ -25,6 +25,7 @@ import type { Snapshot, Trade } from "../types";
 
 export class IbkrBroker implements BrokerAdapter {
   readonly name = "Interactive Brokers";
+  readonly isSample = false;
 
   private baseUrl: string;
   private accountId: string;

@@ -152,3 +152,100 @@ export const trades: Trade[] = [
   { id: "t3", symbol: "COST", side: "buy", quantity: 2, priceUsd: 872.0, executedAt: "2026-04-11T16:11:00Z" },
   { id: "t4", symbol: "AMD", side: "buy", quantity: 9, priceUsd: 154.7, executedAt: "2026-05-01T14:20:00Z" },
 ];
+
+// ===========================================================================
+// Per-strategy attribution + v1.0 performance disclosures (ported from the
+// website-3 build for the /performance page — IMP-01). Additive, illustrative
+// sample data grounded in the existing snapshot sim; no real per-strategy
+// ledger exists. Depends only on makeRng + snapshots already defined above.
+// ===========================================================================
+export type StrategyKind = "discretionary" | "model-driven" | "paper";
+
+export type StrategyMeta = {
+  id: string;
+  name: string;
+  kind: StrategyKind;
+  description: string;
+};
+
+export const strategies: StrategyMeta[] = [
+  {
+    id: "core",
+    name: "Core conviction picks",
+    kind: "discretionary",
+    description: "The four-rule concentrated book members vote on — the same account tracked elsewhere on the desk.",
+  },
+  {
+    id: "signals",
+    name: "Incepta + Aurora signals",
+    kind: "model-driven",
+    description: "Sized off the equity + macro engines' output; not yet a capital-segregated sleeve.",
+  },
+  {
+    id: "paper-weekly",
+    name: "WW-WEEKLY rank (paper)",
+    kind: "paper",
+    description: "Tracked in a paper book only — no real capital committed while it accrues a live track record.",
+  },
+];
+
+export type StrategyAttributionPoint = {
+  date: string; // ISO date, aligned with `snapshots`
+  weight: Record<string, number>; // strategy id -> fraction of the book that week (paper is always 0 — it carries no real capital by definition)
+  contributionPct: Record<string, number>; // strategy id -> contribution to that week's return, in percentage points
+};
+
+export const strategyAttribution: StrategyAttributionPoint[] = (() => {
+  // A different seed from the account sim above: this is an independent
+  // illustrative split, not derived from any real per-trade record.
+  const rng = makeRng(20260201);
+  return snapshots.map((s, i) => {
+    if (i === 0) {
+      return {
+        date: s.date,
+        weight: { core: 0.6, signals: 0.25, "paper-weekly": 0 },
+        contributionPct: { core: 0, signals: 0, "paper-weekly": 0 },
+      };
+    }
+    const weekReturnPct = (s.unitValueUsd / snapshots[i - 1].unitValueUsd - 1) * 100;
+    // Split the week's real blended return across the two capital-bearing
+    // sleeves with a small persistent tilt + noise; paper gets its own
+    // shadow return that never touches the real blended number.
+    const coreShare = 0.55 + (rng() - 0.5) * 0.25;
+    const signalsShare = 1 - coreShare;
+    const paperShadowPct = weekReturnPct * (0.6 + rng() * 0.8) + (rng() - 0.5) * 0.4;
+    return {
+      date: s.date,
+      weight: {
+        core: Math.round((0.55 + (rng() - 0.5) * 0.1) * 100) / 100,
+        signals: Math.round((0.28 + (rng() - 0.5) * 0.08) * 100) / 100,
+        "paper-weekly": 0,
+      },
+      contributionPct: {
+        core: Math.round(weekReturnPct * coreShare * 100) / 100,
+        signals: Math.round(weekReturnPct * signalsShare * 100) / 100,
+        "paper-weekly": Math.round(paperShadowPct * 100) / 100,
+      },
+    };
+  });
+})();
+
+// ---------------------------------------------------------------------------
+// IMP-01 — v1.0 performance disclosures. Every value is grounded in facts
+// already true of this sample simulation (inception = the sim's own start
+// date, benchmark = the SPY series already carried on every Snapshot,
+// valuation cadence = the sim's own weekly step, cash-flow treatment =
+// src/lib/units.ts's unit accounting) — nothing here is invented for this page.
+// ---------------------------------------------------------------------------
+export const performanceDisclosures = {
+  inceptionDate: snapshots[0]?.date ?? "—",
+  benchmark: "S&P 500 (tracked via SPY close — see Snapshot.spyPrice)",
+  feeTreatment:
+    "Returns shown are GROSS — this simulation has no management or performance fee schedule implemented.",
+  cashFlowTreatment:
+    "Unit accounting (src/lib/units.ts): every deposit/withdrawal buys or redeems units at that day's unit value, so cash-flow timing never dilutes or inflates another member's return.",
+  valuationTiming: "Valued weekly, as of each snapshot's date — this sample simulation's own cadence.",
+  dataSource:
+    "Illustrative synthetic sample data (src/lib/sample-data.ts) — no live broker feed or real multi-strategy ledger is connected in this environment.",
+};
+
