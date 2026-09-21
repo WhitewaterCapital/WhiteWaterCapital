@@ -53,6 +53,18 @@ const MODULES = [
     latin: "the print read",
     blurb: "Pre-earnings positioning context — momentum and insider posture into the print.",
   },
+  {
+    href: "/smart-money",
+    name: "Smart Money",
+    latin: "the follow read",
+    blurb: "Where informed flow is leaning — factor momentum + insider posture per name.",
+  },
+  {
+    href: "/trade-ideas",
+    name: "Trade Ideas",
+    latin: "the idea board",
+    blurb: "One ranked board — weekly, earnings and smart-money reads pulled together.",
+  },
 ];
 
 export default async function DeskPage() {
