@@ -249,3 +249,61 @@ export const performanceDisclosures = {
     "Illustrative synthetic sample data (src/lib/sample-data.ts) — no live broker feed or real multi-strategy ledger is connected in this environment.",
 };
 
+
+// ===========================================================================
+// Club toolkit — Watchlist + Decision Journal (in-app, sample data).
+// The Journal closes the loop the club's ethos asks for: every position and
+// past decision carries the written thesis it started as, who championed it,
+// and — once closed — an honest "how it aged" review. Open entries double as
+// the "why we own this" for each current holding. Swap for a real store when
+// proposals/trades persist to a database.
+// ===========================================================================
+
+export type WatchItem = {
+  symbol: string;
+  addedBy: string; // member name
+  addedAt: string; // ISO date
+  note: string; // plain-language reason we're watching it
+};
+
+export const watchlist: WatchItem[] = [
+  { symbol: "GOOGL", addedBy: "James", addedAt: "2026-08-18", note: "Cheap on our numbers and cloud is re-accelerating — there's an open proposal to start a position." },
+  { symbol: "TSM", addedBy: "Alan", addedAt: "2026-08-30", note: "The picks-and-shovels way to own the AI buildout; waiting for a better entry after the recent run." },
+  { symbol: "PANW", addedBy: "Dana", addedAt: "2026-09-05", note: "Security spend keeps compounding; want to see one more clean quarter before we commit." },
+  { symbol: "V", addedBy: "JT", addedAt: "2026-09-09", note: "A quality compounder for ballast — on the list if we want to de-risk the book." },
+];
+
+export type JournalAction = "buy" | "add" | "trim" | "sell";
+export type JournalEntry = {
+  id: string;
+  symbol: string;
+  action: JournalAction;
+  date: string; // ISO date the decision was made
+  championedBy: string; // member name
+  thesis: string; // the written argument at the time
+  status: "open" | "closed";
+  review: string; // open: the current read; closed: how it actually aged
+};
+
+export const journal: JournalEntry[] = [
+  // Open — these are the "why we own this" for the current holdings.
+  { id: "j_nvda", symbol: "NVDA", action: "buy", date: "2026-03-02", championedBy: "James",
+    thesis: "Accelerated-compute demand is supply-constrained, not demand-constrained — we want the toll-taker on the whole AI buildout.",
+    status: "open", review: "Working: up ~$820. Thesis intact while data-center orders keep outrunning supply." },
+  { id: "j_msft", symbol: "MSFT", action: "buy", date: "2026-02-20", championedBy: "Sam",
+    thesis: "Copilot attach + Azure re-acceleration turns AI capex into durable, high-margin recurring revenue.",
+    status: "open", review: "Working: up ~$440. Watching cloud growth and capex discipline at the next print." },
+  { id: "j_cost", symbol: "COST", action: "buy", date: "2026-04-11", championedBy: "Dana",
+    thesis: "Membership model is a recession-resistant compounder — steady, and it balances our tech-heavy book.",
+    status: "open", review: "Working: up ~$200. Doing its job as the defensive anchor." },
+  { id: "j_amd", symbol: "AMD", action: "buy", date: "2026-05-01", championedBy: "Alan",
+    thesis: "The credible #2 in AI accelerators; MI-series share gains give a second horse in the same race as NVDA.",
+    status: "open", review: "Under pressure: down ~$150. If MI-series share gains don't show next print, the thesis is on the clock." },
+  // Closed — the loop working: a decision made, then honestly reviewed.
+  { id: "j_meta", symbol: "META", action: "sell", date: "2026-06-20", championedBy: "James",
+    thesis: "Sold into strength after the position doubled — valuation ran ahead of the growth we underwrote.",
+    status: "closed", review: "Good discipline: locked a clean win. It kept drifting up ~5% after we sold, but selling a doubled thesis-complete position was the right call, not a miss." },
+  { id: "j_pfe", symbol: "PFE", action: "sell", date: "2026-05-12", championedBy: "JT",
+    thesis: "Thesis broke — the pipeline catalyst we bought for slipped a year and the setup no longer held.",
+    status: "closed", review: "Correct exit for the wrong-feeling reason: cutting a broken thesis fast saved us from the further leg down that followed. A reminder that 'the thesis broke, so it goes' works." },
+];

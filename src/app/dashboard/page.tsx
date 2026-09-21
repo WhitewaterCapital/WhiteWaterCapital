@@ -85,6 +85,14 @@ export default async function DeskPage() {
 
         <StateOfBook isSample={broker.isSample} />
 
+        {/* Club tools — the weekly workflow shortcuts */}
+        <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-xs uppercase tracking-[0.12em]">
+          <Link href="/trade-ideas" className="text-muted hover:text-foreground">Trade ideas →</Link>
+          <Link href="/watchlist" className="text-muted hover:text-foreground">Watchlist →</Link>
+          <Link href="/journal" className="text-muted hover:text-foreground">Decision journal →</Link>
+          <Link href="/proposals" className="text-muted hover:text-foreground">Proposals →</Link>
+        </div>
+
         {/* Module launcher */}
         <div className="mt-8 flex flex-wrap justify-end gap-x-5 gap-y-1 text-xs uppercase tracking-[0.12em]">
           <Link href="/how-it-works" className="text-muted hover:text-foreground">
@@ -195,8 +203,8 @@ export default async function DeskPage() {
             <Card
               title="Holdings"
               action={
-                <Link href="/proposals" className="text-xs text-accent hover:underline">
-                  Proposals →
+                <Link href="/journal" className="text-xs text-accent hover:underline">
+                  Why we own these →
                 </Link>
               }
             >
