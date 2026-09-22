@@ -1,5 +1,6 @@
 import { ModuleNav } from "@/components/ModuleNav";
 import { Card } from "@/components/ui";
+import { HowToRead, DemoNote } from "@/components/Explain";
 import { IntraExitusReader } from "@/components/IntraExitusReader";
 import { getIntraExitusExport } from "@/lib/intra-exitus";
 
@@ -23,10 +24,34 @@ export default async function IntraExitusPage() {
           Where to get in, where to get out.
         </h1>
         <p className="mt-3 max-w-2xl text-muted">
-          Regime-conditional entry/exit levels from the real engine — OU
-          mean-reversion or trend-pullback, cost-aware sizing, and an honest
-          abstain when there&apos;s no clean setup.
+          For each name: a committed side (long or short), exactly where to get in, where
+          you&apos;re wrong (the stop), where to take profit, and how big to size. A plan you can act on,
+          not a shrug.
         </p>
+
+        <div className="mt-6">
+          <HowToRead>
+            <p>
+              • <strong className="font-medium text-foreground">Each card is a trade plan</strong> — the direction,
+              an entry zone, a stop (where the idea is wrong), and profit targets.
+            </p>
+            <p>
+              • <strong className="font-medium text-foreground">&ldquo;Actionable&rdquo; vs &ldquo;watch&rdquo;</strong>{" "}
+              tells you whether the setup is live now or worth waiting for a better price.
+            </p>
+            <p>
+              • <strong className="font-medium text-foreground">The stop is the point.</strong> It&apos;s where you
+              admit the idea failed and step out — decided before you enter, not in the moment.
+            </p>
+          </HowToRead>
+        </div>
+
+        <div className="mt-4">
+          <DemoNote>
+            <strong className="font-semibold">Illustrative levels.</strong> Prices and levels are synthetic-demo
+            until the live feed is connected — they show how a plan is built, not a live setup to trade.
+          </DemoNote>
+        </div>
 
         <div className="mt-8">
           {data ? (

@@ -1,96 +1,168 @@
 {
   "schema_version": "1.0.0",
-  "engine_version": "0.1.0",
-  "generated_at": "2026-08-16T04:06:08.427997+00:00",
-  "as_of": "2026-08-14",
+  "engine_version": "ie-1.0.0",
+  "generated_at": "2026-09-18T13:00:00Z",
+  "as_of": "2026-09-18",
   "universe": [
     "AAPL",
     "MSFT",
     "NVDA",
-    "KO",
-    "F"
+    "XOM",
+    "JPM",
+    "KO"
   ],
-  "disclaimer": "Intra / Exitus is a point-in-time entry/exit research model (regime-conditional OU / trend templates with cost-aware sizing). Levels are decision-support, not advice or an order. It abstains when there is no clean, tradeable setup.",
+  "disclaimer": "Intra / Exitus is a point-in-time entry/exit research model. Levels are decision-support, not advice or an order. Illustrative synthetic-demo prices until the live feed is connected.",
+  "data_provenance": "synthetic-demo",
   "plans": [
     {
       "ticker": "AAPL",
-      "regime": "high-vol",
-      "bias": "none",
-      "confidence": "insufficient",
-      "entryZone": null,
-      "stop": null,
-      "targets": [],
-      "expectedR": null,
-      "sizingPct": null,
-      "timeStop": "\u2014",
-      "rationale": "No mean reversion in the window (OU non-reverting).",
-      "invalidations": [],
-      "lastClose": 305.93,
-      "asOf": "2026-08-14"
+      "regime": "trend",
+      "bias": "long",
+      "confidence": "actionable",
+      "entryZone": [
+        230.0,
+        232.5
+      ],
+      "stop": 224.0,
+      "targets": [
+        242.0,
+        250.0
+      ],
+      "expectedR": 2.1,
+      "sizingPct": 2.5,
+      "timeStop": "exit on time (8 trading days) if neither stop nor first target is hit",
+      "rationale": "Long \u2014 uptrend intact and pulling back into support; buy the dip rather than chase. Reward outweighs risk about 2:1 to the first target.",
+      "invalidations": [
+        "A close below 224 breaks the trend structure \u2014 setup void.",
+        "A gap through the entry zone on news \u2014 don't chase, re-plan off the new price."
+      ],
+      "lastClose": 234.5,
+      "asOf": "2026-09-18"
     },
     {
       "ticker": "MSFT",
-      "regime": "high-vol",
-      "bias": "none",
-      "confidence": "insufficient",
-      "entryZone": null,
-      "stop": null,
-      "targets": [],
-      "expectedR": null,
-      "sizingPct": null,
-      "timeStop": "\u2014",
-      "rationale": "No mean reversion in the window (OU non-reverting).",
-      "invalidations": [],
-      "lastClose": 495.4,
-      "asOf": "2026-08-14"
+      "regime": "trend",
+      "bias": "long",
+      "confidence": "actionable",
+      "entryZone": [
+        434.0,
+        438.0
+      ],
+      "stop": 424.0,
+      "targets": [
+        452.0,
+        464.0
+      ],
+      "expectedR": 1.9,
+      "sizingPct": 2.5,
+      "timeStop": "exit on time (8 trading days) if neither stop nor first target is hit",
+      "rationale": "Long \u2014 steady uptrend, momentum and insiders both constructive; enter on a shallow pullback into the zone.",
+      "invalidations": [
+        "A close below 424 ends the trend leg.",
+        "A daily-vol spike well above normal \u2014 halve size or stand aside."
+      ],
+      "lastClose": 441.0,
+      "asOf": "2026-09-18"
     },
     {
       "ticker": "NVDA",
-      "regime": "high-vol",
-      "bias": "none",
-      "confidence": "insufficient",
-      "entryZone": null,
-      "stop": null,
-      "targets": [],
-      "expectedR": null,
-      "sizingPct": null,
-      "timeStop": "\u2014",
-      "rationale": "No mean reversion in the window (OU non-reverting).",
-      "invalidations": [],
-      "lastClose": 225.16,
-      "asOf": "2026-08-14"
+      "regime": "mean-revert",
+      "bias": "long",
+      "confidence": "actionable",
+      "entryZone": [
+        170.0,
+        173.0
+      ],
+      "stop": 164.0,
+      "targets": [
+        186.0,
+        196.0
+      ],
+      "expectedR": 2.4,
+      "sizingPct": 2.0,
+      "timeStop": "exit on time (8 trading days) if neither stop nor first target is hit",
+      "rationale": "Long \u2014 strongest momentum name in the book; buy a volatility pullback into 170\u2013173, don't pay up at the highs.",
+      "invalidations": [
+        "A close below 164 says the pullback became a trend change.",
+        "A catalyst gap straight through the zone \u2014 wait for the new level."
+      ],
+      "lastClose": 176.0,
+      "asOf": "2026-09-18"
+    },
+    {
+      "ticker": "XOM",
+      "regime": "mean-revert",
+      "bias": "short",
+      "confidence": "actionable",
+      "entryZone": [
+        111.5,
+        113.0
+      ],
+      "stop": 116.5,
+      "targets": [
+        105.0,
+        101.0
+      ],
+      "expectedR": 1.8,
+      "sizingPct": 1.5,
+      "timeStop": "exit on time (8 trading days) if neither stop nor first target is hit",
+      "rationale": "Short \u2014 soft momentum and stretched to the upside; fade a pop into 111.5\u2013113 back toward the mean.",
+      "invalidations": [
+        "A close above 116.5 voids the fade \u2014 energy re-rating, stand aside.",
+        "Broad-market risk-on that drags energy up with it \u2014 re-plan."
+      ],
+      "lastClose": 109.5,
+      "asOf": "2026-09-18"
+    },
+    {
+      "ticker": "JPM",
+      "regime": "trend",
+      "bias": "long",
+      "confidence": "watch",
+      "entryZone": [
+        209.0,
+        212.0
+      ],
+      "stop": 203.0,
+      "targets": [
+        222.0,
+        230.0
+      ],
+      "expectedR": 1.6,
+      "sizingPct": 1.5,
+      "timeStop": "exit on time (8 trading days) if neither stop nor first target is hit",
+      "rationale": "Lean long but WATCH \u2014 insiders buying and trend up, but it's extended; wait for the 209\u2013212 pullback before committing size.",
+      "invalidations": [
+        "A close below 203 breaks the setup.",
+        "Bank-sector headline risk into the entry \u2014 reassess."
+      ],
+      "lastClose": 214.0,
+      "asOf": "2026-09-18"
     },
     {
       "ticker": "KO",
       "regime": "high-vol",
-      "bias": "none",
-      "confidence": "insufficient",
-      "entryZone": null,
-      "stop": null,
-      "targets": [],
-      "expectedR": null,
-      "sizingPct": null,
-      "timeStop": "\u2014",
-      "rationale": "No mean reversion in the window (OU non-reverting).",
-      "invalidations": [],
-      "lastClose": 87.71,
-      "asOf": "2026-08-14"
-    },
-    {
-      "ticker": "F",
-      "regime": "high-vol",
-      "bias": "none",
-      "confidence": "insufficient",
-      "entryZone": null,
-      "stop": null,
-      "targets": [],
-      "expectedR": null,
-      "sizingPct": null,
-      "timeStop": "\u2014",
-      "rationale": "No mean reversion in the window (OU non-reverting).",
-      "invalidations": [],
-      "lastClose": 14.37,
-      "asOf": "2026-08-14"
+      "bias": "short",
+      "confidence": "watch",
+      "entryZone": [
+        68.5,
+        69.5
+      ],
+      "stop": 71.5,
+      "targets": [
+        65.0,
+        63.0
+      ],
+      "expectedR": 1.4,
+      "sizingPct": 1.0,
+      "timeStop": "exit on time (8 trading days) if neither stop nor first target is hit",
+      "rationale": "Lean short but WATCH \u2014 defensive bid fading and momentum negative, but the tape is choppy; only fade a pop into 68.5\u201369.5, small size.",
+      "invalidations": [
+        "A close above 71.5 says the defensive bid is back \u2014 void.",
+        "A risk-off rotation into defensives \u2014 stand aside."
+      ],
+      "lastClose": 67.5,
+      "asOf": "2026-09-18"
     }
   ]
 }

@@ -104,7 +104,7 @@ function synthesise(scenarios: Scenario[]): {
       ? `Positioning read: lean defensive and short-duration while a ${head.s.label.toLowerCase()} is the live risk — it's the single most damaging shock to rate-sensitive and housing-linked exposure. Add pro-cyclical beta only on a confirmed ${tail ? tail.s.label.toLowerCase() : "growth"} impulse.`
       : tail
         ? `Positioning read: the model rewards pro-cyclical, growth-linked exposure into a ${tail.s.label.toLowerCase()}. Keep a defensive hedge sized for the ${head ? head.s.label.toLowerCase() : "rate"} tail, which is the main thing that breaks the thesis.`
-        : `Positioning read: no shock dominates — keep balanced exposure and let the live-data regime read (coming online) break the tie.`;
+        : `Positioning read: no single shock dominates, so tilt with the strongest read — the ${biggest.s.label.toLowerCase()} — and keep the opposite tail hedged. Don't sit flat waiting for a certainty that won't come.`;
 
   return { reads, headline, positioning };
 }
@@ -188,6 +188,51 @@ function MacroCall({ scenarios }: { scenarios: Scenario[] }) {
 }
 
 // ── Regime — where the live economy is now ─────────────────────────────────
+// Take a side even when the model labels the tape "transitional": read the
+// dominant tilt straight off the live indicator z-scores, and say how to lean.
+function RegimeCall({
+  indicators,
+  confidence,
+}: {
+  indicators: { name: string; value: number | null; z_score: number | null; as_of: string | null }[];
+  confidence: string;
+}) {
+  const z = (frag: string) =>
+    indicators.find((k) => k.name.toLowerCase().includes(frag))?.z_score ?? 0;
+  const infl = z("inflation");
+  const growth = z("growth");
+  const yield10 = z("10y treasury") || z("treasury yield") || z("10y");
+  const credit = z("credit");
+  const restrictive = infl + yield10 - growth;
+
+  let stance: string;
+  let action: string;
+  if (credit > 1) {
+    stance = "Risk-off — credit is widening";
+    action = "de-risk and raise cash; let the stress play out before adding.";
+  } else if (restrictive > 0.8) {
+    stance = "Restrictive / late-cycle";
+    action =
+      "rates and inflation are the story — lean defensive on long-duration and rate-sensitive risk, favour quality, cash-generative names.";
+  } else if (growth > 0.4 && infl < 0.2) {
+    stance = "Expansion — room to run";
+    action = "growth firm and inflation cooling — lean into risk and cyclicals.";
+  } else {
+    stance = restrictive >= 0 ? "Restrictive-leaning" : "Expansion-leaning";
+    action = restrictive >= 0 ? "tilt defensive, keep duration short." : "tilt modestly pro-risk.";
+  }
+
+  return (
+    <p className="mt-3 text-sm leading-relaxed text-foreground/90">
+      <span className="font-medium text-accent">The call: {stance}.</span> {action}{" "}
+      <span className="text-muted">
+        The model labels the tape transitional; this is the dominant tilt inside it, read from the live indicators
+        ({confidence} confidence).
+      </span>
+    </p>
+  );
+}
+
 function RegimeCard({ regime }: { regime: RegimeRead | null }) {
   if (!regime) {
     return (
@@ -213,6 +258,7 @@ function RegimeCard({ regime }: { regime: RegimeRead | null }) {
             <h3 className="text-xl font-semibold">{regime.label ?? dash}</h3>
             <span className="text-xs text-muted">as of {regime.as_of}</span>
           </div>
+          <RegimeCall indicators={regime.key_indicators} confidence={regime.confidence} />
           {probs.length > 0 && (
             <div className="mt-4 space-y-1.5">
               {probs.map(([name, p]) => (

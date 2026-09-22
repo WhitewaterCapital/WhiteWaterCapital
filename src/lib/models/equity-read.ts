@@ -546,8 +546,11 @@ export function equityVerdict(ev: Evidence): Verdict {
     };
   }
 
+  // Commit to a side: "neutral" is reserved for a razor-thin tie (48–52 only),
+  // never a wide safe middle. Off the midpoint, the read leans own (attractive/
+  // constructive) or avoid (cautious/avoid) — with conviction carrying strength.
   let stance: Stance =
-    blended >= 70 ? "attractive" : blended >= 57 ? "constructive" : blended >= 43 ? "neutral" : blended >= 30 ? "cautious" : "avoid";
+    blended >= 68 ? "attractive" : blended >= 52 ? "constructive" : blended > 48 ? "neutral" : blended >= 32 ? "cautious" : "avoid";
 
   // Health gate — a distressed balance sheet caps a LONG stance. Cheap-and-
   // distressed is a value trap, not a buy; say so rather than let low multiples

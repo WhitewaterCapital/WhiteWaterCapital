@@ -120,9 +120,11 @@ export const distresse: EvaluatorModel = {
     let rating: Rating = "conditional";
     let conviction = 0;
     if (tradeScore != null) {
-      rating = tradeScore >= 62 ? "go" : tradeScore <= 42 ? "no-go" : "conditional";
-      // Same honest curve as the equity read: a clear go/no-go reads 70+;
-      // a marginal one stays low. Volatility is a cost to either side.
+      // Take a side: anything off the midpoint gets a go/no-go call, with
+      // conviction carrying HOW strong it is. Only a razor-thin tie (48–52)
+      // stays "conditional" — and that's stated as a genuine coin-flip, not a
+      // safe hedge. A weak-but-real edge is still a call, not a shrug.
+      rating = tradeScore >= 52 ? "go" : tradeScore <= 48 ? "no-go" : "conditional";
       conviction = convictionScore(tradeScore, cov, risk.score);
     }
 
