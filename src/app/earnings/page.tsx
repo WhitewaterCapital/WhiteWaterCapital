@@ -47,8 +47,9 @@ export default async function EarningsPage() {
               and the date it reports.
             </p>
             <p>
-              • The <Term k="lean">lean</Term> is a soft tilt going into the print — often
-              &ldquo;no lean&rdquo;, and that&apos;s honest: it&apos;s not a prediction of the result.
+              • The <Term k="lean">lean</Term> commits to a side going into the print — bullish or bearish —
+              from insider positioning and momentum. It&apos;s how we&apos;re positioned, not a prediction of the
+              result.
             </p>
             <p>
               • <strong className="font-medium text-foreground">Earnings are high-risk events.</strong> This is
@@ -101,8 +102,8 @@ function EarningsTable({ data }: { data: EquityReading }) {
               <thead>
                 <tr className="text-left text-muted">
                   <th className="pb-2 font-medium">Symbol</th>
-                  <th className="pb-2 text-right font-medium">Insider lean</th>
-                  <th className="pb-2 font-medium">Detail</th>
+                  <th className="pb-2 text-right font-medium">Lean into print</th>
+                  <th className="pb-2 font-medium">Why</th>
                 </tr>
               </thead>
               <tbody>
@@ -113,9 +114,9 @@ function EarningsTable({ data }: { data: EquityReading }) {
             </table>
           </div>
           <p className="mt-3 text-[11px] text-muted">
-            &quot;Insider lean&quot; is built from ONE real directional ingredient — WW-Insider&apos;s trailing
-            30-day pre-print Form 4 net buy/sell — stated plainly as that, never blended with factor momentum or
-            presented as a forecast of which way the print itself will move the stock.
+            The lean commits to a side going into the print, from insider pre-print positioning and momentum
+            (insider flow leads when they disagree). It&apos;s how the desk is positioned into the event — not a
+            forecast of which way the result itself moves the stock.
           </p>
         </Card>
       )}

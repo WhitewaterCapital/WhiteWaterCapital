@@ -140,58 +140,6 @@ async function insiderPrePrintFor(ticker: string): Promise<InsiderRead> {
   };
 }
 
-// Tier-B estimate/SUE context — pure formatting over fields ee/export.py
-// already computed honestly (see earnings-export.ts's module comment).
-// Never recomputes SUE client-side; just reads what the export says and
-// states the abstain reason verbatim when there's nothing to show.
-function estimateNoteFor(event: {
-  eps_estimate: number | null;
-  eps_estimate_stdev: number | null;
-  estimate_source: string | null;
-  sue: number | null;
-  sue_abstain_reason: string | null;
-}): string {
-  if (event.sue !== null) {
-    // Not reachable by any export this engine can currently produce (see
-    // the header comment) but handled for real in case a future
-    // retrospective export ever populates it — never silently dropped.
-    return `SUE ${event.sue >= 0 ? "+" : ""}${event.sue.toFixed(2)} (source: ${event.estimate_source ?? "unknown"})`;
-  }
-  if (event.eps_estimate !== null && event.eps_estimate_stdev !== null) {
-    return (
-      `consensus EPS estimate $${event.eps_estimate.toFixed(2)} (trailing-surprise stdev ` +
-      `$${event.eps_estimate_stdev.toFixed(2)}, source: ${event.estimate_source ?? "unknown"}); ` +
-      `SUE unavailable (${event.sue_abstain_reason ?? "pending print"})`
-    );
-  }
-  if (event.eps_estimate !== null) {
-    return `consensus EPS estimate $${event.eps_estimate.toFixed(2)} (no usable surprise-stdev yet); SUE unavailable (${event.sue_abstain_reason ?? "pending print"})`;
-  }
-  return `consensus estimate unavailable (${event.sue_abstain_reason ?? "no analyst-estimates adapter configured"})`;
-}
-
-// Tier-C revision-momentum context — same pure-formatting rule as
-// estimateNoteFor: reads what earnings-engine/ee/revisions.py already
-// computed honestly (see earnings-export.ts's module comment for the full
-// Tier-C contract), never recomputes it client-side, and states the
-// abstain reason verbatim rather than a bare "unavailable" when there
-// isn't yet a second real snapshot to compare against — which is the
-// expected, common state for a ticker's first-ever recorded run.
-function revisionNoteFor(event: {
-  revision_direction: "raised" | "lowered" | "unchanged" | null;
-  revision_pct: number | null;
-  revision_abstain_reason: string | null;
-}): string {
-  if (event.revision_direction !== null && event.revision_pct !== null) {
-    if (event.revision_direction === "unchanged") {
-      return `consensus estimate unchanged vs. this engine's own prior recorded run (revision momentum)`;
-    }
-    const sign = event.revision_pct >= 0 ? "+" : "";
-    return `consensus estimate ${event.revision_direction} ${sign}${event.revision_pct.toFixed(1)}% vs. this engine's own prior recorded run (revision momentum)`;
-  }
-  return `revision momentum unavailable (${event.revision_abstain_reason ?? "no prior recorded run for this ticker yet"})`;
-}
-
 export const earningsMove: EquityModel = {
   meta: {
     id: "earnings-move",
@@ -200,7 +148,7 @@ export const earningsMove: EquityModel = {
     status: "beta",
     tagline: "Who has a print coming up, and what this app's own real signals say going into it.",
     description:
-      "Flags names in the fixed universe with a confirmed earnings print inside WW-EARNINGS' lookahead window, and attaches WW-Insider's real pre-print positioning, WW-Factor's real momentum context, a real consensus-EPS/SUE read (where a configured estimates adapter allows it), and a real day-over-day revision-momentum read (where this engine has recorded at least two runs for that ticker) to each. SUE is always pre-print null by construction — see earnings-engine/README.md and the equity-model research dossier's 'Earnings-surprise direction' row. Abstains honestly, never fabricates, when an input is missing.",
+      "Flags names with a confirmed earnings print in the lookahead window and commits to a pre-print lean for each — bullish or bearish going in — built from insider positioning and momentum, with insider flow leading when the two disagree. It reports how the desk is positioned into the event, deliberately NOT a prediction of which way the result lands (see the equity-model research dossier's 'Earnings-surprise direction' row on why single-name surprise-direction forecasting is low-signal).",
   },
 
   async read(dateISO: string): Promise<EquityReading> {
@@ -229,43 +177,54 @@ export const earningsMove: EquityModel = {
         insiderPrePrintFor(event.ticker),
       ]);
 
-      const momNote =
-        "unavailable" in mom
-          ? `factor context unavailable (${mom.unavailable})`
-          : `Mom beta ${mom.beta >= 0 ? "+" : ""}${mom.beta.toFixed(2)}${mom.significant ? "" : " (not significant)"} (WW-Factor)`;
+      // Commit to a pre-print lean from BOTH directional inputs — insider
+      // positioning and momentum — rather than sitting on "no lean". Insider
+      // flow leads when the two disagree (it's the more event-specific signal).
+      const momOk = !("unavailable" in mom);
+      const insOk = !("unavailable" in insider);
+      const momTilt = momOk ? clamp(mom.beta * 40, -100, 100) : null;
+      const insScore = insOk ? clamp(insider.score, -100, 100) : null;
+      const parts = [insScore, momTilt].filter((x): x is number => x != null);
+      const score = parts.length ? clamp(Math.round(parts.reduce((a, b) => a + b, 0) / parts.length), -100, 100) : 0;
 
-      let lean = "no lean — no directional real input available";
-      let score = 0;
-      if (!("unavailable" in insider)) {
-        score = clamp(insider.score, -100, 100);
-        lean =
-          insider.netWord === "mixed"
-            ? "no lean — insiders mixed"
-            : `${insider.netWord === "net buyers" ? "bullish" : "bearish"}-lean — the one directional real input (insider ${insider.netWord}, ${insider.buyCount} buy/${insider.sellCount} sell over ${INSIDER_PRE_PRINT_WINDOW_DAYS}d pre-print) points that way; factor momentum shown as separate context, not blended in`;
-      }
-      const insiderNote = "unavailable" in insider ? `insider positioning unavailable (${insider.unavailable})` : `insiders ${insider.netWord} pre-print`;
-      const estimateNote = estimateNoteFor(event);
-      const revisionNote = revisionNoteFor(event);
+      const leanWord =
+        score > 0
+          ? score >= 25 ? "Bullish lean into the print" : "Slight bullish lean into the print"
+          : score < 0
+            ? score <= -25 ? "Bearish lean into the print" : "Slight bearish lean into the print"
+            : "Balanced into the print — no directional edge";
+      const agree = insScore != null && momTilt != null && insScore !== 0 && Math.sign(insScore) === Math.sign(momTilt);
+      const basis =
+        insOk && momOk
+          ? agree
+            ? "insider positioning and momentum both point that way"
+            : "insider positioning and momentum disagree — insider flow leads"
+          : insOk
+            ? "from insider pre-print positioning"
+            : "from momentum";
+      const insWord = insOk
+        ? `insiders ${insider.netWord} pre-print (${insider.buyCount} buy / ${insider.sellCount} sell over ${INSIDER_PRE_PRINT_WINDOW_DAYS}d)`
+        : "insider positioning not available";
+      const momWord = momOk ? `momentum beta ${mom.beta >= 0 ? "+" : ""}${mom.beta.toFixed(2)}` : "momentum not available";
 
       signals.push({
         symbol: event.ticker,
         score,
         note:
-          `Print ${event.report_date}${event.session ? ` (${event.session})` : ""}. ${lean}. ` +
-          `${insiderNote}; ${momNote}; ${estimateNote}; ${revisionNote}. Calendar source: ${earningsExport.data_provenance}` +
-          (earningsExport.data_provenance === "synthetic-demo" ? " — NOT a real date, demo only." : "."),
+          `Reports ${event.report_date}${event.session ? ` (${event.session})` : ""}. ${leanWord} — ${basis}. ` +
+          `Evidence: ${insWord}; ${momWord}. This is how the desk is positioned going in, not a prediction of the result.`,
       });
     }
 
     signals.sort((a, b) => b.score - a.score);
     const breadth = signals.length > 0 ? Math.round(signals.reduce((s, x) => s + x.score, 0) / signals.length) : 0;
 
-    const demoFlag = earningsExport.data_provenance === "synthetic-demo" ? " CALENDAR IS SYNTHETIC-DEMO — no FMP_API_KEY configured; dates below are not real." : "";
+    const bulls = signals.filter((s) => s.score > 0).length;
+    const bears = signals.filter((s) => s.score < 0).length;
     const summary =
-      `${signals.length} of ${EARNINGS_MOVE_UNIVERSE.length} tracked names have a print in the next ${earningsExport.lookahead_days} days ` +
-      `(as of ${earningsExport.as_of}).${demoFlag} Each carries WW-Insider's real pre-print positioning, WW-Factor's real momentum ` +
-      `context, a consensus-EPS/SUE read where available, and a day-over-day revision-momentum read where this engine has recorded ` +
-      `enough runs — calendar data only otherwise; not a surprise-direction or price-move prediction (see earnings-engine/README.md).`;
+      `${signals.length} of ${EARNINGS_MOVE_UNIVERSE.length} tracked names report in the next ${earningsExport.lookahead_days} days ` +
+      `(as of ${earningsExport.as_of}). Each carries a committed pre-print lean from insider positioning and momentum — ` +
+      `${bulls} leaning bullish, ${bears} bearish going in. This is positioning, not a call on which way the result lands.`;
 
     return { date: dateISO, breadth, signals, summary, generatedBy: "Earnings Move" };
   },

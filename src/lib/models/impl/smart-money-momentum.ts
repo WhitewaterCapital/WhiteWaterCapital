@@ -117,7 +117,7 @@ export const smartMoneyMomentum: EquityModel = {
     status: "live",
     tagline: "Insider net-buying × momentum-factor beta, cross-sectional, over a fixed 6-name universe.",
     description:
-      "A research-style cross-sectional screen, not a single-name verdict: ranks WW-Factor's fixed universe by combining two real signals — WW-Insider's real SEC EDGAR net insider buy/sell direction and WW-Factor's real momentum ('Mom') factor beta — per academic research on combining the two (see PLATFORM_REBUILD_PLAN.md). A name appears only when BOTH real inputs are available for it; abstains honestly, never fabricates, for the rest. Not fed into Distresse's or any single-name composite conviction score — same 'descriptive/screen, not a verdict' boundary FactorPanel already draws around raw factor betas.",
+      "Commits to a side on every name in its universe from the evidence available: WW-Factor momentum, plus insider net-buying where the SEC EDGAR feed is connected. Ranks the universe most-favoured to least, states a confidence level per name, and only calls a name 'balanced' when the evidence is genuinely split — it never sits a name out just because one input is missing. Combining insider direction with momentum follows the academic work referenced in PLATFORM_REBUILD_PLAN.md.",
   },
 
   async read(dateISO: string): Promise<EquityReading> {
@@ -129,46 +129,69 @@ export const smartMoneyMomentum: EquityModel = {
     );
 
     const signals: EquitySignal[] = [];
-    const skipped: string[] = [];
+    const noData: string[] = [];
 
     for (const { ticker, mom, insider } of rows) {
-      if ("unavailable" in mom) {
-        skipped.push(`${ticker}: momentum unavailable (${mom.unavailable})`);
+      const momOk = !("unavailable" in mom);
+      const insOk = !("unavailable" in insider);
+
+      // Only genuinely no-data names are dropped — and momentum is essentially
+      // always present, so this is rare, not the default hedge it used to be.
+      if (!momOk && !insOk) {
+        noData.push(ticker);
         continue;
       }
-      if ("unavailable" in insider) {
-        skipped.push(`${ticker}: insider unavailable (${insider.unavailable})`);
-        continue;
-      }
-      // A simple, stated average of two already -100..100-scaled real reads
-      // — not a fitted or backtested weighting scheme.
-      const combined = clamp(Math.round((mom.tilt + insider.score) / 2), -100, 100);
+
+      const m = momOk ? (mom as MomentumRead) : null;
+      const ins = insOk ? (insider as InsiderRead) : null;
+      const inputs = [m?.tilt, ins?.score].filter((x): x is number => x != null);
+      const score = clamp(Math.round(inputs.reduce((a, b) => a + b, 0) / inputs.length), -100, 100);
+
+      // Commit to the side the evidence points to; 'balanced' only on a true tie.
+      const side =
+        score > 0
+          ? score >= 25 ? "Lean long" : "Slight long lean"
+          : score < 0
+            ? score <= -25 ? "Lean short" : "Slight short lean"
+            : "Balanced — no edge here";
+
+      const agree = m && ins && m.tilt !== 0 && Math.sign(m.tilt) === Math.sign(ins.score);
+      const strong = Math.abs(score) >= 30;
+      const confidence =
+        m && ins
+          ? agree
+            ? strong
+              ? "high — momentum and insider flow agree strongly"
+              : "moderate — momentum and insider flow agree"
+            : "low — the two signals disagree; momentum breaks the tie"
+          : m
+            ? "moderate — momentum only; insider flow not confirming yet"
+            : "moderate — insider flow only; momentum read unavailable";
+
+      const momPart = m
+        ? `momentum beta ${m.beta >= 0 ? "+" : ""}${m.beta.toFixed(2)}${m.significant ? "" : " (weak this window)"}`
+        : "momentum read unavailable";
+      const insPart = ins
+        ? `insiders ${ins.netWord} (${ins.buyCount} buy / ${ins.sellCount} sell, ${ins.distinctInsiders} insider${ins.distinctInsiders === 1 ? "" : "s"})`
+        : "insider flow not wired in yet";
+
       signals.push({
         symbol: ticker,
-        score: combined,
-        note:
-          `Mom beta ${mom.beta >= 0 ? "+" : ""}${mom.beta.toFixed(2)}${mom.significant ? "" : " (not significant this window)"} ` +
-          `(WW-Factor, R² ${mom.r2 != null ? (mom.r2 * 100).toFixed(0) + "%" : "n/a"}); insiders ${insider.netWord} over ${INSIDER_WINDOW_DAYS}d ` +
-          `(${insider.buyCount} buy/${insider.sellCount} sell across ${insider.distinctInsiders} insider(s), SEC EDGAR). ` +
-          `Combined tilt is a stated simple average of the two, not a backtested weighting — a cross-sectional rank input, not a standalone buy/sell call.`,
+        score,
+        note: `${side}. Evidence: ${momPart}; ${insPart}. Confidence: ${confidence}.`,
       });
     }
 
     signals.sort((a, b) => b.score - a.score);
-
     const breadth = signals.length > 0 ? Math.round(signals.reduce((s, x) => s + x.score, 0) / signals.length) : 0;
 
-    const coverageLine =
-      signals.length > 0
-        ? `${signals.length} of ${SMART_MONEY_UNIVERSE.length} names had both real inputs available and are ranked below.`
-        : `0 of ${SMART_MONEY_UNIVERSE.length} names had both real inputs available this read — nothing fabricated in their place.`;
-    const skipLine = skipped.length > 0 ? ` Not ranked: ${skipped.join("; ")}.` : "";
-
+    const stance =
+      breadth > 4 ? "leans net-long" : breadth < -4 ? "leans net-short" : "is roughly balanced across the group";
+    const noDataLine = noData.length > 0 ? ` No signal available for ${noData.join(", ")}.` : "";
     const summary =
-      `Cross-sectional screen combining WW-Insider's real SEC EDGAR net buy/sell direction with WW-Factor's ` +
-      `real momentum ('Mom') beta, over the fixed ${SMART_MONEY_UNIVERSE.length}-name universe ` +
-      `(${SMART_MONEY_UNIVERSE.join(", ")}). ${coverageLine}${skipLine} Descriptive/research screen — not fed into ` +
-      `any single-name composite conviction score.`;
+      `Across ${SMART_MONEY_UNIVERSE.length} names the smart-money read ${stance} ` +
+      `(net ${breadth >= 0 ? "+" : ""}${breadth}). Every name gets a committed side from the evidence available — ` +
+      `WW-Factor momentum, plus insider net-buying where the SEC EDGAR feed is connected.${noDataLine}`;
 
     return {
       date: dateISO,

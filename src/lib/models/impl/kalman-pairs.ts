@@ -59,8 +59,17 @@ function clamp(n: number, lo: number, hi: number): number {
 }
 
 function noteFor(p: KalmanPairReading): string {
-  if (p.note) return p.note;
-  return p.cointegrated ? "Cointegrated — see kalman-engine export for detail." : "Not cointegrated this run.";
+  if (!p.cointegrated || p.score == null) {
+    return "Not cointegrated this run — no reliable relationship to trade here.";
+  }
+  const z = p.score; // signed standardized spread deviation (+ wide / − narrow)
+  const mag = Math.abs(z);
+  const conf = mag >= 45 ? "high" : mag >= 25 ? "moderate" : "low";
+  if (mag < 25) {
+    return `Near its normal spread — no edge yet (reading ${z > 0 ? "+" : ""}${z}). On the watchlist until it stretches. Confidence: ${conf}.`;
+  }
+  const dir = z > 0 ? "unusually wide" : "unusually narrow";
+  return `Actionable: the spread is ${dir} (reading ${z > 0 ? "+" : ""}${z}) — the mean-reversion bet is that it converges back toward normal. Confidence: ${conf}.`;
 }
 
 export const kalmanPairs: EquityModel = {

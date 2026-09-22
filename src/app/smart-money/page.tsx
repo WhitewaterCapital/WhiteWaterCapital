@@ -1,6 +1,6 @@
 import { ModuleNav } from "@/components/ModuleNav";
 import { Card, Badge } from "@/components/ui";
-import { Term, HowToRead } from "@/components/Explain";
+import { Term, HowToRead, DemoNote } from "@/components/Explain";
 import { smartMoneyMomentum, SMART_MONEY_UNIVERSE } from "@/lib/models/impl/smart-money-momentum";
 import type { EquityReading, EquitySignal } from "@/lib/models/types";
 
@@ -46,6 +46,14 @@ export default async function SmartMoneyPage() {
               the strongest read here — still a starting point, not a buy order.
             </p>
           </HowToRead>
+        </div>
+
+        <div className="mt-4">
+          <DemoNote>
+            <strong className="font-semibold">Illustrative data.</strong> Momentum and insider figures are
+            synthetic-demo while the live market and SEC EDGAR feeds are connected — the calls show how the model
+            reasons, not real positioning yet.
+          </DemoNote>
         </div>
 
         <div className="mt-8">
