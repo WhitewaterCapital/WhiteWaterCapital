@@ -10,6 +10,7 @@ import {
   type StrategyKind,
 } from "@/lib/sample-data";
 import { computeMetrics } from "@/lib/metrics";
+import { loadBook } from "@/lib/book";
 import { pctValue, shortDate } from "@/lib/format";
 
 // PERFORMANCE ATTRIBUTION — IMP-01. An equity curve, a per-strategy
@@ -38,11 +39,19 @@ const STRAT_COLORS: Record<string, string> = {
   "paper-weekly": "var(--viz-cat-4)",
 };
 
-export default function PerformancePage() {
-  const m = computeMetrics(snapshots);
+export default async function PerformancePage() {
+  // The blended account curve is the REAL book when BROKER=ibkr; the
+  // per-strategy attribution below stays illustrative (sample axis) until a
+  // per-strategy ledger exists.
+  const book = await loadBook();
+  const live = !book.isSample && !book.error && book.history.length >= 2;
+  const curve = live ? book.history : snapshots;
+  const m = computeMetrics(curve, live ? book.periodsPerYear : 52);
+  const curveLabels = curve.map((s) => shortDate(s.date));
   const labels = snapshots.map((s) => shortDate(s.date));
   const usPct = m.portIndexed.map((v) => v - 100);
   const spyPct = m.spyIndexed.map((v) => v - 100);
+  const showSpy = live ? book.hasBenchmark : true;
 
   // Per-strategy cumulative index, starting at 100, compounding each week's
   // ATTRIBUTED contribution as if it were a standalone series. Illustrative:
@@ -98,9 +107,19 @@ export default function PerformancePage() {
 
         <div className="mt-4">
           <DemoNote>
-            <strong className="font-semibold">Illustrative figures.</strong> The account curve is the desk&apos;s
-            sample book (the same one on the Desk and public page); the per-strategy split is an illustrative
-            breakdown of it, until a real per-strategy ledger is wired in.
+            {live ? (
+              <>
+                <strong className="font-semibold">Live account curve, illustrative attribution.</strong> The equity
+                curve is the club&apos;s real IBKR book{book.asOf ? ` (as of close ${book.asOf})` : ""}; the
+                per-strategy split is still an illustrative breakdown until a real per-strategy ledger is wired in.
+              </>
+            ) : (
+              <>
+                <strong className="font-semibold">Illustrative figures.</strong> The account curve is the desk&apos;s
+                sample book (the same one on the Desk); the per-strategy split is an illustrative breakdown of it,
+                until a real per-strategy ledger is wired in.
+              </>
+            )}
           </DemoNote>
         </div>
 
@@ -122,11 +141,11 @@ export default function PerformancePage() {
         <div className="mt-6">
           <Card title="Equity curve — us vs SPY (blended account)">
             <LineChart
-              labels={labels}
+              labels={curveLabels}
               yFormat={(v) => `${v >= 0 ? "+" : ""}${v.toFixed(0)}%`}
               series={[
                 { values: usPct, color: "currentColor", label: "Whitewater (blended)" },
-                { values: spyPct, color: "#9ca3af", label: "SPY" },
+                ...(showSpy ? [{ values: spyPct, color: "#9ca3af", label: "SPY" }] : []),
               ]}
             />
           </Card>

@@ -4,10 +4,9 @@ import { LineChart } from "@/components/LineChart";
 import { ExposureGauge } from "@/components/ExposureGauge";
 import { Stat, Card } from "@/components/ui";
 import { StateOfBook } from "@/components/StateOfBook";
-import { getBroker } from "@/lib/broker";
-import { snapshots } from "@/lib/sample-data";
+import { loadBook } from "@/lib/book";
 import { computeMetrics } from "@/lib/metrics";
-import { usd, pct, shortDate, num } from "@/lib/format";
+import { money, pct, shortDate, num } from "@/lib/format";
 
 // THE DESK — the members launcher. Each module is a shell you fill with its
 // own algo backend; portfolio/holdings below.
@@ -68,11 +67,18 @@ const MODULES = [
   },
 ];
 
+// Live book: render per request (the IBKR client caches the statement itself).
+export const dynamic = "force-dynamic";
+
 export default async function DeskPage() {
-  const broker = getBroker();
-  const account = await broker.getAccount();
-  const m = computeMetrics(snapshots);
-  const labels = snapshots.map((s) => shortDate(s.date));
+  const book = await loadBook();
+  const { account, history } = book;
+  const broker = { name: book.source, isSample: book.isSample };
+  const hasCurve = history.length >= 2;
+  const m = hasCurve ? computeMetrics(history, book.periodsPerYear) : null;
+  const labels = history.map((s) => shortDate(s.date));
+  // Non-USD books are compared with SPY converted into the base currency.
+  const spyLabel = book.currency === "USD" ? "SPY" : `SPY in ${book.currency}`;
 
   return (
     <div>
@@ -83,7 +89,7 @@ export default async function DeskPage() {
           Good to see you.
         </h1>
 
-        <StateOfBook isSample={broker.isSample} />
+        <StateOfBook book={book} />
 
         {/* Club tools — the weekly workflow shortcuts */}
         <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-xs uppercase tracking-[0.12em]">
@@ -140,7 +146,7 @@ export default async function DeskPage() {
               <strong>Sample data — not the club&apos;s real book.</strong> Every number in this
               section (account value, return, Sharpe, holdings, P&amp;L, the equity curve) is
               placeholder data so the desk is usable before the brokerage is wired. Connect the
-              IBKR adapter (set <code>BROKER=ibkr</code> + gateway credentials) to show live
+              IBKR adapter (set <code>BROKER=ibkr</code> + the Flex token/query — see docs/IBKR_SETUP.md) to show live
               numbers — this banner disappears automatically once real data flows.
             </div>
           )}
@@ -158,22 +164,32 @@ export default async function DeskPage() {
               {broker.isSample ? (
                 <span className="text-amber-600 dark:text-amber-400">Source: {broker.name} — illustrative</span>
               ) : (
-                <>Source: {broker.name} · synced just now</>
+                <>
+                  Source: {broker.name}
+                  {book.asOf ? ` · as of close ${book.asOf}` : ""}
+                </>
               )}
             </span>
           </div>
 
+          {book.error && (
+            <div className="mb-4 border border-rose-500/50 bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-400">
+              <strong>Couldn&apos;t load the book from {broker.name}.</strong> {book.error}
+            </div>
+          )}
+          {m && (
+          <>
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
-            <Stat label="Account Value" value={usd(account.totalValueUsd)} />
+            <Stat label="Account Value" value={money(account.totalValueUsd, book.currency)} />
             <Stat
               label="Total Return"
               value={pct(m.portReturn)}
               tone={m.portReturn >= 0 ? "up" : "down"}
-              sub={`vs SPY ${pct(m.alpha)}`}
+              sub={book.hasBenchmark ? `vs ${spyLabel} ${pct(m.alpha)}` : "SPY unavailable"}
             />
             <Stat
               label="Cash"
-              value={usd(account.cashUsd)}
+              value={money(account.cashUsd, book.currency)}
               sub={`${m.exposure.cashPct.toFixed(0)}% of pool`}
             />
             <Stat label="Sharpe" value={num(m.sharpe, 2)} sub={`vol ${(m.volatility * 100).toFixed(0)}%`} />
@@ -187,7 +203,9 @@ export default async function DeskPage() {
                   yFormat={(v) => `${v >= 0 ? "+" : ""}${v.toFixed(0)}%`}
                   series={[
                     { values: m.portIndexed.map((v) => v - 100), color: "currentColor", label: "Us" },
-                    { values: m.spyIndexed.map((v) => v - 100), color: "#9ca3af", label: "SPY" },
+                    ...(book.hasBenchmark
+                      ? [{ values: m.spyIndexed.map((v) => v - 100), color: "#9ca3af", label: spyLabel }]
+                      : []),
                   ]}
                 />
               </Card>
@@ -198,6 +216,9 @@ export default async function DeskPage() {
               </div>
             </Card>
           </div>
+
+          </>
+          )}
 
           <div className="mt-6">
             <Card
@@ -217,16 +238,23 @@ export default async function DeskPage() {
                   </tr>
                 </thead>
                 <tbody>
+                  {account.positions.length === 0 && (
+                    <tr className="border-t border-hairline">
+                      <td colSpan={3} className="py-3 text-muted">
+                        {book.error ? "—" : "No open positions."}
+                      </td>
+                    </tr>
+                  )}
                   {account.positions.map((p) => (
                     <tr key={p.symbol} className="border-t border-hairline">
                       <td className="py-2 font-medium">
                         {p.symbol}
                         <span className="ml-2 text-xs text-muted">{p.quantity} sh</span>
                       </td>
-                      <td className="py-2 text-right tabular-nums">{usd(p.marketValueUsd)}</td>
+                      <td className="py-2 text-right tabular-nums">{money(p.marketValueUsd, book.currency)}</td>
                       <td className={`py-2 text-right tabular-nums ${p.unrealizedPnlUsd >= 0 ? "text-emerald-500" : "text-rose-500"}`}>
                         {p.unrealizedPnlUsd >= 0 ? "+" : ""}
-                        {usd(p.unrealizedPnlUsd)}
+                        {money(p.unrealizedPnlUsd, book.currency)}
                       </td>
                     </tr>
                   ))}
@@ -234,6 +262,34 @@ export default async function DeskPage() {
               </table>
             </Card>
           </div>
+          {book.trades.length > 0 && (
+            <div className="mt-6">
+              <Card title="Recent fills">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="text-left text-muted">
+                      <th className="pb-2 font-medium">Date</th>
+                      <th className="pb-2 font-medium">Symbol</th>
+                      <th className="pb-2 font-medium">Side</th>
+                      <th className="pb-2 text-right font-medium">Qty</th>
+                      <th className="pb-2 text-right font-medium">Price</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {book.trades.slice(0, 8).map((t) => (
+                      <tr key={t.id} className="border-t border-hairline">
+                        <td className="py-2 tabular-nums text-muted">{t.executedAt.slice(0, 10)}</td>
+                        <td className="py-2 font-medium">{t.symbol}</td>
+                        <td className={`py-2 uppercase ${t.side === "buy" ? "text-emerald-500" : "text-rose-500"}`}>{t.side}</td>
+                        <td className="py-2 text-right tabular-nums">{t.quantity}</td>
+                        <td className="py-2 text-right tabular-nums">{money(t.priceUsd, book.currency, { cents: true })}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </Card>
+            </div>
+          )}
         </section>
       </main>
     </div>

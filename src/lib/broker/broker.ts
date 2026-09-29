@@ -9,6 +9,8 @@ import type { Position, Snapshot, Trade } from "../types";
 // unit/metrics math totally decoupled from whichever broker you actually use.
 // ---------------------------------------------------------------------------
 
+// NOTE: the `*Usd` field names are historical — amounts are in the account's
+// BASE currency (see BrokerMeta.currency; EUR for the club's IBKR Ireland acct).
 export interface AccountState {
   totalValueUsd: number;
   cashUsd: number;
@@ -31,4 +33,9 @@ export interface BrokerAdapter {
   // Historical account-value points, for the equity curve. Some brokers expose
   // this directly; otherwise the app builds it from stored snapshots instead.
   getHistory?(): Promise<Snapshot[]>;
+
+  // Base currency + statement date, when the broker knows them.
+  getMeta?(): Promise<BrokerMeta>;
 }
+
+export type BrokerMeta = { currency: string; asOf?: string };

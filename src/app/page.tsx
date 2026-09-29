@@ -1,15 +1,26 @@
 import Link from "next/link";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { Stat, Card } from "@/components/ui";
+import { LineChart } from "@/components/LineChart";
 import { members } from "@/lib/sample-data";
+import { loadBook } from "@/lib/book";
+import { computeMetrics } from "@/lib/metrics";
+import { pct, shortDate } from "@/lib/format";
 
 // PUBLIC HOME PAGE — the shopfront.
 // Track record + who we are. Deliberately NO tickers, positions, or holdings.
 // The pooled book isn't live yet, so there is NO real performance to show — the
 // track record is deliberately BLANK ("begins at launch") rather than backfilled
-// with placeholder numbers. Wire the IBKR adapter + real snapshots to populate
-// it; nothing here fabricates returns.
-export default function PublicPage() {
+// with placeholder numbers. It populates ONLY when all of these hold:
+//   • the live IBKR book is connected (BROKER=ibkr, never the sample book)
+//   • PUBLIC_TRACK_RECORD=on — an explicit, deliberate opt-in, because
+//     publishing performance is a compliance decision (see /invest disclaimer)
+//   • there are at least 2 statement days and a SPY benchmark to compare to.
+// Aggregate % only — never dollar values, tickers or positions.
+export const revalidate = 1800;
+
+export default async function PublicPage() {
+  const pub = await publicTrackRecord();
   return (
     <div>
       {/* Transparent header overlaying the gradient hero */}
@@ -78,9 +89,29 @@ export default function PublicPage() {
       {/* STATS BAND */}
       <section className="border-b border-hairline">
         <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 px-6 py-12 sm:grid-cols-4">
-          <Stat label="Total Return" value="—" sub="reported at launch" />
-          <Stat label="vs S&P 500" value="—" sub="reported at launch" />
-          <Stat label="Max Drawdown" value="—" sub="reported at launch" />
+          {pub ? (
+            <>
+              <Stat
+                label="Total Return"
+                value={pct(pub.m.portReturn)}
+                tone={pub.m.portReturn >= 0 ? "up" : "down"}
+                sub={`since ${pub.since}`}
+              />
+              <Stat
+                label="vs S&P 500"
+                value={pct(pub.m.alpha)}
+                tone={pub.m.alpha >= 0 ? "up" : "down"}
+                sub={`S&P ${pct(pub.m.spyReturn)}`}
+              />
+              <Stat label="Max Drawdown" value={pct(-pub.m.maxDrawdown)} sub={`as of ${pub.asOf}`} />
+            </>
+          ) : (
+            <>
+              <Stat label="Total Return" value="—" sub="reported at launch" />
+              <Stat label="vs S&P 500" value="—" sub="reported at launch" />
+              <Stat label="Max Drawdown" value="—" sub="reported at launch" />
+            </>
+          )}
           <Stat label="Partners" value={members.length} sub="one pooled account" />
         </div>
       </section>
@@ -115,6 +146,23 @@ export default function PublicPage() {
           </h2>
           <div className="mt-10">
             <Card title="Cumulative return — us vs S&P 500">
+              {pub ? (
+                <>
+                  <LineChart
+                    labels={pub.labels}
+                    yFormat={(v) => `${v >= 0 ? "+" : ""}${v.toFixed(0)}%`}
+                    series={[
+                      { values: pub.m.portIndexed.map((v) => v - 100), color: "currentColor", label: "Whitewater" },
+                      { values: pub.m.spyIndexed.map((v) => v - 100), color: "#9ca3af", label: "S&P 500 (SPY)" },
+                    ]}
+                  />
+                  <p className="mt-3 text-[11px] text-muted">
+                    Time-weighted (unit-value) return from the brokerage&apos;s end-of-day statements since{" "}
+                    {pub.since}, net of trading costs; deposits and withdrawals are excluded. Past performance
+                    does not guarantee future results. Not an offer or investment advice.
+                  </p>
+                </>
+              ) : (
               <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
                 <span className="inline-flex items-center border border-foreground/25 px-3 py-1 text-[11px] font-medium uppercase tracking-wide text-muted">
                   Begins at launch
@@ -126,6 +174,7 @@ export default function PublicPage() {
                   estimates. We&apos;d rather show nothing than a number we can&apos;t stand behind.
                 </p>
               </div>
+              )}
             </Card>
           </div>
         </div>
@@ -191,3 +240,17 @@ const PRINCIPLES = [
     body: "Capital is pooled in units, like a tiny fund. Deposits and withdrawals at different times never dilute anyone's gains.",
   },
 ];
+
+// Aggregate, benchmark-relative track record — or null (page shows "at launch").
+async function publicTrackRecord() {
+  if (process.env.PUBLIC_TRACK_RECORD !== "on") return null;
+  const book = await loadBook();
+  if (book.isSample || book.error || !book.hasBenchmark || book.history.length < 2) return null;
+  const h = book.history;
+  return {
+    m: computeMetrics(h, book.periodsPerYear),
+    labels: h.map((s) => shortDate(s.date)),
+    since: h[0].date,
+    asOf: book.asOf ?? h[h.length - 1].date,
+  };
+}

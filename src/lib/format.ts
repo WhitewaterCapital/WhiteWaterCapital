@@ -9,6 +9,16 @@ export function usd(n: number, opts: { cents?: boolean } = {}): string {
   });
 }
 
+// Money in any ISO currency ("EUR" → €1,234). `usd` is the USD shorthand.
+export function money(n: number, currency = "USD", opts: { cents?: boolean } = {}): string {
+  return n.toLocaleString("en-US", {
+    style: "currency",
+    currency,
+    minimumFractionDigits: opts.cents ? 2 : 0,
+    maximumFractionDigits: opts.cents ? 2 : 0,
+  });
+}
+
 // Fraction in (0.123 -> "+12.3%"). Always signed.
 export function pct(fraction: number, digits = 1): string {
   const sign = fraction > 0 ? "+" : "";

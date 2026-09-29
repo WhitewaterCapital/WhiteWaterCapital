@@ -72,7 +72,7 @@ export function exposure(latest: Snapshot): {
 }
 
 // One bundle of everything the dashboards need, computed once.
-export function computeMetrics(snapshots: Snapshot[]) {
+export function computeMetrics(snapshots: Snapshot[], periodsPerYear = 52) {
   // Performance is measured on UNIT VALUE, not raw account value — otherwise
   // deposits would look like gains. Exposure still uses the latest account totals.
   const values = snapshots.map((s) => s.unitValueUsd);
@@ -88,8 +88,8 @@ export function computeMetrics(snapshots: Snapshot[]) {
     spyReturn,
     alpha: portReturn - spyReturn, // simple excess vs benchmark
     maxDrawdown: maxDrawdown(values),
-    volatility: volatility(values),
-    sharpe: sharpe(values),
+    volatility: volatility(values, periodsPerYear),
+    sharpe: sharpe(values, 0.04, periodsPerYear),
     exposure: exposure(latest),
     portIndexed: indexed(values),
     spyIndexed: indexed(spy),

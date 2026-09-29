@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "sync:aurora": "node scripts/sync-aurora.mjs"
+    "sync:aurora": "node scripts/sync-aurora.mjs",
+    "test:flex": "npx -y tsx scripts/test-flex.ts",
+    "ibkr:check": "npx -y tsx --env-file=.env.local scripts/ibkr-check.mts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.0",

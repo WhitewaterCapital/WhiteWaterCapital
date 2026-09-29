@@ -1,16 +1,30 @@
 import Link from "next/link";
-import { snapshots, positions, proposals } from "@/lib/sample-data";
+import { proposals } from "@/lib/sample-data";
 import { computeMetrics } from "@/lib/metrics";
-import { pct, usd } from "@/lib/format";
+import type { Book } from "@/lib/book";
+import { money, pct } from "@/lib/format";
 
 // STATE OF THE BOOK — the plain-English "where do we stand" a member should be
 // able to read in ten seconds, before any chart or model. Reads the same
-// sample metrics/positions/proposals the rest of the Desk uses; swaps to real
-// numbers automatically once the broker + a live proposals store are wired.
-export function StateOfBook({ isSample = true }: { isSample?: boolean }) {
-  const m = computeMetrics(snapshots);
+// same book the rest of the Desk uses (live IBKR when BROKER=ibkr, else the
+// sample book). Proposals are still the sample list until a store is wired.
+export function StateOfBook({ book }: { book: Book }) {
+  const { isSample } = book;
+  if (book.error || book.history.length < 2) {
+    return (
+      <section className="rise rise-3 mt-8 border border-hairline bg-paper/50 p-6 sm:p-7">
+        <p className="eyebrow">Where we stand</p>
+        <p className="mt-3 text-sm text-foreground/85">
+          {book.error
+            ? "The brokerage feed is unavailable right now — see the Portfolio section below."
+            : "Not enough history yet — the scorecard fills in after the first couple of statement days."}
+        </p>
+      </section>
+    );
+  }
+  const m = computeMetrics(book.history, book.periodsPerYear);
   const ahead = m.alpha >= 0;
-  const sorted = [...positions].sort((a, b) => b.unrealizedPnlUsd - a.unrealizedPnlUsd);
+  const sorted = [...book.account.positions].sort((a, b) => b.unrealizedPnlUsd - a.unrealizedPnlUsd);
   const best = sorted[0];
   const worst = sorted[sorted.length - 1];
   const openVotes = proposals.filter((p) => p.status === "open").length;
@@ -23,17 +37,23 @@ export function StateOfBook({ isSample = true }: { isSample?: boolean }) {
         We&apos;re{" "}
         <span className={ahead ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}>
           {pct(m.portReturn)} since launch
-        </span>{" "}
-        — {ahead ? "ahead of" : "behind"} the S&amp;P 500 by {pct(Math.abs(m.alpha))}.
+        </span>
+        {book.hasBenchmark ? (
+          <>
+            {" "}— {ahead ? "ahead of" : "behind"} the S&amp;P 500 by {pct(Math.abs(m.alpha))}.
+          </>
+        ) : (
+          <>.</>
+        )}
       </p>
 
       <p className="mt-3 max-w-2xl text-sm leading-relaxed text-foreground/85">
         {best && best.unrealizedPnlUsd > 0 ? (
           <>
             <strong className="font-medium">{best.symbol}</strong> is our strongest position right now (
-            {usd(best.unrealizedPnlUsd)}), {worst && worst.unrealizedPnlUsd < 0 ? (
+            {money(best.unrealizedPnlUsd, book.currency)}), {worst && worst.unrealizedPnlUsd < 0 ? (
               <>
-                and <strong className="font-medium">{worst.symbol}</strong> the weakest ({usd(worst.unrealizedPnlUsd)}).{" "}
+                and <strong className="font-medium">{worst.symbol}</strong> the weakest ({money(worst.unrealizedPnlUsd, book.currency)}).{" "}
               </>
             ) : (
               <>and every position is in the green right now. </>
@@ -54,7 +74,11 @@ export function StateOfBook({ isSample = true }: { isSample?: boolean }) {
 
       <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
         <Chip label="Since launch" value={pct(m.portReturn)} tone={m.portReturn >= 0 ? "up" : "down"} />
-        <Chip label="vs S&P 500" value={pct(m.alpha)} tone={ahead ? "up" : "down"} />
+        <Chip
+          label="vs S&P 500"
+          value={book.hasBenchmark ? pct(m.alpha) : "—"}
+          tone={book.hasBenchmark ? (ahead ? "up" : "down") : undefined}
+        />
         <Chip label="Invested" value={`${m.exposure.investedPct.toFixed(0)}%`} />
         <Chip label="Open votes" value={String(openVotes)} />
         {openVotes > 0 && (

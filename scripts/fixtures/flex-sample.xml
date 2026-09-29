@@ -1,0 +1,30 @@
+<FlexQueryResponse queryName="Whitewater" type="AF">
+<FlexStatements count="1">
+<FlexStatement accountId="U1234567" fromDate="20260901" toDate="20260910" period="Last365CalendarDays" whenGenerated="20260911;080000">
+<EquitySummaryInBase>
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="USD" reportDate="20260901" cash="10000" stock="0" total="10000" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="USD" reportDate="20260902" cash="2000" stock="8100" total="10100" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="USD" reportDate="20260903" cash="7000" stock="8200" total="15200" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="USD" reportDate="20260908" cash="7000" stock="7900" total="14900" />
+<EquitySummaryByReportDateInBase accountId="U1234567" currency="USD" reportDate="20260910" cash="7000" stock="8300" total="15300" />
+</EquitySummaryInBase>
+<CashTransactions>
+<CashTransaction accountId="U1234567" currency="USD" fxRateToBase="1" type="Deposits/Withdrawals" amount="10000" reportDate="20260901" dateTime="20260901" levelOfDetail="DETAIL" />
+<CashTransaction accountId="U1234567" currency="USD" fxRateToBase="1" type="Deposits/Withdrawals" amount="5000" reportDate="20260903" dateTime="20260903" levelOfDetail="DETAIL" />
+<CashTransaction accountId="U1234567" currency="BASE_SUMMARY" type="Deposits/Withdrawals" amount="15000" reportDate="" levelOfDetail="SUMMARY" />
+<CashTransaction accountId="U1234567" currency="USD" fxRateToBase="1" type="Dividends" amount="12.5" reportDate="20260908" levelOfDetail="DETAIL" />
+</CashTransactions>
+<OpenPositions>
+<OpenPosition accountId="U1234567" currency="USD" fxRateToBase="1" assetCategory="STK" symbol="AAPL" description="APPLE INC" position="20" markPrice="230" positionValue="4600" costBasisPrice="220" costBasisMoney="4400" fifoPnlUnrealized="200" openDateTime="" reportDate="20260910" levelOfDetail="SUMMARY" multiplier="1" />
+<OpenPosition accountId="U1234567" currency="USD" fxRateToBase="1" assetCategory="STK" symbol="AAPL" position="20" markPrice="230" positionValue="4600" costBasisPrice="220" openDateTime="20260902;101500" levelOfDetail="LOT" />
+<OpenPosition accountId="U1234567" currency="EUR" fxRateToBase="1.1" assetCategory="STK" symbol="ASML" description="ASML HOLDING" position="5" markPrice="672.73" positionValue="3363.65" costBasisPrice="700" costBasisMoney="3500" fifoPnlUnrealized="-136.35" reportDate="20260910" levelOfDetail="SUMMARY" multiplier="1" />
+</OpenPositions>
+<Trades>
+<Trade accountId="U1234567" currency="USD" fxRateToBase="1" assetCategory="STK" symbol="AAPL" tradeID="111" dateTime="20260902;101500" tradeDate="20260902" quantity="20" tradePrice="220" buySell="BUY" levelOfDetail="EXECUTION" />
+<Trade accountId="U1234567" currency="USD" fxRateToBase="1" assetCategory="CASH" symbol="EUR.USD" tradeID="112" dateTime="20260902;101600" quantity="3500" tradePrice="1.1" buySell="BUY" levelOfDetail="EXECUTION" />
+<Trade accountId="U1234567" currency="EUR" fxRateToBase="1.1" assetCategory="STK" symbol="ASML" tradeID="113" dateTime="20260902;101700" quantity="5" tradePrice="700" buySell="BUY" levelOfDetail="EXECUTION" />
+<Trade accountId="U1234567" currency="USD" fxRateToBase="1" assetCategory="STK" symbol="MSFT" tradeID="114" dateTime="20260908;150000" quantity="-3" tradePrice="410.5" buySell="SELL" levelOfDetail="EXECUTION" />
+</Trades>
+</FlexStatement>
+</FlexStatements>
+</FlexQueryResponse>
