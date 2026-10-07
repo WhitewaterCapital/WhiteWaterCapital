@@ -1,3 +1,7 @@
+> **PARTLY DONE 2026-10-07:** the session cookie is HMAC-signed and carries the member's name
+> (`src/lib/auth.ts`, `src/lib/session.ts` → `getCurrentMember()`). Remaining: real per-member Supabase
+> logins with an approved-members allowlist, replacing the shared passcode + typed name.
+
 # 01 · Real per-member login (Supabase Auth)
 
 ## Why

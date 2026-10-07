@@ -1,3 +1,5 @@
+> **DONE 2026-10-07** in `feat/layout-and-model-audit`: see `docs/CLUB_STORE.md`. Don't run this task.
+
 # 02 · Make the club's tools real (proposals, votes, journal, watchlist)
 
 ## Why
