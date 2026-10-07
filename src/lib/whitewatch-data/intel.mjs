@@ -46,14 +46,20 @@ function classifyThreat(text) {
   return 'low';
 }
 
+// World desks of major outlets (checked 2026-10-07: all return 13-56 items).
+// The old Google-News-for-Reuters search was returning ~1 item, and BBC's
+// http URL now redirects — both fixed here.
 const FEEDS = [
-  'http://feeds.bbci.co.uk/news/world/rss.xml',
+  'https://feeds.bbci.co.uk/news/world/rss.xml',
   'https://www.aljazeera.com/xml/rss/all.xml',
-  'https://news.google.com/rss/search?q=site:reuters.com+world&hl=en-US&gl=US&ceid=US:en',
+  'https://www.theguardian.com/world/rss',
+  'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
+  'https://www.france24.com/en/rss',
+  'https://rss.dw.com/rdf/rss-en-world',
 ];
 
 const GDELT_QUERY = '(war OR conflict OR military OR sanctions OR coup OR ceasefire OR strike OR invasion OR airstrike OR unrest) sourcelang:eng';
-const GDELT_URL = `https://api.gdeltproject.org/api/v2/doc/doc?query=${encodeURIComponent(GDELT_QUERY)}&mode=artlist&format=json&maxrecords=75&sort=datedesc&timespan=2d`;
+const GDELT_URL = `https://api.gdeltproject.org/api/v2/doc/doc?query=${encodeURIComponent(GDELT_QUERY)}&mode=artlist&format=json&maxrecords=250&sort=datedesc&timespan=3d`;
 
 function parseGdeltDate(seendate) {
   if (!seendate || seendate.length < 15) return null;
@@ -84,7 +90,7 @@ async function fetchRss() {
   const settled = await Promise.allSettled(
     FEEDS.map(async (url) => {
       const parsed = await parser.parseURL(url);
-      return (parsed.items || []).slice(0, 20).map((item) => {
+      return (parsed.items || []).slice(0, 60).map((item) => {
         const text = `${item.title || ''} ${item.contentSnippet || ''}`;
         return {
           title: item.title,

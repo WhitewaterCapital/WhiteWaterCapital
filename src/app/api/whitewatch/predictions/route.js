@@ -124,16 +124,17 @@ function scoreHeadlines(hits) {
   let deescN = 0;
   let escW = 0;
   let deescW = 0;
+  let neutW = 0;
   for (const h of hits) {
     const t = (h.title || '').toLowerCase();
     const esc = ESCALATE.some((k) => t.includes(k));
     const deesc = DEESCALATE.some((k) => t.includes(k));
-    if (!esc && !deesc) continue;
     const w = THREAT_WEIGHT[h.threat] ?? 1.0;
+    if (!esc && !deesc) { neutW += w; continue; }
     if (esc) { net += w; escN += 1; escW += w; }
     if (deesc) { net -= w; deescN += 1; deescW += w; }
   }
-  return { net, escN, deescN, escW, deescW };
+  return { net, escN, deescN, escW, deescW, neutW };
 }
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, Math.round(v)));
@@ -153,13 +154,14 @@ function watchFor(call) {
 function callZone(c, hits) {
   const count = hits.length;
   const status = (c.status || 'the current situation').toLowerCase();
-  const { net, escN, deescN, escW, deescW } = scoreHeadlines(hits);
+  const { net, escN, deescN, escW, deescW, neutW } = scoreHeadlines(hits);
 
   // CONVICTION — recalibrated 2026-10. The old constants pinned almost every
   // zone between 50 and 67 regardless of evidence. Now conviction moves with
   // (a) how ONE-SIDED the coverage is and (b) how MUCH of it there is, and a
   // quiet zone gets a real base rate instead of a coin flip.
-  //   balance b = (E − D)/(E + D) ∈ [−1, 1]  (E/D = threat-weighted esc/de-esc votes)
+  //   balance b = (E − D)/(E + D + ½N) ∈ [−1, 1]  (E/D = threat-weighted esc/de-esc
+  //               votes, N = neutral headlines on the zone — dilutes at half weight)
   //   volume  v = 1 − e^(−(E + D)/4)          (≈0.22 at 1 vote, 0.63 at 4, 0.92 at 10)
   //   directional call: 50 + 45·|b|·v (+5 if it agrees with the threat baseline)
   //   stable call with evidence: 50 + 35·(1 − |b|)·v  (lots of mixed news = confident "stable")
@@ -192,7 +194,10 @@ function callZone(c, hits) {
     };
   }
 
-  const bal = E + D > 0 ? (E - D) / (E + D) : 0;
+  // Neutral coverage (mentions the zone, no escalation/de-escalation language)
+  // dilutes the balance at half weight: 3 strike headlines out of 15 is not
+  // the same signal as 3 out of 3.
+  const bal = E + D > 0 ? (E - D) / (E + D + 0.5 * neutW) : 0;
   const vol = 1 - Math.exp(-(E + D) / 4);
 
   // Direction: a clear tilt (|b| ≥ 0.25) with real weight behind it (≥ 1.5).
@@ -297,7 +302,7 @@ async function claudeZones(byZone, macro) {
     const hits = (byZone.get(c.id) || []).slice(0, 6).map((h) => `- ${h.title} (${h.source})`);
     return {
       id: c.id, name: c.name, threat: c.threat, situation: c.summary, actors: c.actors,
-      recent_headlines: hits.length ? hits : ['(no fresh matching headline in the last 48h)'],
+      recent_headlines: hits.length ? hits : ['(no fresh matching headline in the last 72h)'],
     };
   });
   const system = [
