@@ -1,3 +1,6 @@
+> **DONE 2026-10-07** in `feat/layout-and-model-audit`: `scripts/refresh-insider.mts` writes real Form 4 data to
+> `public/data/insider/latest.json`; `edgar-sources.ts` reads it. Don't run this task.
+
 # 03 · Real insider trading feed (SEC Form 4)
 
 ## Why

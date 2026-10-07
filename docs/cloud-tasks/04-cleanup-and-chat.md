@@ -1,3 +1,7 @@
+> **MOSTLY DONE 2026-10-07** (`feat/layout-and-model-audit`): the macro tracker is now real (sector ETFs, `npm run refresh:macro`),
+> so `/api/chat` already answers from real data, and the `// eyebrow` lint errors are fixed. Remaining: lint errors in
+> `src/app/war-map/WarMapClient.jsx` and `src/components/ModuleShell.tsx`, and a smarter keyword-routed chat responder.
+
 # 04 · Clean-up: lint to zero + consensus chat on real macro
 
 ## Build
