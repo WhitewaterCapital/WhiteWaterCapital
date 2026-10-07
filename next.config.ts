@@ -8,8 +8,10 @@ const nextConfig: NextConfig = {
   // only three routes were listed, so pages like /weekly, /kalman, /earnings
   // and /smart-money could read "not synced" in production.
   outputFileTracingIncludes: {
+    // "/*" = one-segment routes (/dashboard…); "/**/*" = deeper ones
+    // (/t/[ticker], /api/desk/[ticker]/challenge…).
     "/*": ["./public/data/**/*.json"],
-    "/api/**/*": ["./public/data/**/*.json"],
+    "/**/*": ["./public/data/**/*.json"],
   },
 };
 

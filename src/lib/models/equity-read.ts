@@ -684,6 +684,8 @@ function verdictCall(stance: Stance, h: Read<HealthBand>, v: Read<ValueBand>, t:
   // Article-free phrasing ("rich on valuation") so bands never produce "a extreme".
   switch (stance) {
     case "attractive":
+      if (rich)
+        return `Own it — ${q} quality and a ${tr} tape carry it, even though it's ${val} on valuation. Size for the multiple: a miss gets punished.`;
       return `Own it. ${cap(q)} balance sheet, ${val} on valuation and a ${tr} tape all line up on your side — a real position.`;
     case "constructive":
       if (rich)

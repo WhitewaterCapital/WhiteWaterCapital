@@ -1,12 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fbfaf8;
-  --foreground: #16130f;
-  --muted: #6f6a64;
-  --hairline: #e6e2dc;
-  --paper: #f4f1ec;
-  --accent: #e0603f; /* GSA-style coral */
+  --background: #f7f4ee; /* warm paper */
+  --foreground: #15120e; /* ink */
+  --muted: #736c63;
+  --hairline: #e3ddd3;
+  --paper: #efeae1;
+  --surface: #fcfaf6; /* raised cards */
+  --accent: #d9583a; /* coral, used sparingly */
+  --long: #1e6b4a; /* deep green — lean long */
+  --short: #a8362a; /* brick — lean short */
+  --neutral-lean: #8a8378;
+  --shadow: 0 1px 0 rgba(21, 18, 14, 0.04), 0 8px 24px -12px rgba(21, 18, 14, 0.12);
 }
 
 @theme inline {
@@ -16,8 +21,13 @@
   --color-hairline: var(--hairline);
   --color-paper: var(--paper);
   --color-accent: var(--accent);
+  --color-surface: var(--surface);
+  --color-long: var(--long);
+  --color-short: var(--short);
+  --color-neutral-lean: var(--neutral-lean);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-serif);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -27,7 +37,12 @@
     --muted: #a09a92;
     --hairline: #2a2621;
     --paper: #181512;
+    --surface: #1b1815;
     --accent: #f0765a;
+    --long: #5fb98b;
+    --short: #e2705f;
+    --neutral-lean: #9a9389;
+    --shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.6);
   }
 }
 
@@ -47,6 +62,11 @@
   font-weight: 450;
   letter-spacing: -0.02em;
   line-height: 1.02;
+}
+
+html,
+body {
+  overflow-x: clip; /* decorative layers must never create sideways scroll */
 }
 
 body {
@@ -120,4 +140,58 @@ body {
   right: -1px;
   border-bottom: 1.5px solid;
   border-right: 1.5px solid;
+}
+
+/* ── Desk design system ─────────────────────────────────────────────────── */
+.serif {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+.surface {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--shadow);
+}
+/* Soft brand glow behind the search bar (the coral→teal mesh, whispered). */
+.glow {
+  position: relative;
+  isolation: isolate;
+}
+.glow::before {
+  content: "";
+  position: absolute;
+  inset: -40% 0 -60%;
+  z-index: -1;
+  background:
+    radial-gradient(40% 50% at 30% 50%, rgba(217, 88, 58, 0.16), transparent 70%),
+    radial-gradient(40% 50% at 72% 55%, rgba(110, 170, 160, 0.18), transparent 70%);
+  filter: blur(20px);
+  pointer-events: none;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+.fade-up { animation: fadeUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: none; }
+}
+.sheet { animation: slideIn 0.32s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--paper) 0%, var(--hairline) 50%, var(--paper) 100%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fade-up, .sheet, .skeleton { animation: none; }
 }

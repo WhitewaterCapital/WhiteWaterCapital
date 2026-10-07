@@ -5,7 +5,8 @@ import { PROTECTED_PATHS } from "@/lib/modules";
 // Public pages are indexable; the members area and APIs are not.
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: { userAgent: "*", allow: "/", disallow: [...PROTECTED_PATHS, "/login", "/api/"] },
+    rules: { userAgent: "*", allow: "/", // "/t" (ticker pages) must be "/t/" so it doesn't also block "/terms".
+    disallow: [...PROTECTED_PATHS.map((p) => (p === "/t" ? "/t/" : p)), "/login", "/api/"] },
     sitemap: `${SITE.url}/sitemap.xml`,
   };
 }

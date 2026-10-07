@@ -13,7 +13,8 @@
     "refresh:insider": "npx -y tsx scripts/refresh-insider.mts",
     "refresh:macro": "npx -y tsx scripts/refresh-macro.mts",
     "refresh:all": "bash scripts/refresh-all.sh",
-    "audit:equity": "npx -y tsx scripts/audit-equity.mts"
+    "audit:equity": "npx -y tsx scripts/audit-equity.mts",
+    "desk": "npx -y tsx --conditions=react-server scripts/try-desk.mts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.0",

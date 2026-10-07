@@ -1,13 +1,10 @@
 import { NextResponse } from "next/server";
 import { resolveSecurity } from "@/lib/incepta-resolve";
 
-// Resolves a ticker to REAL Incepta output (universe → live engine). The engine
-// steps shell out to Python, so this needs the Node runtime and a machine that
-// has the engine + its venv (local / self-hosted worker — not Vercel
-// serverless). Production will call an engine service instead; same schema, so
-// the UI is unchanged.
+// Resolves a ticker to real evidence: the published Incepta universe, else the
+// live TypeScript engine (SEC + Yahoo) — any listed ticker, on Vercel too.
 export const runtime = "nodejs";
-export const maxDuration = 120;
+export const maxDuration = 60;
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));

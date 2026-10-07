@@ -7,7 +7,7 @@ import { PROTECTED_PATHS } from "@/lib/modules";
 // /privacy, ...) stays open. Members API routes answer 401 instead of
 // redirecting. Every protected response is also marked noindex.
 const PROTECTED = PROTECTED_PATHS;
-const PROTECTED_API = ["/api/models", "/api/chat"];
+const PROTECTED_API = ["/api/models", "/api/chat", "/api/search", "/api/desk"];
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -51,5 +51,9 @@ export const config = {
     "/proposals/:path*",
     "/api/models/:path*",
     "/api/chat/:path*",
+    "/api/search/:path*",
+    "/api/desk/:path*",
+    "/book/:path*",
+    "/t/:path*",
   ],
 };

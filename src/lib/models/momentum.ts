@@ -27,19 +27,21 @@ export async function ownMomentum(ticker: string): Promise<MomentumRead | { unav
   return { mom12_1: mom, ret1m, tilt: Math.max(-100, Math.min(100, mom * 200)), asOf: data.as_of };
 }
 
-// Combine insider flow and momentum into one signed score with an explicit
-// rule (used by Smart Money and Earnings Move):
-//   • both agree  → average, plus a 15% agreement bonus (two independent
-//                    sources pointing the same way is stronger than either)
-//   • they clash  → insider flow LEADS (it's the informed, event-specific
-//                    signal), dampened by 30% for the disagreement
+// Combine insider flow and momentum into one signed score (used by Smart
+// Money, Earnings Move and the ticker desk):
+//   • agree  → weighted average plus a 15% agreement bonus
+//   • clash  → weighted average where insider weight grows with insider
+//              evidence strength (|score|/50, capped): a strong, multi-trade
+//              insider signal leads; one small sale can't override a big trend
+//              (fix 2026-10 — KO: one $-sale outvoted +35% momentum)
 //   • one missing → the one we have
 export function combineInsiderMomentum(ins: number | null, mom: number | null): number {
   const clamp = (n: number) => Math.max(-100, Math.min(100, Math.round(n)));
   if (ins != null && mom != null) {
     if (ins === 0) return clamp(mom);
-    if (Math.sign(ins) === Math.sign(mom)) return clamp(((ins + mom) / 2) * 1.15);
-    return clamp(ins * 0.7);
+    const wIns = 0.6 * Math.min(1, Math.abs(ins) / 50);
+    const blend = wIns * ins + (1 - wIns) * mom;
+    return clamp(Math.sign(ins) === Math.sign(mom) ? blend * 1.15 : blend);
   }
   return clamp(ins ?? mom ?? 0);
 }

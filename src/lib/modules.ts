@@ -41,6 +41,8 @@ export const REFERENCE: { href: string; name: string }[] = [
 // Everything behind the members login. /nova redirects to /war-map.
 export const PROTECTED_PATHS: string[] = [
   "/dashboard",
+  "/book",
+  "/t",
   "/nova",
   ...MODULES.map((m) => m.href),
   ...CLUB_TOOLS.map((t) => t.href),
