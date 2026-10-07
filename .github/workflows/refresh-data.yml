@@ -72,6 +72,19 @@ jobs:
         # the summary at the end of the script lists anything that failed.
         run: bash scripts/refresh-all.sh || echo "::warning::some engines failed — see the summary above"
 
+      # Free-tier Supabase pauses a project after ~7 days without API traffic,
+      # which silently breaks the Invest/newsletter forms and the club store.
+      # One tiny read each weekday keeps it awake. Uses the public anon key.
+      - name: Keep Supabase awake
+        if: steps.gate.outputs.go == 'true' && env.SB_URL != ''
+        env:
+          SB_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SB_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: |
+          curl -s -o /dev/null -w "supabase ping: %{http_code}\n" \
+            "$SB_URL/rest/v1/newsletter_subscribers?select=email&limit=1" \
+            -H "apikey: $SB_KEY" -H "Authorization: Bearer $SB_KEY" || true
+
       - name: Commit and push fresh data
         if: steps.gate.outputs.go == 'true'
         run: |

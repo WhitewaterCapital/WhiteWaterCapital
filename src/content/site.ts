@@ -30,6 +30,10 @@ export const SITE = {
   // TODO(team): founding year, e.g. "2026".
   founded: "2026",
 
+  // Number of voting partners — sets the proposal approval majority
+  // (strict majority: 3 of 5).
+  memberCount: Number(process.env.CLUB_MEMBER_COUNT ?? 5),
+
   // TODO(team): one entry per partner. The About page's team section stays
   // hidden until this has at least one entry.
   team: [] as TeamMember[],

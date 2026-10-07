@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { proposals } from "@/lib/sample-data";
 import { computeMetrics } from "@/lib/metrics";
 import type { Book } from "@/lib/book";
 import { money, pct } from "@/lib/format";
@@ -7,8 +6,8 @@ import { money, pct } from "@/lib/format";
 // STATE OF THE BOOK — the plain-English "where do we stand" a member should be
 // able to read in ten seconds, before any chart or model. Reads the same
 // same book the rest of the Desk uses (live IBKR when BROKER=ibkr, else the
-// sample book). Proposals are still the sample list until a store is wired.
-export function StateOfBook({ book }: { book: Book }) {
+// sample book); open votes come from the club store.
+export function StateOfBook({ book, openVotes }: { book: Book; openVotes: number }) {
   const { isSample } = book;
   if (book.error || book.history.length < 2) {
     return (
@@ -27,7 +26,6 @@ export function StateOfBook({ book }: { book: Book }) {
   const sorted = [...book.account.positions].sort((a, b) => b.unrealizedPnlUsd - a.unrealizedPnlUsd);
   const best = sorted[0];
   const worst = sorted[sorted.length - 1];
-  const openVotes = proposals.filter((p) => p.status === "open").length;
 
   return (
     <section className="rise rise-3 mt-8 border border-hairline bg-paper/50 p-6 sm:p-7">

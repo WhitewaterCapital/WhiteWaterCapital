@@ -2,8 +2,12 @@ import Link from "next/link";
 import { ModuleNav } from "@/components/ModuleNav";
 import { Card, Badge } from "@/components/ui";
 import { HowToRead, DemoNote } from "@/components/Explain";
-import { journal, type JournalEntry, type JournalAction } from "@/lib/sample-data";
+import { readClub, type ClubJournalEntry } from "@/lib/club-store";
+import { getCurrentMember } from "@/lib/session";
+import { addJournal, setJournalOutcome } from "@/app/club/actions";
 import { shortDate } from "@/lib/format";
+
+type JournalAction = ClubJournalEntry["action"];
 
 // DECISION JOURNAL — the club's decision loop made visible: every position and
 // past decision keeps the written thesis it started as, who championed it, and
@@ -24,9 +28,15 @@ const actionWord: Record<JournalAction, string> = {
   sell: "Sold",
 };
 
-export default function JournalPage() {
-  const open = journal.filter((e) => e.status === "open");
-  const closed = journal.filter((e) => e.status === "closed");
+export default async function JournalPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const [{ error }, club, me] = await Promise.all([searchParams, readClub(), getCurrentMember()]);
+  const open = club.journal.filter((e) => !e.outcome);
+  const closed = club.journal.filter((e) => e.outcome);
+  const live = !club.isSample;
 
   return (
     <div>
@@ -60,18 +70,49 @@ export default function JournalPage() {
           </HowToRead>
         </div>
 
-        <div className="mt-4">
-          <DemoNote>
-            <strong className="font-semibold">Example entries.</strong> These illustrate the format; real entries
-            will flow from proposals and executed trades once those are wired to the account.
-          </DemoNote>
-        </div>
+        {club.isSample && (
+          <div className="mt-4">
+            <DemoNote>
+              <strong className="font-semibold">Example entries.</strong> {club.reason}
+            </DemoNote>
+          </div>
+        )}
+        {error && (
+          <p className="mt-4 border border-rose-500/40 bg-rose-500/10 px-3 py-2 text-sm text-rose-700 dark:text-rose-300">
+            {error}
+          </p>
+        )}
+
+        {live && (
+          <div className="mt-6">
+            <Card title="Log a decision">
+              <form action={addJournal} className="grid gap-3 sm:grid-cols-2">
+                <input name="symbol" required maxLength={12} placeholder="Ticker"
+                  className="border border-hairline bg-transparent px-3 py-2 text-sm uppercase outline-none focus:border-foreground/40" />
+                <select name="action" className="border border-hairline bg-transparent px-3 py-2 text-sm">
+                  <option value="buy">Bought</option>
+                  <option value="add">Added</option>
+                  <option value="trim">Trimmed</option>
+                  <option value="sell">Sold</option>
+                </select>
+                <textarea name="reasoning" required minLength={10} maxLength={4000} rows={3}
+                  placeholder="The thesis at the time — what you believed and what would prove it wrong."
+                  className="border border-hairline bg-transparent px-3 py-2 text-sm outline-none focus:border-foreground/40 sm:col-span-2" />
+                <div className="flex items-center justify-between sm:col-span-2">
+                  <span className="text-xs text-muted">Logging as {me?.name ?? "—"}</span>
+                  <button className="bg-foreground px-4 py-2 text-sm font-medium text-background hover:opacity-90">Save</button>
+                </div>
+              </form>
+            </Card>
+          </div>
+        )}
 
         <section className="mt-8">
           <h2 className="eyebrow mb-4">Open positions — why we own them</h2>
           <div className="space-y-4">
+            {open.length === 0 && <p className="text-sm text-muted">No open decisions logged yet.</p>}
             {open.map((e) => (
-              <EntryCard key={e.id} e={e} />
+              <EntryCard key={e.id} e={e} live={live} />
             ))}
           </div>
         </section>
@@ -79,8 +120,9 @@ export default function JournalPage() {
         <section className="mt-10">
           <h2 className="eyebrow mb-4">Closed — how they aged</h2>
           <div className="space-y-4">
+            {closed.length === 0 && <p className="text-sm text-muted">Nothing reviewed yet.</p>}
             {closed.map((e) => (
-              <EntryCard key={e.id} e={e} />
+              <EntryCard key={e.id} e={e} live={live} />
             ))}
           </div>
         </section>
@@ -96,7 +138,7 @@ export default function JournalPage() {
   );
 }
 
-function EntryCard({ e }: { e: JournalEntry }) {
+function EntryCard({ e, live }: { e: ClubJournalEntry; live: boolean }) {
   return (
     <Card>
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -104,18 +146,29 @@ function EntryCard({ e }: { e: JournalEntry }) {
           <h3 className="text-lg font-semibold">{e.symbol}</h3>
           <Badge tone={actionTone[e.action]}>{actionWord[e.action]}</Badge>
           <span className="text-xs text-muted">
-            {shortDate(e.date)} · championed by {e.championedBy}
+            {shortDate(e.created_at)} · championed by {e.author}
           </span>
         </div>
       </div>
       <p className="mt-3 text-sm leading-relaxed text-foreground/90">
         <span className="font-medium text-muted">Thesis: </span>
-        {e.thesis}
+        {e.reasoning}
       </p>
-      <p className="mt-2 text-sm leading-relaxed text-foreground/75">
-        <span className="font-medium text-muted">{e.status === "open" ? "Where it stands: " : "How it aged: "}</span>
-        {e.review}
-      </p>
+      {e.outcome ? (
+        <p className="mt-2 text-sm leading-relaxed text-foreground/75">
+          <span className="font-medium text-muted">How it aged: </span>
+          {e.outcome}
+        </p>
+      ) : live ? (
+        <form action={setJournalOutcome} className="mt-3 flex gap-2">
+          <input type="hidden" name="id" value={e.id} />
+          <input name="outcome" maxLength={4000} placeholder="Closed it? Write how the thesis aged…"
+            className="flex-1 border border-hairline bg-transparent px-3 py-1.5 text-sm outline-none focus:border-foreground/40" />
+          <button className="border border-foreground/25 px-3 py-1.5 text-xs uppercase tracking-wide text-muted hover:text-foreground">
+            Review
+          </button>
+        </form>
+      ) : null}
     </Card>
   );
 }

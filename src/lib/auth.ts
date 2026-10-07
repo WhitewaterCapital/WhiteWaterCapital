@@ -57,24 +57,50 @@ async function hmac(message: string): Promise<string | null> {
   return Array.from(new Uint8Array(sig), (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-// Cookie value: "v1.<expiresAtMs>.<hex hmac>"
-export async function createSessionToken(): Promise<string | null> {
+// Display name carried in the session (who proposed / voted / wrote it).
+// Interim identity until per-member logins land: honest attribution among a
+// small trusted group, not proof of identity.
+export function cleanMemberName(raw: string): string | null {
+  const n = raw.normalize("NFKC").replace(/[\u0000-\u001f]/g, "").replace(/\s+/g, " ").trim();
+  return n.length >= 1 && n.length <= 40 ? n : null;
+}
+
+const b64u = (s: string) =>
+  btoa(String.fromCharCode(...new TextEncoder().encode(s))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+const unb64u = (s: string) => {
+  const bin = atob(s.replace(/-/g, "+").replace(/_/g, "/"));
+  return new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));
+};
+
+// Cookie value: "v2.<expiresAtMs>.<base64url name>.<hex hmac>" — the HMAC
+// covers the expiry AND the name, so neither can be edited.
+export async function createSessionToken(name: string): Promise<string | null> {
   const exp = Date.now() + SESSION_DAYS * 86400_000;
-  const sig = await hmac(`v1.${exp}`);
-  return sig ? `v1.${exp}.${sig}` : null;
+  const n = b64u(name);
+  const sig = await hmac(`v2.${exp}.${n}`);
+  return sig ? `v2.${exp}.${n}.${sig}` : null;
+}
+
+export async function readSessionToken(token: string | undefined): Promise<{ name: string } | null> {
+  if (!token) return null;
+  const [v, expStr, n, sig] = token.split(".");
+  if (v !== "v2" || !expStr || !n || !sig) return null;
+  const exp = Number(expStr);
+  if (!Number.isFinite(exp) || exp < Date.now()) return null;
+  const expected = await hmac(`v2.${expStr}.${n}`);
+  if (!expected || expected.length !== sig.length) return null;
+  let diff = 0;
+  for (let i = 0; i < sig.length; i++) diff |= sig.charCodeAt(i) ^ expected.charCodeAt(i);
+  if (diff !== 0) return null;
+  try {
+    return { name: unb64u(n) };
+  } catch {
+    return null;
+  }
 }
 
 export async function verifySessionToken(token: string | undefined): Promise<boolean> {
-  if (!token) return false;
-  const [v, expStr, sig] = token.split(".");
-  if (v !== "v1" || !expStr || !sig) return false;
-  const exp = Number(expStr);
-  if (!Number.isFinite(exp) || exp < Date.now()) return false;
-  const expected = await hmac(`v1.${expStr}`);
-  if (!expected || expected.length !== sig.length) return false;
-  let diff = 0;
-  for (let i = 0; i < sig.length; i++) diff |= sig.charCodeAt(i) ^ expected.charCodeAt(i);
-  return diff === 0;
+  return (await readSessionToken(token)) !== null;
 }
 
 // Only same-site paths are allowed as a post-login destination (no open redirect).

@@ -2,7 +2,9 @@ import Link from "next/link";
 import { ModuleNav } from "@/components/ModuleNav";
 import { Card } from "@/components/ui";
 import { HowToRead, DemoNote } from "@/components/Explain";
-import { watchlist } from "@/lib/sample-data";
+import { readClub } from "@/lib/club-store";
+import { getCurrentMember } from "@/lib/session";
+import { addWatch, removeWatch } from "@/app/club/actions";
 import { shortDate } from "@/lib/format";
 
 // WATCHLIST — the on-ramp between "a model flagged this" and "let's propose
@@ -10,7 +12,13 @@ import { shortDate } from "@/lib/format";
 // plain reason and who added it. The natural next step is a written proposal.
 export const dynamic = "force-dynamic";
 
-export default function WatchlistPage() {
+export default async function WatchlistPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const [{ error }, club, me] = await Promise.all([searchParams, readClub(), getCurrentMember()]);
+  const live = !club.isSample;
   return (
     <div>
       <ModuleNav crumb="Watchlist" />
@@ -42,29 +50,55 @@ export default function WatchlistPage() {
           </HowToRead>
         </div>
 
-        <div className="mt-4">
-          <DemoNote>
-            <strong className="font-semibold">Example list.</strong> A shared, editable watchlist saves to the
-            account once a database is wired in; these entries show the format.
-          </DemoNote>
-        </div>
+        {club.isSample && (
+          <div className="mt-4">
+            <DemoNote>
+              <strong className="font-semibold">Example list.</strong> {club.reason}
+            </DemoNote>
+          </div>
+        )}
+        {error && (
+          <p className="mt-4 border border-rose-500/40 bg-rose-500/10 px-3 py-2 text-sm text-rose-700 dark:text-rose-300">
+            {error}
+          </p>
+        )}
+        {live && (
+          <form action={addWatch} className="mt-6 flex flex-col gap-2 sm:flex-row">
+            <input name="symbol" required maxLength={12} placeholder="Ticker"
+              className="border border-hairline bg-transparent px-3 py-2 text-sm uppercase outline-none focus:border-foreground/40 sm:w-32" />
+            <input name="note" maxLength={1000} placeholder="Why we're watching it (one line)"
+              className="flex-1 border border-hairline bg-transparent px-3 py-2 text-sm outline-none focus:border-foreground/40" />
+            <button className="bg-foreground px-4 py-2 text-sm font-medium text-background hover:opacity-90">
+              Add{me ? ` as ${me.name}` : ""}
+            </button>
+          </form>
+        )}
 
         <div className="mt-8 space-y-4">
-          {watchlist.map((w) => (
+          {club.watchlist.length === 0 && <p className="text-sm text-muted">Nothing on the radar yet.</p>}
+          {club.watchlist.map((w) => (
             <Card key={w.symbol}>
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex flex-wrap items-baseline gap-2">
                   <h3 className="text-lg font-semibold">{w.symbol}</h3>
                   <span className="text-xs text-muted">
-                    added by {w.addedBy} · {shortDate(w.addedAt)}
+                    added by {w.added_by} · {shortDate(w.created_at)}
                   </span>
                 </div>
-                <Link
-                  href="/proposals"
-                  className="whitespace-nowrap text-xs font-medium text-accent hover:underline"
-                >
-                  Propose it →
-                </Link>
+                <div className="flex items-center gap-4">
+                  <Link
+                    href="/proposals"
+                    className="whitespace-nowrap text-xs font-medium text-accent hover:underline"
+                  >
+                    Propose it →
+                  </Link>
+                  {live && (
+                    <form action={removeWatch}>
+                      <input type="hidden" name="symbol" value={w.symbol} />
+                      <button className="text-xs text-muted hover:text-rose-500">Remove</button>
+                    </form>
+                  )}
+                </div>
               </div>
               <p className="mt-2 text-sm leading-relaxed text-foreground/85">{w.note}</p>
             </Card>

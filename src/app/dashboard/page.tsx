@@ -5,6 +5,7 @@ import { ExposureGauge } from "@/components/ExposureGauge";
 import { Stat, Card } from "@/components/ui";
 import { StateOfBook } from "@/components/StateOfBook";
 import { loadBook } from "@/lib/book";
+import { readClub } from "@/lib/club-store";
 import { MODULES, CLUB_TOOLS, REFERENCE } from "@/lib/modules";
 import { computeMetrics } from "@/lib/metrics";
 import { money, pct, shortDate, num } from "@/lib/format";
@@ -16,7 +17,8 @@ import { money, pct, shortDate, num } from "@/lib/format";
 export const dynamic = "force-dynamic";
 
 export default async function DeskPage() {
-  const book = await loadBook();
+  const [book, club] = await Promise.all([loadBook(), readClub()]);
+  const openVotes = club.proposals.filter((p) => p.status === "open").length;
   const { account, history } = book;
   const broker = { name: book.source, isSample: book.isSample };
   const hasCurve = history.length >= 2;
@@ -34,7 +36,7 @@ export default async function DeskPage() {
           Good to see you.
         </h1>
 
-        <StateOfBook book={book} />
+        <StateOfBook book={book} openVotes={openVotes} />
 
         {/* Club tools — the weekly workflow shortcuts */}
         <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-xs uppercase tracking-[0.12em]">

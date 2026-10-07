@@ -388,6 +388,7 @@ export default function WarMapClient() {
       map.on('mouseenter', 'countries-fill', () => { map.getCanvas().style.cursor = 'pointer'; });
       map.on('mouseleave', 'countries-fill', () => { map.getCanvas().style.cursor = ''; });
 
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- kicks off a data load / marks the map layer ready; intentional
       setCountriesLoaded(true);
     } catch (err) {
       console.error('Whitewatch: country layer failed', err);
@@ -432,6 +433,7 @@ export default function WarMapClient() {
   }, [powerPlants, powerPlantsLoading]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- kicks off a data load / marks the map layer ready; intentional
     if (showPowerPlants || activeView === 'indicators') loadPowerPlants();
   }, [showPowerPlants, activeView, loadPowerPlants]);
 
@@ -512,6 +514,7 @@ export default function WarMapClient() {
   }, [hazards, hazardsLoading]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- kicks off a data load / marks the map layer ready; intentional
     if (showFires || showQuakes) loadHazards();
   }, [showFires, showQuakes, loadHazards]);
 
@@ -573,6 +576,7 @@ export default function WarMapClient() {
 
   useEffect(() => {
     if (activeView === 'feed') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- kicks off a data load / marks the map layer ready; intentional
       loadFeed();
       if (!xFeed) fetch('/api/whitewatch/x-feed').then((r) => r.json()).then(setXFeed).catch((err) => console.error(err));
     }
@@ -656,7 +660,7 @@ export default function WarMapClient() {
                   allowFullScreen
                 />
               </div>
-              <div className="ww-muted ww-mini-caption">Bloomberg's own free public livestream — not paywalled, not scraped.</div>
+              <div className="ww-muted ww-mini-caption">Bloomberg&apos;s own free public livestream — not paywalled, not scraped.</div>
             </aside>
 
             <div className="ww-map-stage">
@@ -937,7 +941,7 @@ export default function WarMapClient() {
             </div>
 
             <p className="ww-eyebrow ww-spaced-lg">Power Plants</p>
-            <h2 className="ww-h2">Major plants in emerging markets — also plotted on the War Map (toggle "Power plants" in Layers)</h2>
+            <h2 className="ww-h2">Major plants in emerging markets — also plotted on the War Map (toggle &ldquo;Power plants&rdquo; in Layers)</h2>
             <p className="ww-muted">{powerPlants?.source || 'Loading…'}{powerPlants?.scope ? ` — ${powerPlants.scope}` : ''}</p>
             <div className="ww-card-list">
               {(powerPlants?.items || []).slice(0, 25).map((p) => (
@@ -959,7 +963,7 @@ export default function WarMapClient() {
               <div key={key}>
                 <p className="ww-eyebrow ww-spaced-lg">{label}</p>
                 <h2 className="ww-h2">
-                  Live from Wikidata — click one below or toggle "{label}" in the War Map's Layers panel
+                  Live from Wikidata — click one below or toggle &ldquo;{label}&rdquo; in the War Map&apos;s Layers panel
                 </h2>
                 <p className="ww-muted">{wikiAssets[key]?.source || (wikiAssetsLoading[key] ? 'Loading…' : 'Not loaded yet — toggle the layer on the map, or click a row below')}</p>
                 <div className="ww-card-list">
@@ -990,8 +994,8 @@ export default function WarMapClient() {
               </div>
             ))}
             <p className="ww-muted ww-spaced-sm">
-              Source: Wikidata Query Service (CC0), the same source warwatchlive's own asset panel cites — community-maintained
-              and genuinely global, but coverage per country/facility depends on what's been mapped there. Scoped to the same
+              Source: Wikidata Query Service (CC0), the same source warwatchlive&apos;s own asset panel cites — community-maintained
+              and genuinely global, but coverage per country/facility depends on what&apos;s been mapped there. Scoped to the same
               emerging-market + active-conflict-zone country list as the rest of this dashboard; widen it in
               <code> app/api/whitewatch/assets/route.js</code>.
             </p>

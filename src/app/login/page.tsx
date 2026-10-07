@@ -19,20 +19,32 @@ export default async function LoginPage({
         Whitewater
       </Link>
       <h1 className="display mt-8 text-3xl">Members sign in</h1>
-      <p className="mt-2 text-sm text-muted">Enter the club passcode to reach the Desk.</p>
+      <p className="mt-2 text-sm text-muted">
+        Your name (so proposals and votes are attributed) and the club passcode.
+      </p>
 
       {configured ? (
         <form action="/api/login" method="post" className="mt-6 space-y-3">
           <input type="hidden" name="next" value={safeNext(next)} />
           <input
+            type="text"
+            name="name"
+            placeholder="Your name"
+            autoComplete="given-name"
+            required
+            maxLength={40}
+            autoFocus
+            className="w-full border border-hairline bg-transparent px-3 py-2.5 text-sm outline-none focus:border-foreground/40"
+          />
+          <input
             type="password"
             name="passcode"
             placeholder="Passcode"
             autoComplete="current-password"
-            autoFocus
+            required
             className="w-full border border-hairline bg-transparent px-3 py-2.5 text-sm outline-none focus:border-foreground/40"
           />
-          {error ? <p className="text-sm text-rose-500">Wrong passcode. Try again.</p> : null}
+          {error ? <p className="text-sm text-rose-500">Wrong passcode, or no name given. Try again.</p> : null}
           <button className="w-full bg-foreground px-3 py-2.5 text-sm font-medium text-background hover:opacity-90">
             Enter
           </button>
