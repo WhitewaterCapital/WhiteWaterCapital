@@ -42,6 +42,10 @@ aurora_refresh() {
 }
 if [ -d "$AURORA_DIR/aurora" ] && command -v octave >/dev/null; then
   run "Aurora (macro DSGE + FRED regime)" aurora_refresh
+  # Keep the background job's mirror in step with the Desktop copy (launchd
+  # can't read ~/Desktop — see scripts/aurora-daily.sh).
+  mkdir -p "$HOME/.whitewater-refresh"
+  rsync -a --delete --exclude .git --exclude logs "$AURORA_DIR/" "$HOME/.whitewater-refresh/aurora-mirror/" || true
 else
   step "Aurora (macro DSGE + FRED regime)"; echo "skipped — Aurora repo/Octave not available here (runs on James's Mac only)"
 fi
