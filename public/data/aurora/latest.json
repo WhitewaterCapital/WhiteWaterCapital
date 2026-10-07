@@ -1,8 +1,8 @@
 {
   "schema_version": "0.2.0",
   "engine_version": "0.1.0",
-  "generated_at": "2026-08-11T01:01:39+00:00",
-  "as_of": "2026-08-07",
+  "generated_at": "2026-10-07T12:05:17+00:00",
+  "as_of": "2026-10-06",
   "model_variant": "mortgage_choice",
   "disclaimer": "Aurora is a structural macro research model (Sustek housing/mortgage DSGE). Outputs are directional scenario analysis for internal decision-support only \u2014 not forecasts, not investment advice. Shock sizes are normalized to a +1% innovation and responses are linearized, so they scale linearly with shock size.",
   "steady_state": {
@@ -867,74 +867,74 @@
     }
   ],
   "regime": {
-    "as_of": "2026-08-07",
-    "label": "Mixed / transitional",
+    "as_of": "2026-10-06",
+    "label": "Restrictive / tightening",
     "scenario_affinity": {
-      "Restrictive / tightening": 0.22,
-      "Expansion": 0.189,
+      "Restrictive / tightening": 0.288,
+      "Expansion": 0.182,
       "Housing-driven": 0.141,
-      "Demand / valuation boom": 0.213,
-      "Mixed / transitional": 0.238
+      "Demand / valuation boom": 0.161,
+      "Mixed / transitional": 0.227
     },
     "key_indicators": [
       {
         "name": "Real policy rate (FF \u2212 core PCE)",
-        "value": 0.34,
+        "value": 0.74,
         "z_score": null,
-        "as_of": "2026-07-01"
+        "as_of": "2026-09-01"
       },
       {
         "name": "Growth composite (z)",
         "value": null,
-        "z_score": 0.19,
-        "as_of": "2026-08-07"
+        "z_score": 0.2,
+        "as_of": "2026-10-06"
       },
       {
         "name": "Inflation composite (z)",
         "value": null,
-        "z_score": 0.71,
-        "as_of": "2026-08-07"
+        "z_score": 0.57,
+        "as_of": "2026-10-06"
       },
       {
         "name": "10y-2y curve slope",
-        "value": 0.46,
-        "z_score": -0.58,
-        "as_of": "2026-08-07"
+        "value": 0.48,
+        "z_score": -0.57,
+        "as_of": "2026-10-06"
       },
       {
         "name": "Core PCE price index",
-        "value": 3.287,
-        "z_score": 0.95,
-        "as_of": "2026-06-01"
+        "value": 3.008,
+        "z_score": 0.71,
+        "as_of": "2026-08-01"
       },
       {
         "name": "Case-Shiller home price",
-        "value": 1.114,
-        "z_score": -0.33,
-        "as_of": "2026-05-01"
+        "value": 1.929,
+        "z_score": -0.2,
+        "as_of": "2026-07-01"
       },
       {
         "name": "BAA-10y credit spread",
-        "value": 1.61,
-        "z_score": -1.07,
-        "as_of": "2026-08-06"
+        "value": 1.46,
+        "z_score": -1.26,
+        "as_of": "2026-10-05"
       },
       {
         "name": "10y Treasury yield",
-        "value": 4.69,
-        "z_score": 1.64,
-        "as_of": "2026-08-06"
+        "value": 5.31,
+        "z_score": 2.2,
+        "as_of": "2026-10-05"
       },
       {
         "name": "30y mortgage rate",
-        "value": 6.69,
-        "z_score": 1.48,
-        "as_of": "2026-08-06"
+        "value": 7.28,
+        "z_score": 1.93,
+        "as_of": "2026-10-01"
       }
     ],
     "confidence": "low",
     "flags": [
-      "2 indicator(s) stale (normal for quarterly data)",
+      "1 indicator(s) stale (normal for quarterly data)",
       "regime signal is weak / transitional"
     ]
   },
@@ -942,30 +942,61 @@
     "factors": [
       {
         "name": "quality",
-        "lean": "neutral",
-        "rationale": "no dominant regime"
+        "lean": "overweight",
+        "rationale": "restrictive policy rewards balance-sheet strength"
+      },
+      {
+        "name": "low_volatility",
+        "lean": "overweight",
+        "rationale": "defensive posture into tightening"
+      },
+      {
+        "name": "duration",
+        "lean": "underweight",
+        "rationale": "high/rising real rates penalise long duration"
       }
     ],
-    "sectors": [],
+    "sectors": [
+      {
+        "name": "utilities",
+        "lean": "overweight",
+        "rationale": "defensive, rate-shock passes"
+      },
+      {
+        "name": "consumer_staples",
+        "lean": "overweight",
+        "rationale": "demand-inelastic"
+      },
+      {
+        "name": "homebuilders_REITs",
+        "lean": "underweight",
+        "rationale": "rate-sensitive, housing softens"
+      },
+      {
+        "name": "long_duration_tech",
+        "lean": "underweight",
+        "rationale": "valuation compresses with real rates"
+      }
+    ],
     "confidence": "medium"
   },
   "nowcast": {
     "horizon_months": 3,
     "method": "PCA(4) + Ridge, walk-forward time-series CV; OOS R^2 vs naive mean",
-    "as_of": "2026-08-07",
+    "as_of": "2026-10-06",
     "factors": [
       {
         "factor": "Mkt-RF",
         "expected_return": null,
-        "oos_r2": 0.0098,
-        "hit_rate": 0.67,
+        "oos_r2": 0.001,
+        "hit_rate": 0.683,
         "fold_oos_r2": [
-          0.0304,
-          -0.0081,
-          0.03,
-          -0.0385,
-          0.0579,
-          -0.0571
+          0.0218,
+          -0.0139,
+          0.0283,
+          -0.0464,
+          0.089,
+          -0.1937
         ],
         "folds_positive": 3,
         "n_folds": 6,
@@ -975,15 +1006,15 @@
       {
         "factor": "SMB",
         "expected_return": null,
-        "oos_r2": -0.1118,
+        "oos_r2": -0.1236,
         "hit_rate": 0.51,
         "fold_oos_r2": [
-          0.1738,
-          -1.1127,
-          -0.2874,
-          -0.0732,
-          0.0517,
-          0.0523
+          0.1679,
+          -1.1956,
+          -0.1917,
+          -0.067,
+          0.0512,
+          0.0483
         ],
         "folds_positive": 3,
         "n_folds": 6,
@@ -993,17 +1024,17 @@
       {
         "factor": "HML",
         "expected_return": null,
-        "oos_r2": -0.0117,
-        "hit_rate": 0.527,
+        "oos_r2": -0.0197,
+        "hit_rate": 0.523,
         "fold_oos_r2": [
-          -0.014,
-          -0.0452,
-          -0.0156,
-          0.0241,
-          0.0157,
-          -0.0492
+          -0.0257,
+          -0.0416,
+          0.0051,
+          0.023,
+          0.0179,
+          -0.1179
         ],
-        "folds_positive": 2,
+        "folds_positive": 3,
         "n_folds": 6,
         "skillful": false,
         "confidence": "insufficient"
@@ -1011,15 +1042,15 @@
       {
         "factor": "RMW",
         "expected_return": null,
-        "oos_r2": -0.0753,
-        "hit_rate": 0.563,
+        "oos_r2": 0.0086,
+        "hit_rate": 0.57,
         "fold_oos_r2": [
-          -0.2296,
-          0.0641,
-          0.0885,
-          0.0548,
-          -0.0084,
-          -0.0299
+          -0.0012,
+          0.0582,
+          0.139,
+          0.0112,
+          -0.0018,
+          -0.0439
         ],
         "folds_positive": 3,
         "n_folds": 6,
@@ -1029,15 +1060,15 @@
       {
         "factor": "CMA",
         "expected_return": null,
-        "oos_r2": -0.0344,
+        "oos_r2": -0.0592,
         "hit_rate": 0.437,
         "fold_oos_r2": [
-          0.0291,
-          -0.167,
-          -0.0015,
-          -0.0129,
-          -0.0054,
-          -0.0799
+          0.0171,
+          -0.1964,
+          -0.0021,
+          -0.0024,
+          -0.0121,
+          -0.1573
         ],
         "folds_positive": 1,
         "n_folds": 6,
@@ -1047,17 +1078,17 @@
       {
         "factor": "Mom",
         "expected_return": null,
-        "oos_r2": -0.0121,
-        "hit_rate": 0.59,
+        "oos_r2": -0.0083,
+        "hit_rate": 0.573,
         "fold_oos_r2": [
-          0.0058,
-          0.0375,
-          -0.7962,
-          0.0563,
-          0.0449,
-          -0.0658
+          -0.0064,
+          0.0371,
+          -0.5829,
+          0.0604,
+          0.074,
+          -0.1283
         ],
-        "folds_positive": 4,
+        "folds_positive": 3,
         "n_folds": 6,
         "skillful": false,
         "confidence": "insufficient"

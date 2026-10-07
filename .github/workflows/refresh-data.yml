@@ -1,0 +1,87 @@
+# Daily data refresh — every weekday ~30 minutes before the NYSE opens.
+#
+# Runs `npm run refresh:all` (every engine on real, free data: SEC EDGAR,
+# Yahoo prices, Ken French factors, Nasdaq earnings calendar, Fed FOMC dates),
+# commits the new public/data/ exports to main, and Vercel redeploys.
+#
+# GitHub cron is UTC and has no daylight-saving support, so it fires at BOTH
+# 13:00 and 14:00 UTC and the first step only proceeds when it is 9 a.m. in
+# New York (13:00 UTC in summer/EDT, 14:00 UTC in winter/EST).
+# Aurora is NOT refreshed here (it lives in a separate local repo + needs
+# Octave) — run `npm run refresh:all` on the Mac to include it.
+name: Refresh data (pre-open)
+
+on:
+  schedule:
+    - cron: "0 13 * * 1-5"
+    - cron: "0 14 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Only at 9 a.m. New York time (handles DST)
+        id: gate
+        run: |
+          hour=$(TZ=America/New_York date +%H)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$hour" = "09" ]; then
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "It's ${hour}:00 in New York — not the pre-open run, skipping."
+            echo "go=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.gate.outputs.go == 'true'
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        if: steps.gate.outputs.go == 'true'
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-data.txt
+
+      - uses: actions/setup-node@v4
+        if: steps.gate.outputs.go == 'true'
+        with:
+          node-version: "24"
+
+      - name: Install engine dependencies
+        if: steps.gate.outputs.go == 'true'
+        run: pip install -r requirements-data.txt
+
+      - name: Refresh every engine
+        if: steps.gate.outputs.go == 'true'
+        env:
+          PY: python
+          INCEPTA_PY: python
+          PRICES_PROVIDER: yahoo
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT || 'Whitewater Research https://whitewater-management.vercel.app' }}
+        # A single failing source shouldn't block the others from publishing;
+        # the summary at the end of the script lists anything that failed.
+        run: bash scripts/refresh-all.sh || echo "::warning::some engines failed — see the summary above"
+
+      - name: Commit and push fresh data
+        if: steps.gate.outputs.go == 'true'
+        run: |
+          git config user.name "whitewater-data-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data engine/exports intra-exitus-engine/exports factor-engine/exports \
+                  weekly-engine/exports kalman-engine/exports earnings-engine/exports earnings-engine/state
+          if git diff --cached --quiet; then
+            echo "No data changes."
+          else
+            git commit -m "data: pre-open refresh $(TZ=America/New_York date +%F)"
+            git push
+          fi

@@ -70,9 +70,16 @@ def _parse_factor_csv(text: str, colnames: list[str]) -> pd.DataFrame:
     return df
 
 
+# The French library updates monthly; the cache used to never expire, which
+# froze factor betas on the first download (found 2026-10: still Aug 4 data).
+_CACHE_MAX_AGE_S = 7 * 86400
+
+
 def fetch_factors(use_cache: bool = True) -> pd.DataFrame:
+    import time
+
     cache = config.data_dir() / "ff_factors_daily.pkl"
-    if use_cache and cache.exists():
+    if use_cache and cache.exists() and time.time() - cache.stat().st_mtime < _CACHE_MAX_AGE_S:
         return pd.read_pickle(cache)
 
     ff5 = _parse_factor_csv(

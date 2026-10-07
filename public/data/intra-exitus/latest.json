@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "engine_version": "0.1.0",
-  "generated_at": "2026-10-07T10:49:38.660380+00:00",
+  "generated_at": "2026-10-07T12:01:38.286652+00:00",
   "as_of": "2026-10-06",
   "universe": [
     "AAPL",
@@ -14,7 +14,7 @@
   ],
   "disclaimer": "Intra / Exitus is a point-in-time entry/exit research model (regime-conditional OU / trend templates with cost-aware sizing). Levels are decision-support, not advice or an order. It abstains when there is no clean, tradeable setup.",
   "data_provenance": "live",
-  "price_source": "tiingo",
+  "price_source": "yahoo",
   "plans": [
     {
       "ticker": "AAPL",
@@ -98,17 +98,17 @@
       "bias": "short",
       "confidence": "watch",
       "entryZone": [
-        336.69,
-        342.66
+        336.68,
+        342.65
       ],
       "stop": 367.22,
       "targets": [
-        275.63,
-        214.57,
-        153.51
+        275.6,
+        214.52,
+        153.44
       ],
       "expectedR": -0.16,
-      "sizingPct": 11.03,
+      "sizingPct": 11.02,
       "timeStop": "Re-evaluate at the next earnings print, or if the first target isn't tagged within ~6 weeks.",
       "rationale": "Downtrend; enter on a pullback to the 339.67 anchor with the stop 1.5 ATR beyond the recent swing high (dynamic buffer). Targets scale at 2R/4R/6R. Expectancy -0.16R <= bar \u2014 watch.",
       "invalidations": [
@@ -177,16 +177,16 @@
         12.68,
         13.03
       ],
-      "stop": 14.69,
+      "stop": 14.7,
       "targets": [
-        8.66
+        8.64
       ],
       "expectedR": 1.09,
-      "sizingPct": 6.31,
+      "sizingPct": 6.28,
       "timeStop": "Re-evaluate at the next earnings print, or if the first target isn't tagged within ~6 weeks.",
       "rationale": "Downtrend; enter on a pullback to the 12.85 anchor with the stop 1.5 ATR beyond the recent swing high (dynamic buffer). Targets scale at 2R/4R/6R. NOTE: stop is 16% of price (>15%) \u2014 structure is too loose for a clean swing; watch, don't force it.",
       "invalidations": [
-        "A close beyond 14.69 breaks structure and voids the trend setup.",
+        "A close beyond 14.7 breaks structure and voids the trend setup.",
         "Regime flips to high-vol \u2014 halve size or stand aside."
       ],
       "lastClose": 12.28,

@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "engine_version": "0.1.0",
-  "generated_at": "2026-10-07T10:54:13.898281+00:00",
+  "generated_at": "2026-10-07T12:02:09.534109+00:00",
   "as_of": "2026-10-06",
   "universe": [
     "AAPL",
@@ -70,16 +70,16 @@
         "evidence": "strong"
       },
       "kalman": {
-        "mu": 4.379492,
+        "mu": 4.379491,
         "gamma": 0.261152,
         "z_score": 0.0138,
         "innovation_var": 0.0009643,
         "adaptive_noise": {
           "initial_q_trace": 2e-06,
-          "final_q_trace": 8.968264211750668e-05,
+          "final_q_trace": 8.968264949118292e-05,
           "q_drift_pct": 4384.1,
           "initial_r": 0.001,
-          "final_r": 0.00019913064013620286,
+          "final_r": 0.00019913066263764007,
           "r_drift_pct": -80.1
         }
       },
@@ -230,7 +230,7 @@
         },
         "significance": 0.05,
         "ols_hedge_ratio": -0.393371,
-        "ols_intercept": 8.039275,
+        "ols_intercept": 8.039274,
         "ols_r_squared": 0.2459
       },
       "note": "ADF t-stat -0.788 vs. 5% critical value -3.338 (lag=0, n=274 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
@@ -339,16 +339,16 @@
         "evidence": "marginal"
       },
       "kalman": {
-        "mu": 5.321356,
+        "mu": 5.321357,
         "gamma": 0.034672,
         "z_score": 0.2241,
         "innovation_var": 0.00098209,
         "adaptive_noise": {
           "initial_q_trace": 2e-06,
-          "final_q_trace": 0.00013125329180529587,
+          "final_q_trace": 0.0001312533034828423,
           "q_drift_pct": 6462.7,
           "initial_r": 0.001,
-          "final_r": 0.00022207063852893588,
+          "final_r": 0.00022207064491184546,
           "r_drift_pct": -77.8
         }
       },
