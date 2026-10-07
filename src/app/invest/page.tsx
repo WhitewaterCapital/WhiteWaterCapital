@@ -1,10 +1,11 @@
-import Link from "next/link";
+import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooter } from "@/components/SiteFooter";
 import { RegisterInterest } from "@/components/RegisterInterest";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { Card } from "@/components/ui";
 
 export const metadata = {
-  title: "Invest — Whitewater",
+  title: "Invest",
   description: "Register interest in Whitewater.",
 };
 
@@ -14,20 +15,10 @@ export const metadata = {
 export default function InvestPage() {
   return (
     <div>
-      <header className="border-b border-hairline">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
-          <Link href="/" className="text-sm font-semibold uppercase tracking-[0.18em]">
-            Whitewater
-          </Link>
-          <nav className="flex items-center gap-6 text-xs uppercase tracking-[0.12em] text-muted">
-            <Link href="/" className="hover:text-foreground">Home</Link>
-            <Link href="/dashboard" className="hover:text-foreground">Members</Link>
-          </nav>
-        </div>
-      </header>
+      <SiteHeader />
 
       <main className="mx-auto max-w-4xl px-6 py-16">
-        <p className="font-mono text-sm text-accent">// Investors</p>
+        <p className="font-mono text-sm text-accent">{"// Investors"}</p>
         <h1 className="display mt-3 max-w-2xl text-4xl sm:text-5xl">
           Interested in investing alongside us?
         </h1>
@@ -64,6 +55,7 @@ export default function InvestPage() {
           performance is not indicative of future results.
         </p>
       </main>
+      <SiteFooter />
     </div>
   );
 }

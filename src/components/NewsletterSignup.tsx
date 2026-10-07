@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 
@@ -40,6 +41,7 @@ export function NewsletterSignup({ source = "site" }: { source?: string }) {
   }
 
   return (
+    <div>
     <form onSubmit={submit} className="flex flex-col gap-2 sm:flex-row">
       <input
         type="email"
@@ -59,5 +61,9 @@ export function NewsletterSignup({ source = "site" }: { source?: string }) {
         <span className="text-sm text-rose-500">{msg}</span>
       ) : null}
     </form>
+    <p className="mt-2 text-[11px] text-muted">
+      By subscribing you agree to our <Link href="/privacy" className="underline hover:text-foreground">privacy policy</Link>. Unsubscribe any time.
+    </p>
+    </div>
   );
 }

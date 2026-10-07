@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 
@@ -100,6 +101,10 @@ export function RegisterInterest() {
       >
         {state === "loading" ? "Sending…" : "Register interest"}
       </button>
+      <p className="text-[11px] text-muted">
+        We&apos;ll use your details only to contact you about Whitewater. See our{" "}
+        <Link href="/privacy" className="underline hover:text-foreground">privacy policy</Link>.
+      </p>
     </form>
   );
 }

@@ -1,20 +1,86 @@
 // ---------------------------------------------------------------------------
-// Placeholder auth for the members area.
+// Shared-passcode gate for the members area (interim, until per-member
+// Supabase logins land — see docs/cloud-tasks/01-member-auth.md).
 //
-// This is a shared-passcode gate so the private pages are usable today without
-// standing up a full auth system. It is NOT real authentication — there are no
-// individual accounts and the cookie is not signed. Before going live, swap
-// this for per-member auth (Clerk, Auth.js/NextAuth, or Supabase Auth) so each
-// person logs in as themselves and you get real roles + an audit trail.
+// Hardened so it's safe to run in production meanwhile:
+//   • the session cookie is HMAC-signed with an expiry, so it can't be forged
+//     by setting a cookie by hand (it used to be the literal string "ok")
+//   • in production there is NO default passcode: if MEMBER_PASSCODE isn't set,
+//     login is disabled rather than open to anyone who guesses "letmein"
+//   • changing MEMBER_PASSCODE (or AUTH_SECRET) logs everyone out
+// Uses Web Crypto so the same code runs in the proxy and in route handlers.
 // ---------------------------------------------------------------------------
 
 export const AUTH_COOKIE = "hf_member";
+export const SESSION_DAYS = 30;
 
-// The passcode everyone on the team shares. Override with MEMBER_PASSCODE.
-export function memberPasscode(): string {
-  return process.env.MEMBER_PASSCODE ?? "letmein";
+const DEV_PASSCODE = "letmein";
+
+// The shared passcode, or null when login is disabled (prod with none set).
+export function memberPasscode(): string | null {
+  const set = process.env.MEMBER_PASSCODE?.trim();
+  if (set) return set;
+  return process.env.NODE_ENV === "production" ? null : DEV_PASSCODE;
+}
+
+export function loginConfigured(): boolean {
+  return memberPasscode() !== null;
 }
 
 export function isValidPasscode(input: string): boolean {
-  return input.trim() === memberPasscode();
+  const expected = memberPasscode();
+  if (!expected) return false;
+  const a = new TextEncoder().encode(input.trim());
+  const b = new TextEncoder().encode(expected);
+  // Constant-time compare (length leak only).
+  let diff = a.length ^ b.length;
+  for (let i = 0; i < Math.max(a.length, b.length); i++) diff |= (a[i] ?? 0) ^ (b[i] ?? 0);
+  return diff === 0;
+}
+
+function secret(): string | null {
+  const s = process.env.AUTH_SECRET?.trim() || memberPasscode();
+  return s ? `whitewater-session:${s}` : null;
+}
+
+async function hmac(message: string): Promise<string | null> {
+  const s = secret();
+  if (!s) return null;
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(s),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(message));
+  return Array.from(new Uint8Array(sig), (b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+// Cookie value: "v1.<expiresAtMs>.<hex hmac>"
+export async function createSessionToken(): Promise<string | null> {
+  const exp = Date.now() + SESSION_DAYS * 86400_000;
+  const sig = await hmac(`v1.${exp}`);
+  return sig ? `v1.${exp}.${sig}` : null;
+}
+
+export async function verifySessionToken(token: string | undefined): Promise<boolean> {
+  if (!token) return false;
+  const [v, expStr, sig] = token.split(".");
+  if (v !== "v1" || !expStr || !sig) return false;
+  const exp = Number(expStr);
+  if (!Number.isFinite(exp) || exp < Date.now()) return false;
+  const expected = await hmac(`v1.${expStr}`);
+  if (!expected || expected.length !== sig.length) return false;
+  let diff = 0;
+  for (let i = 0; i < sig.length; i++) diff |= sig.charCodeAt(i) ^ expected.charCodeAt(i);
+  return diff === 0;
+}
+
+// Only same-site paths are allowed as a post-login destination (no open redirect).
+export function safeNext(next: string | null | undefined): string {
+  if (!next || !next.startsWith("/") || next.startsWith("//") || next.includes("\\")) {
+    return "/dashboard";
+  }
+  return next;
 }

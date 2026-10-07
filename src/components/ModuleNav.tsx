@@ -1,8 +1,8 @@
 import Link from "next/link";
+import { ModuleMenu } from "./ModuleMenu";
 
-// Minimal top bar for module sub-pages: brand, a "back to the Desk" link, and
-// logout. Navigation between modules happens from the Desk launcher, not a
-// crowded top nav.
+// Members header: brand, "back to the Desk", logout, plus a second row
+// (ModuleMenu) to hop between modules and club tools directly.
 export function ModuleNav({ crumb }: { crumb?: string }) {
   return (
     <header className="border-b border-hairline">
@@ -31,6 +31,7 @@ export function ModuleNav({ crumb }: { crumb?: string }) {
           </form>
         </div>
       </div>
+      <ModuleMenu />
     </header>
   );
 }

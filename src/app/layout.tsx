@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { SITE } from "@/content/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,8 +14,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Whitewater — Investment Club",
-  description: "Track record and members portal for our investment club.",
+  metadataBase: new URL(SITE.url),
+  title: { default: "Whitewater — Investment Club", template: "%s · Whitewater" },
+  description: "A concentrated, conviction-led investment club. Five partners, one pooled book, one scorecard.",
+  openGraph: { siteName: "Whitewater", type: "website", locale: "en_US" },
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({

@@ -5,67 +5,12 @@ import { ExposureGauge } from "@/components/ExposureGauge";
 import { Stat, Card } from "@/components/ui";
 import { StateOfBook } from "@/components/StateOfBook";
 import { loadBook } from "@/lib/book";
+import { MODULES, CLUB_TOOLS, REFERENCE } from "@/lib/modules";
 import { computeMetrics } from "@/lib/metrics";
 import { money, pct, shortDate, num } from "@/lib/format";
 
-// THE DESK — the members launcher. Each module is a shell you fill with its
-// own algo backend; portfolio/holdings below.
-const MODULES = [
-  {
-    href: "/sentiment",
-    name: "Sentimentum",
-    latin: "the regime lens",
-    blurb: "Top-down macro and cross-sector read.",
-  },
-  {
-    href: "/stress-test",
-    name: "Strictus Testum",
-    latin: "the rigorous test",
-    blurb: "Pressure-test a trade — the adversarial read.",
-  },
-  {
-    href: "/war-map",
-    name: "Nova",
-    latin: "new things",
-    blurb: "War map — conflict zones, intel feed, catalysts that move the book.",
-  },
-  {
-    href: "/intra-exitus",
-    name: "Intra / Exitus",
-    latin: "enter · exit",
-    blurb: "Entry and exit levels — where to get in, where to get out.",
-  },
-  {
-    href: "/weekly",
-    name: "Weekly Ranking",
-    latin: "the weekly read",
-    blurb: "Ranked cross-sectional forecast — who leads, who lags this week.",
-  },
-  {
-    href: "/kalman",
-    name: "Kalman Pairs",
-    latin: "the spread lens",
-    blurb: "Adaptive pairs / stat-arb screen — cointegrated spreads and their z-scores.",
-  },
-  {
-    href: "/earnings",
-    name: "Earnings Move",
-    latin: "the print read",
-    blurb: "Pre-earnings positioning context — momentum and insider posture into the print.",
-  },
-  {
-    href: "/smart-money",
-    name: "Smart Money",
-    latin: "the follow read",
-    blurb: "Where informed flow is leaning — factor momentum + insider posture per name.",
-  },
-  {
-    href: "/trade-ideas",
-    name: "Trade Ideas",
-    latin: "the idea board",
-    blurb: "One ranked board — weekly, earnings and smart-money reads pulled together.",
-  },
-];
+// THE DESK — the members launcher. Modules come from src/lib/modules.ts
+// (shared with the module menu and the auth proxy); portfolio below.
 
 // Live book: render per request (the IBKR client caches the statement itself).
 export const dynamic = "force-dynamic";
@@ -84,7 +29,7 @@ export default async function DeskPage() {
     <div>
       <ModuleNav />
       <main className="mx-auto max-w-5xl px-6 py-10">
-        <p className="rise rise-1 font-mono text-sm text-accent">// The Desk</p>
+        <p className="rise rise-1 font-mono text-sm text-accent">{"// The Desk"}</p>
         <h1 className="rise rise-2 display mt-2 text-4xl sm:text-5xl">
           Good to see you.
         </h1>
@@ -93,23 +38,20 @@ export default async function DeskPage() {
 
         {/* Club tools — the weekly workflow shortcuts */}
         <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-xs uppercase tracking-[0.12em]">
-          <Link href="/trade-ideas" className="text-muted hover:text-foreground">Trade ideas →</Link>
-          <Link href="/watchlist" className="text-muted hover:text-foreground">Watchlist →</Link>
-          <Link href="/journal" className="text-muted hover:text-foreground">Decision journal →</Link>
-          <Link href="/proposals" className="text-muted hover:text-foreground">Proposals →</Link>
+          {CLUB_TOOLS.map((t) => (
+            <Link key={t.href} href={t.href} className="text-muted hover:text-foreground">
+              {t.name} →
+            </Link>
+          ))}
         </div>
 
         {/* Module launcher */}
         <div className="mt-8 flex flex-wrap justify-end gap-x-5 gap-y-1 text-xs uppercase tracking-[0.12em]">
-          <Link href="/how-it-works" className="text-muted hover:text-foreground">
-            How it works →
-          </Link>
-          <Link href="/glossary" className="text-muted hover:text-foreground">
-            Glossary →
-          </Link>
-          <Link href="/models" className="text-muted hover:text-foreground">
-            Model registry →
-          </Link>
+          {REFERENCE.map((r) => (
+            <Link key={r.href} href={r.href} className="text-muted hover:text-foreground">
+              {r.name} →
+            </Link>
+          ))}
         </div>
         <div className="mt-3 grid gap-px border border-hairline bg-hairline sm:grid-cols-2">
           {MODULES.map((mod, i) => (
@@ -132,8 +74,8 @@ export default async function DeskPage() {
                 </span>
               </div>
               <p className="mt-4 text-sm text-foreground/80">{mod.blurb}</p>
-              <span className="mt-4 inline-block text-[11px] uppercase tracking-wide text-muted">
-                Build in progress
+              <span className="mt-4 inline-block text-[11px] uppercase tracking-wide text-accent">
+                Open →
               </span>
             </Link>
           ))}

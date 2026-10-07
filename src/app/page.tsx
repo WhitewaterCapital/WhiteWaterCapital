@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooter } from "@/components/SiteFooter";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { Stat, Card } from "@/components/ui";
 import { LineChart } from "@/components/LineChart";
@@ -23,31 +25,7 @@ export default async function PublicPage() {
   const pub = await publicTrackRecord();
   return (
     <div>
-      {/* Transparent header overlaying the gradient hero */}
-      <header className="absolute inset-x-0 top-0 z-10">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5 text-white">
-          <span className="text-sm font-semibold uppercase tracking-[0.18em]">
-            Whitewater
-          </span>
-          <nav className="flex items-center gap-6 text-xs uppercase tracking-[0.12em] text-white/80">
-            <a href="#approach" className="hidden hover:text-white sm:inline">
-              Approach
-            </a>
-            <a href="#track-record" className="hidden hover:text-white sm:inline">
-              Track Record
-            </a>
-            <Link href="/invest" className="hover:text-white">
-              Invest
-            </Link>
-            <Link
-              href="/dashboard"
-              className="rounded-full border border-white/40 px-4 py-1.5 hover:border-white"
-            >
-              Members
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <SiteHeader variant="overlay" />
 
       {/* HERO */}
       <section className="mesh relative overflow-hidden text-white">
@@ -119,7 +97,7 @@ export default async function PublicPage() {
       {/* APPROACH */}
       <section id="approach" className="border-b border-hairline">
         <div className="mx-auto max-w-5xl px-6 py-16">
-          <p className="font-mono text-sm text-accent">// The Approach</p>
+          <p className="font-mono text-sm text-accent">{"// The Approach"}</p>
           <h2 className="display mt-3 max-w-2xl text-3xl sm:text-5xl">
             How we invest, in four rules.
           </h2>
@@ -140,7 +118,7 @@ export default async function PublicPage() {
       {/* TRACK RECORD */}
       <section id="track-record" className="border-b border-hairline">
         <div className="mx-auto max-w-5xl px-6 py-16">
-          <p className="font-mono text-sm text-accent">// Track Record</p>
+          <p className="font-mono text-sm text-accent">{"// Track Record"}</p>
           <h2 className="display mt-3 text-3xl sm:text-5xl">
             Measured against the index.
           </h2>
@@ -185,7 +163,7 @@ export default async function PublicPage() {
         <div className="mx-auto max-w-5xl px-6 py-14">
           <div className="grid gap-6 sm:grid-cols-[1fr_1fr] sm:items-center">
             <div>
-              <p className="font-mono text-sm text-accent">// The Letters</p>
+              <p className="font-mono text-sm text-accent">{"// The Letters"}</p>
               <h2 className="display mt-2 text-2xl sm:text-3xl">
                 Our thinking, now and then.
               </h2>
@@ -199,25 +177,7 @@ export default async function PublicPage() {
       </section>
 
       {/* FOOTER */}
-      <footer className="mx-auto max-w-5xl px-6 py-12">
-        <div className="flex flex-col justify-between gap-4 sm:flex-row">
-          <span className="text-sm font-semibold uppercase tracking-[0.18em]">
-            Whitewater
-          </span>
-          <div className="flex gap-6 text-xs uppercase tracking-[0.12em] text-muted">
-            <Link href="/invest" className="hover:text-foreground">
-              Invest →
-            </Link>
-            <Link href="/dashboard" className="hover:text-foreground">
-              Members portal →
-            </Link>
-          </div>
-        </div>
-        <p className="mt-6 max-w-2xl text-xs text-muted">
-          Positions and holdings are private to members. Past performance is not
-          indicative of future results; nothing here is investment advice.
-        </p>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

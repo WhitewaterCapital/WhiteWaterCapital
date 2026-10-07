@@ -1,3 +1,8 @@
+import Link from "next/link";
+import { loginConfigured, safeNext } from "@/lib/auth";
+
+export const metadata = { title: "Members sign in", robots: { index: false } };
+
 type SearchParams = Promise<{ next?: string; error?: string }>;
 
 export default async function LoginPage({
@@ -5,37 +10,43 @@ export default async function LoginPage({
 }: {
   searchParams: SearchParams;
 }) {
-  const { next = "/dashboard", error } = await searchParams;
+  const { next, error } = await searchParams;
+  const configured = loginConfigured();
 
   return (
-    <main className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center px-5">
-      <h1 className="text-xl font-semibold">Members sign in</h1>
-      <p className="mt-1 text-sm text-foreground/60">
-        Enter the shared club passcode to reach the private dashboard.
-      </p>
+    <main className="mx-auto flex min-h-[80vh] w-full max-w-sm flex-col justify-center px-5">
+      <Link href="/" className="text-sm font-semibold uppercase tracking-[0.18em]">
+        Whitewater
+      </Link>
+      <h1 className="display mt-8 text-3xl">Members sign in</h1>
+      <p className="mt-2 text-sm text-muted">Enter the club passcode to reach the Desk.</p>
 
-      <form action="/api/login" method="post" className="mt-6 space-y-3">
-        <input type="hidden" name="next" value={next} />
-        <input
-          type="password"
-          name="passcode"
-          placeholder="Passcode"
-          autoFocus
-          className="w-full rounded-md border border-black/15 dark:border-white/15 bg-transparent px-3 py-2 text-sm outline-none focus:border-foreground/40"
-        />
-        {error ? (
-          <p className="text-sm text-rose-500">Wrong passcode — try again.</p>
-        ) : null}
-        <button className="w-full rounded-md bg-foreground px-3 py-2 text-sm font-medium text-background">
-          Enter
-        </button>
-      </form>
+      {configured ? (
+        <form action="/api/login" method="post" className="mt-6 space-y-3">
+          <input type="hidden" name="next" value={safeNext(next)} />
+          <input
+            type="password"
+            name="passcode"
+            placeholder="Passcode"
+            autoComplete="current-password"
+            autoFocus
+            className="w-full border border-hairline bg-transparent px-3 py-2.5 text-sm outline-none focus:border-foreground/40"
+          />
+          {error ? <p className="text-sm text-rose-500">Wrong passcode. Try again.</p> : null}
+          <button className="w-full bg-foreground px-3 py-2.5 text-sm font-medium text-background hover:opacity-90">
+            Enter
+          </button>
+        </form>
+      ) : (
+        <p className="mt-6 border border-amber-500/50 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-400">
+          Members sign-in isn&apos;t configured yet. An admin needs to set <code>MEMBER_PASSCODE</code>{" "}
+          in the hosting settings.
+        </p>
+      )}
 
-      <p className="mt-6 text-xs text-foreground/40">
-        Placeholder shared-passcode gate (default <code>letmein</code>, set{" "}
-        <code>MEMBER_PASSCODE</code> to change). Swap for per-member auth before
-        going live.
-      </p>
+      <Link href="/" className="mt-8 text-xs uppercase tracking-[0.12em] text-muted hover:text-foreground">
+        ← Back to site
+      </Link>
     </main>
   );
 }
