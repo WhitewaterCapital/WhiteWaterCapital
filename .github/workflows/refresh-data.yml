@@ -76,11 +76,12 @@ jobs:
       # which silently breaks the Invest/newsletter forms and the club store.
       # One tiny read each weekday keeps it awake. Uses the public anon key.
       - name: Keep Supabase awake
-        if: steps.gate.outputs.go == 'true' && env.SB_URL != ''
+        if: steps.gate.outputs.go == 'true'
         env:
           SB_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           SB_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
         run: |
+          if [ -z "$SB_URL" ]; then echo "Supabase secrets not set — skipping ping."; exit 0; fi
           curl -s -o /dev/null -w "supabase ping: %{http_code}\n" \
             "$SB_URL/rest/v1/newsletter_subscribers?select=email&limit=1" \
             -H "apikey: $SB_KEY" -H "Authorization: Bearer $SB_KEY" || true
