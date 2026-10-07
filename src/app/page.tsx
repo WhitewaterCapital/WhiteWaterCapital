@@ -31,7 +31,7 @@ export default async function PublicPage() {
       <section className="mesh relative overflow-hidden text-white">
         <div className="relative mx-auto max-w-5xl px-6 pb-24 pt-24 sm:pb-32 sm:pt-36">
           <p className="rise rise-1 font-mono text-sm text-white/80">
-            // A concentrated, conviction-led investment club.
+            {"// A concentrated, conviction-led investment club."}
           </p>
           <h1 className="rise rise-2 display mt-6 max-w-3xl text-5xl text-white sm:text-7xl">
             Sustained

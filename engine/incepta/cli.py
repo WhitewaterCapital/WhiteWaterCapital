@@ -20,14 +20,18 @@ from .store.duckdb_store import DuckDBStore
 
 
 def _price_client():
-    """Prefer Tiingo when a key is set; otherwise fall back to Stooq (which now
-    fails honestly against its bot-detection wall). Import lazily so the engine
-    works with no price provider at all."""
-    if os.environ.get("TIINGO_API_KEY"):
+    """Price source: PRICES_PROVIDER=tiingo|yahoo|stooq. Default: Tiingo when a
+    key is set, else Yahoo (free, no key). Stooq stays selectable but is behind
+    a bot wall. Imported lazily so the engine works with no provider at all."""
+    choice = os.environ.get("PRICES_PROVIDER", "").strip().lower()
+    if choice == "tiingo" or (not choice and os.environ.get("TIINGO_API_KEY")):
         from .adapters.prices_tiingo import TiingoClient
         return TiingoClient()
-    from .adapters.prices_stooq import StooqClient
-    return StooqClient()
+    if choice == "stooq":
+        from .adapters.prices_stooq import StooqClient
+        return StooqClient()
+    from .adapters.prices_yahoo import YahooClient
+    return YahooClient()
 
 
 def _cmd_ingest(tickers: list[str]) -> int:

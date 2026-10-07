@@ -39,6 +39,18 @@ const g = (r: Reads, k: string): number | null => {
   return typeof v === "number" && Number.isFinite(v) ? v : null;
 };
 
+// Engine-flagged banks/financials (Incepta: "bank/finance (SIC)…"), or a
+// finance SIC code (6000–6799) when the evidence carries one.
+function isFinancial(ev: Evidence & { flags?: string[]; sic?: string | null }): boolean {
+  const flags = [
+    ...((ev as { flags?: string[] }).flags ?? []),
+    ...(((ev.valuation as { flags?: string[] } | undefined)?.flags) ?? []),
+  ];
+  if (flags.some((f) => /bank|finance/i.test(f))) return true;
+  const sic = Number((ev as { sic?: string | null }).sic ?? NaN);
+  return Number.isFinite(sic) && sic >= 6000 && sic < 6800;
+}
+
 // ── scoring primitives ──────────────────────────────────────────────────────
 // Map a value onto 0..100 through documented breakpoints. `higherIsBetter`
 // flips direction. Interpolates linearly between the two nearest stops.
@@ -117,25 +129,36 @@ export interface Read<B extends string> {
 // anchor. This is the "Distresse" question: how far is this from trouble?
 export function financialHealth(ev: Evidence): Read<HealthBand> {
   const q = ev.quality;
-  const piotroski = g(q, "piotroski_f");
+  const bank = isFinancial(ev);
+  // Piotroski is reported as f out of piotroski_max: the engine only counts
+  // the tests the filings allow (e.g. 4/7). Fix 2026-10: the raw f was being
+  // scored on the 0–9 scale as if all 9 tests ran, understating most names
+  // (NVDA 4/7 read as 4/9). Rescale to /9 and cut the driver's weight by the
+  // share of tests that couldn't run.
+  const pRaw = g(q, "piotroski_f");
+  const pMax = g(q, "piotroski_max") ?? (pRaw != null ? 9 : null);
+  const piotroski = pRaw != null && pMax ? (pRaw / pMax) * 9 : null;
+  const pCoverage = pMax ? Math.min(1, pMax / 9) : 1;
   const roa = g(q, "roa");
-  const fcf = g(q, "fcf_margin");
+  // For banks, debt/assets and FCF describe the business model (deposits,
+  // loan funding), not distress — excluded rather than misread (2026-10).
+  const fcf = bank ? null : g(q, "fcf_margin");
   const netm = g(q, "net_margin");
-  const lev = g(q, "leverage"); // total debt / assets — lower is safer
+  const lev = bank ? null : g(q, "leverage"); // total debt / assets — lower is safer
   const grow = g(q, "rev_growth");
 
   const drivers: Driver[] = [
     {
-      label: "Piotroski F-score",
-      value: piotroski,
-      fmt: "int",
-      weight: 26,
+      label: pRaw != null && pMax && pMax < 9 ? `Piotroski F-score (${pRaw}/${pMax} tests, scaled to 9)` : "Piotroski F-score",
+      value: piotroski == null ? null : Math.round(piotroski * 10) / 10,
+      fmt: pMax && pMax < 9 ? "ratio" : "int",
+      weight: 26 * pCoverage,
       score: scoreStops(piotroski, [[0, 0], [3, 20], [5, 45], [7, 80], [9, 100]]),
       verdict:
         piotroski == null
           ? "no fundamentals"
           : piotroski >= 7
-            ? "9-point strength test: passing clean"
+            ? `9-point strength test: passing clean${pMax && pMax < 9 ? ` (only ${pMax} of 9 tests computable)` : ""}`
             : piotroski >= 5
               ? "middling on the 9-point strength test"
               : "failing most of the 9-point strength test",
@@ -148,7 +171,9 @@ export function financialHealth(ev: Evidence): Read<HealthBand> {
       score: scoreStops(lev, [[0.0, 100], [0.1, 92], [0.3, 68], [0.5, 40], [0.8, 12], [1.2, 0]]),
       verdict:
         lev == null
-          ? "leverage not computable from filings"
+          ? bank
+            ? "bank balance sheet — judged on returns, not debt/assets"
+            : "leverage not computable from filings"
           : lev <= 0.1
             ? "fortress balance sheet"
             : lev <= 0.3
@@ -177,7 +202,10 @@ export function financialHealth(ev: Evidence): Read<HealthBand> {
       value: roa,
       fmt: "pct",
       weight: 14,
-      score: scoreStops(roa, [[-0.05, 0], [0, 30], [0.05, 60], [0.1, 82], [0.2, 100]]),
+      // Bank ROA runs ~1% (huge balance sheets): a 1.2% ROA is strong for a bank.
+      score: bank
+        ? scoreStops(roa, [[-0.005, 0], [0, 25], [0.006, 55], [0.012, 82], [0.018, 100]])
+        : scoreStops(roa, [[-0.05, 0], [0, 30], [0.05, 60], [0.1, 82], [0.2, 100]]),
       verdict:
         roa == null
           ? "returns not available"
@@ -252,7 +280,17 @@ export function valuationRead(ev: Evidence): Read<ValueBand> {
   const ey = g(v, "earnings_yield");
   const fcfy = g(v, "fcf_yield");
   const evs = g(v, "ev_sales");
-  const pb = g(v, "pb");
+  const pbRaw = g(v, "pb");
+  // Negative book equity (buybacks/losses) makes P/B meaningless — scoring it
+  // through the stops clamped it to 100 = "maximally cheap" (bug, fixed
+  // 2026-10). Treat as not computable rather than as a bargain.
+  const pb = pbRaw != null && pbRaw <= 0 ? null : pbRaw;
+  const bank = isFinancial(ev);
+  // EV = market cap + debt − cash. When the filings don't yield total debt
+  // (quality.leverage is null), EV is understated — e.g. Ford's EV ignored
+  // Ford Credit's debt and read EV/Sales 0.12. Don't score a multiple built
+  // on a number we know is missing (fix 2026-10).
+  const debtUnknown = g(ev.quality, "leverage") == null && !bank;
 
   const drivers: Driver[] = [
     {
@@ -274,12 +312,14 @@ export function valuationRead(ev: Evidence): Read<ValueBand> {
     },
     {
       label: "FCF yield",
-      value: fcfy,
+      value: bank ? null : fcfy,
       fmt: "pct",
       weight: 30,
-      score: scoreStops(fcfy, [[-0.02, 0], [0.02, 30], [0.04, 55], [0.07, 82], [0.1, 100]]),
+      score: bank ? null : scoreStops(fcfy, [[-0.02, 0], [0.02, 30], [0.04, 55], [0.07, 82], [0.1, 100]]),
       verdict:
-        fcfy == null
+        bank
+          ? "not meaningful for a bank (deposits aren't free cash)"
+          : fcfy == null
           ? "no free-cash yield"
           : fcfy >= 0.06
             ? "strong cash yield to the buyer"
@@ -289,12 +329,16 @@ export function valuationRead(ev: Evidence): Read<ValueBand> {
     },
     {
       label: "EV / Sales",
-      value: evs,
+      value: bank || debtUnknown ? null : evs,
       fmt: "ratio",
       weight: 22,
-      score: scoreStops(evs, [[0.5, 100], [2, 78], [5, 50], [10, 25], [16, 5]]),
+      score: bank || debtUnknown ? null : scoreStops(evs, [[0.5, 100], [2, 78], [5, 50], [10, 25], [16, 5]]),
       verdict:
-        evs == null
+        bank
+          ? "not meaningful for a bank"
+          : debtUnknown && evs != null
+            ? "EV unreliable — total debt not in the filings data"
+          : evs == null
           ? "no EV/Sales"
           : evs <= 2
             ? "undemanding on sales"
@@ -306,11 +350,16 @@ export function valuationRead(ev: Evidence): Read<ValueBand> {
       label: "Price / Book",
       value: pb,
       fmt: "ratio",
-      weight: 14,
-      score: scoreStops(pb, [[0.8, 100], [2, 75], [5, 50], [12, 22], [30, 5]]),
+      // Banks are valued on book: P/B carries the weight EV/Sales and FCF can't.
+      weight: bank ? 36 : 14,
+      score: bank
+        ? scoreStops(pb, [[0.7, 100], [1.0, 80], [1.5, 55], [2.2, 30], [3.5, 5]])
+        : scoreStops(pb, [[0.8, 100], [2, 75], [5, 50], [12, 22], [30, 5]]),
       verdict:
         pb == null
-          ? "no book value"
+          ? pbRaw != null && pbRaw <= 0
+            ? "negative book equity — P/B not meaningful"
+            : "no book value"
           : pb <= 3
             ? "reasonable to book"
             : "well above book (asset-light or richly valued)",
@@ -488,25 +537,63 @@ export interface Verdict {
   risk: Read<RiskBand>;
 }
 
-// ── Conviction — one honest curve, shared by the equity read and Distresse ───
-// A CLEAR setup (the axes agree, so the blended read sits far from the 50 fence)
-// backed by real data and not a lottery ticket should read 70+. An ambiguous
-// one (blend near 50) stays low. The dampeners are truthful, not padding:
-//   • coverage — thin data can't buy high conviction, only a modest floor.
-//   • volatility — a strong read on a wild name is still a weaker bet.
-// `leanScore` is 0..100 on whichever side's axis (long-quality, or short-fit).
-export function convictionScore(
-  leanScore: number,
-  coverage: number,
-  riskScore: number | null,
-): number {
-  // /35 (not /50) so a genuinely clear lean saturates the strength term: a
-  // blended read of ~85/15 counts as a full-strength setup, ~72/28 as strong.
-  const edge = Math.min(1, Math.abs(leanScore - 50) / 35);
-  const strength = 30 + edge * 70; // edge 0 → 30, ~0.63 → ~74, 1 → 100
-  const covFactor = 0.55 + 0.45 * Math.max(0, Math.min(1, coverage)); // full data → 1.0
+// ── Conviction — recalibrated 2026-10 ────────────────────────────────────────
+// Each axis votes FOR or AGAINST the call on a signed scale s = (score−50)/50.
+//   lean      L = Σ wᵢ·sᵢ                        (direction + size of the case)
+//   strength  = 100·(1 − e^(−|L|/0.12))         real names rarely lean more
+//                                                 than ±0.3, so the curve is
+//                                                 scaled to that range (the old
+//                                                 /35-point scale left every
+//                                                 name stuck in the 30s–50s)
+//   clarity   = (support − opposition)/(support + opposition), where support /
+//               opposition are the weighted axis votes with / against L. A great
+//               business at an extreme price is a CONTESTED call and reads
+//               lower than a clean one with the same net lean.
+//   conviction = strength · (0.6 + 0.4·clarity) · coverage · vol, capped at 97.
+// Coverage factor 0.35 + 0.65·cov (thin data costs real conviction); the
+// volatility haircut 0.85 + 0.15·calm. Same evidence in → same number out.
+export type Axis = { s: number | null; w: number };
+
+export function convictionFromAxes(axes: Axis[], coverage: number, riskScore: number | null): number {
+  const live = axes.filter((a): a is { s: number; w: number } => a.s != null);
+  if (!live.length) return 0;
+  const W = live.reduce((acc, a) => acc + a.w, 0);
+  const signed = live.map((a) => ({ v: (a.s - 50) / 50, w: a.w / W }));
+  const L = signed.reduce((acc, a) => acc + a.w * a.v, 0);
+  const dir = Math.sign(L) || 1;
+  let support = 0;
+  let opposition = 0;
+  for (const a of signed) {
+    const x = a.w * a.v * dir;
+    if (x >= 0) support += x;
+    else opposition -= x;
+  }
+  const clarity = support + opposition > 0 ? (support - opposition) / (support + opposition) : 0;
+  const strength = 100 * (1 - Math.exp(-Math.abs(L) / 0.12));
+  // Thin data costs real conviction: 100% coverage → ×1.0, 50% → ×0.68,
+  // 28% (price only, no fundamentals) → ×0.53.
+  const covFactor = 0.35 + 0.65 * Math.max(0, Math.min(1, coverage));
   const volFactor = riskScore == null ? 0.92 : 0.85 + 0.15 * (riskScore / 100);
-  return Math.round(Math.min(96, strength * covFactor * volFactor));
+  return Math.round(Math.min(97, strength * (0.6 + 0.4 * clarity) * covFactor * volFactor));
+}
+
+// Back-compat: a single 0..100 lean score (e.g. a trade score) with no axis
+// breakdown — treated as one fully-agreeing axis.
+export function convictionScore(leanScore: number, coverage: number, riskScore: number | null): number {
+  return convictionFromAxes([{ s: leanScore, w: 1 }], coverage, riskScore);
+}
+
+// Equity axis weights — quality is the backbone; valuation and trend push.
+export const AXIS_WEIGHTS = { health: 0.4, valuation: 0.32, trend: 0.28 } as const;
+
+// Coverage across the three axes, weighted by each axis's share of the blend
+// (fix 2026-10: the old formula multiplied the average coverage by the share
+// of available axes, counting a missing axis twice).
+export function blendCoverage(h: Read<string>, v: Read<string>, t: Read<string>): number {
+  const W = AXIS_WEIGHTS.health + AXIS_WEIGHTS.valuation + AXIS_WEIGHTS.trend;
+  return (
+    (AXIS_WEIGHTS.health * h.coverage + AXIS_WEIGHTS.valuation * v.coverage + AXIS_WEIGHTS.trend * t.coverage) / W
+  );
 }
 
 // Long-book perspective: quality + value + trend, with vol as a conviction
@@ -519,18 +606,16 @@ export function equityVerdict(ev: Evidence): Verdict {
 
   // Blend on a -100..+100 conviction axis. Quality is the backbone; valuation
   // and trend push it either way; nothing here is random.
-  const parts: { s: number | null; w: number }[] = [
-    { s: health.score, w: 0.4 },
-    { s: valuation.score, w: 0.32 },
-    { s: trend.score, w: 0.28 },
+  const parts: Axis[] = [
+    { s: health.score, w: AXIS_WEIGHTS.health },
+    { s: valuation.score, w: AXIS_WEIGHTS.valuation },
+    { s: trend.score, w: AXIS_WEIGHTS.trend },
   ];
   let sw = 0;
   let acc = 0;
   for (const p of parts) if (p.s != null) { sw += p.w; acc += p.w * p.s; }
   const blended = sw ? acc / sw : null; // 0..100
-  const coverage =
-    ([health, valuation, trend].reduce((a, r) => a + r.coverage, 0) / 3) *
-    (sw / (0.4 + 0.32 + 0.28));
+  const coverage = blendCoverage(health, valuation, trend);
 
   if (blended == null) {
     return {
@@ -550,7 +635,12 @@ export function equityVerdict(ev: Evidence): Verdict {
   // never a wide safe middle. Off the midpoint, the read leans own (attractive/
   // constructive) or avoid (cautious/avoid) — with conviction carrying strength.
   let stance: Stance =
-    blended >= 68 ? "attractive" : blended >= 52 ? "constructive" : blended > 48 ? "neutral" : blended >= 32 ? "cautious" : "avoid";
+    blended >= 63 ? "attractive" : blended >= 51 ? "constructive" : blended > 49 ? "neutral" : blended >= 37 ? "cautious" : "avoid";
+
+  // No (or thin) fundamentals → no "own it": the balance sheet is the
+  // backbone of a long, so a call resting on <50% of the health data can
+  // earn at most "constructive".
+  if ((health.score == null || health.coverage < 0.5) && stance === "attractive") stance = "constructive";
 
   // Health gate — a distressed balance sheet caps a LONG stance. Cheap-and-
   // distressed is a value trap, not a buy; say so rather than let low multiples
@@ -560,7 +650,12 @@ export function equityVerdict(ev: Evidence): Verdict {
   }
 
   // Conviction: how clearly the read leans, backed by real data, minus a vol haircut.
-  const conviction = convictionScore(blended, coverage, risk.score);
+  let conviction = convictionFromAxes(parts, coverage, risk.score);
+  // A health-gated call is a deliberate override of the blend: its conviction
+  // is the conviction that the balance sheet is the problem.
+  if (health.band === "distressed" && stance === "cautious" && blended >= 49) {
+    conviction = convictionFromAxes([{ s: health.score, w: 1 }], health.coverage, risk.score);
+  }
 
   const reasons: string[] = [];
   // Lead with the strongest signals in either direction.

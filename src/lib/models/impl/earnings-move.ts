@@ -1,6 +1,6 @@
 import type { EquityModel, EquityReading, EquitySignal } from "../types";
-import { getFactorExport } from "@/lib/factor";
 import { fetchInsiderTransactions } from "@/lib/whitewatch-data/edgar-sources";
+import { ownMomentum, combineInsiderMomentum } from "../momentum";
 import { getEarningsExport } from "@/lib/earnings";
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -94,25 +94,12 @@ import { getEarningsExport } from "@/lib/earnings";
 // not invented fresh here.
 export const EARNINGS_MOVE_UNIVERSE = ["AAPL", "MSFT", "NVDA", "JPM", "XOM", "KO"] as const;
 
-const INSIDER_PRE_PRINT_WINDOW_DAYS = 30;
+// The insider refresh uses one 90-day window (public/data/insider); the
+// result reports the window actually used.
+const INSIDER_PRE_PRINT_WINDOW_DAYS = 90;
 
 function clamp(n: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, n));
-}
-
-type MomentumContext = { beta: number; significant: boolean; r2: number | null } | { unavailable: string };
-
-async function momentumContextFor(ticker: string): Promise<MomentumContext> {
-  const data = await getFactorExport();
-  if (!data) return { unavailable: "WW-Factor hasn't exported yet" };
-  const exposure = data.exposures.find((e) => e.ticker.toUpperCase() === ticker);
-  if (!exposure) return { unavailable: `not in WW-Factor's current universe (${data.exposures.length} names covered)` };
-  if (exposure.confidence !== "ok" || !exposure.betas) {
-    return { unavailable: `WW-Factor abstains on ${ticker}: ${exposure.abstain_reason ?? exposure.confidence}` };
-  }
-  const mom = exposure.betas.find((b) => b.factor === "Mom");
-  if (!mom) return { unavailable: `no Mom factor loading in this window for ${ticker}` };
-  return { beta: mom.beta, significant: mom.significant, r2: exposure.r2 };
 }
 
 type InsiderRead = { score: number; netWord: string; buyCount: number; sellCount: number } | { unavailable: string };
@@ -173,7 +160,7 @@ export const earningsMove: EquityModel = {
 
     for (const event of universeEvents) {
       const [mom, insider] = await Promise.all([
-        momentumContextFor(event.ticker),
+        ownMomentum(event.ticker),
         insiderPrePrintFor(event.ticker),
       ]);
 
@@ -182,10 +169,12 @@ export const earningsMove: EquityModel = {
       // flow leads when the two disagree (it's the more event-specific signal).
       const momOk = !("unavailable" in mom);
       const insOk = !("unavailable" in insider);
-      const momTilt = momOk ? clamp(mom.beta * 40, -100, 100) : null;
+      const momTilt = momOk ? mom.tilt : null;
       const insScore = insOk ? clamp(insider.score, -100, 100) : null;
-      const parts = [insScore, momTilt].filter((x): x is number => x != null);
-      const score = parts.length ? clamp(Math.round(parts.reduce((a, b) => a + b, 0) / parts.length), -100, 100) : 0;
+      // Explicit rule (../momentum.ts): agree → average + bonus; clash →
+      // insider flow leads, dampened. (Before 2026-10 this was a plain
+      // average, so the larger number won — not "insider leads".)
+      const score = combineInsiderMomentum(insScore, momTilt);
 
       const leanWord =
         score > 0
@@ -203,15 +192,16 @@ export const earningsMove: EquityModel = {
             ? "from insider pre-print positioning"
             : "from momentum";
       const insWord = insOk
-        ? `insiders ${insider.netWord} pre-print (${insider.buyCount} buy / ${insider.sellCount} sell over ${INSIDER_PRE_PRINT_WINDOW_DAYS}d)`
-        : "insider positioning not available";
-      const momWord = momOk ? `momentum beta ${mom.beta >= 0 ? "+" : ""}${mom.beta.toFixed(2)}` : "momentum not available";
+        ? `insiders ${insider.netWord} pre-print (${insider.buyCount} buy / ${insider.sellCount} sell over ${INSIDER_PRE_PRINT_WINDOW_DAYS}d, SEC Form 4)`
+        : "no discretionary insider trades pre-print";
+      const momWord = momOk ? `12-month momentum ${mom.mom12_1 >= 0 ? "+" : ""}${(mom.mom12_1 * 100).toFixed(0)}%` : "momentum not available";
 
       signals.push({
         symbol: event.ticker,
         score,
         note:
-          `Reports ${event.report_date}${event.session ? ` (${event.session})` : ""}. ${leanWord} — ${basis}. ` +
+          `Reports ${event.report_date}${event.session ? ` (${event.session === "bmo" ? "before the open" : event.session === "amc" ? "after the close" : event.session})` : ""}` +
+          `${event.eps_estimate != null ? `, consensus EPS $${event.eps_estimate.toFixed(2)}` : ""}. ${leanWord} — ${basis}. ` +
           `Evidence: ${insWord}; ${momWord}. This is how the desk is positioned going in, not a prediction of the result.`,
       });
     }

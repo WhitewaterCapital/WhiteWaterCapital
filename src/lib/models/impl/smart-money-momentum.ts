@@ -1,7 +1,17 @@
 import type { EquityModel, EquityReading, EquitySignal } from "../types";
-import { getFactorExport } from "@/lib/factor";
 import { fetchInsiderTransactions } from "@/lib/whitewatch-data/edgar-sources";
+import { ownMomentum, combineInsiderMomentum, type MomentumRead } from "../momentum";
 
+// ═══════════════════════════════════════════════════════════════════════════
+// UPDATE 2026-10 — now runs on REAL inputs end to end:
+//   • momentum = the stock's OWN 12-1 return from the Incepta export (real
+//     prices), replacing the Mom FACTOR BETA from WW-Factor (a style loading,
+//     and synthetic-demo at the time);
+//   • insider flow = real SEC Form 4 open-market trades (public/data/insider,
+//     `npm run refresh:insider`), replacing a hard-coded synthetic table.
+//   • combination rule = combineInsiderMomentum() in ../momentum.ts (agree →
+//     average + bonus; clash → insider leads, dampened).
+// The older notes below describe the original construction.
 // ═══════════════════════════════════════════════════════════════════════════
 // Smart Money Momentum — an EquityModel (PLATFORM_REBUILD_PLAN.md priority
 // #11). A cross-sectional screen combining two signals this app already
@@ -57,31 +67,6 @@ export const SMART_MONEY_UNIVERSE = ["AAPL", "MSFT", "NVDA", "JPM", "XOM", "KO"]
 
 const INSIDER_WINDOW_DAYS = 90;
 
-function clamp(n: number, lo: number, hi: number): number {
-  return Math.max(lo, Math.min(hi, n));
-}
-
-type MomentumRead = { beta: number; significant: boolean; r2: number | null; tilt: number };
-
-async function momentumForTicker(ticker: string): Promise<MomentumRead | { unavailable: string }> {
-  const data = await getFactorExport();
-  if (!data) return { unavailable: "WW-Factor hasn't exported yet" };
-
-  const exposure = data.exposures.find((e) => e.ticker.toUpperCase() === ticker);
-  if (!exposure) return { unavailable: `not in WW-Factor's current universe (${data.exposures.length} names covered)` };
-  if (exposure.confidence !== "ok" || !exposure.betas) {
-    return { unavailable: `WW-Factor abstains on ${ticker}: ${exposure.abstain_reason ?? exposure.confidence}` };
-  }
-
-  const mom = exposure.betas.find((b) => b.factor === "Mom");
-  if (!mom) return { unavailable: `no Mom factor loading in this window for ${ticker}` };
-
-  // Same linear-scaling convention as this session's other real-data screens
-  // (fred.ts's T10Y2Y read, distresse.ts's regime dimension): deliberately
-  // simple, explicitly unbacktested, stated as such in the note.
-  const tilt = clamp(mom.beta * 40, -100, 100);
-  return { beta: mom.beta, significant: mom.significant, r2: exposure.r2, tilt };
-}
 
 type InsiderRead = { score: number; netWord: string; buyCount: number; sellCount: number; distinctInsiders: number };
 
@@ -115,15 +100,15 @@ export const smartMoneyMomentum: EquityModel = {
     name: "Smart Money Momentum",
     kind: "equity",
     status: "live",
-    tagline: "Insider net-buying × momentum-factor beta, cross-sectional, over a fixed 6-name universe.",
+    tagline: "Real insider buying (SEC Form 4) × 12-month price momentum, over a fixed 6-name universe.",
     description:
-      "Commits to a side on every name in its universe from the evidence available: WW-Factor momentum, plus insider net-buying where the SEC EDGAR feed is connected. Ranks the universe most-favoured to least, states a confidence level per name, and only calls a name 'balanced' when the evidence is genuinely split — it never sits a name out just because one input is missing. Combining insider direction with momentum follows the academic work referenced in PLATFORM_REBUILD_PLAN.md.",
+      "Commits to a side on every name in its universe from real evidence: the stock's own 12-month price momentum and open-market insider buying/selling from SEC Form 4 filings. Ranks the universe most-favoured to least, states a confidence level per name, and only calls a name 'balanced' when the evidence is genuinely split — it never sits a name out just because one input is missing. Combining insider direction with momentum follows the academic work referenced in PLATFORM_REBUILD_PLAN.md.",
   },
 
   async read(dateISO: string): Promise<EquityReading> {
     const rows = await Promise.all(
       SMART_MONEY_UNIVERSE.map(async (ticker) => {
-        const [mom, insider] = await Promise.all([momentumForTicker(ticker), insiderForTicker(ticker)]);
+        const [mom, insider] = await Promise.all([ownMomentum(ticker), insiderForTicker(ticker)]);
         return { ticker, mom, insider };
       }),
     );
@@ -144,36 +129,35 @@ export const smartMoneyMomentum: EquityModel = {
 
       const m = momOk ? (mom as MomentumRead) : null;
       const ins = insOk ? (insider as InsiderRead) : null;
-      const inputs = [m?.tilt, ins?.score].filter((x): x is number => x != null);
-      const score = clamp(Math.round(inputs.reduce((a, b) => a + b, 0) / inputs.length), -100, 100);
+      const score = combineInsiderMomentum(ins?.score ?? null, m?.tilt ?? null);
 
-      // Commit to the side the evidence points to; 'balanced' only on a true tie.
+      // Commit to a side; "balanced" only on an exact tie.
       const side =
         score > 0
-          ? score >= 25 ? "Lean long" : "Slight long lean"
+          ? score >= 40 ? "Long" : score >= 15 ? "Lean long" : "Slight long lean"
           : score < 0
-            ? score <= -25 ? "Lean short" : "Slight short lean"
+            ? score <= -40 ? "Short / avoid" : score <= -15 ? "Lean short" : "Slight short lean"
             : "Balanced — no edge here";
 
-      const agree = m && ins && m.tilt !== 0 && Math.sign(m.tilt) === Math.sign(ins.score);
-      const strong = Math.abs(score) >= 30;
+      const agree = m && ins && Math.sign(m.tilt) === Math.sign(ins.score);
       const confidence =
         m && ins
           ? agree
-            ? strong
-              ? "high — momentum and insider flow agree strongly"
-              : "moderate — momentum and insider flow agree"
-            : "low — the two signals disagree; momentum breaks the tie"
-          : m
-            ? "moderate — momentum only; insider flow not confirming yet"
-            : "moderate — insider flow only; momentum read unavailable";
+            ? Math.abs(score) >= 40
+              ? "high — price trend and insiders agree"
+              : "moderate — price trend and insiders agree, modestly"
+            : "contested — insiders lead against the price trend"
+          : Math.abs(score) >= 40
+            ? "moderate — strong price trend; insiders quiet"
+            : "low — mild price trend; insiders quiet";
 
       const momPart = m
-        ? `momentum beta ${m.beta >= 0 ? "+" : ""}${m.beta.toFixed(2)}${m.significant ? "" : " (weak this window)"}`
-        : "momentum read unavailable";
+        ? `12-month momentum ${m.mom12_1 >= 0 ? "+" : ""}${(m.mom12_1 * 100).toFixed(0)}%` +
+          (m.ret1m != null ? ` (last month ${m.ret1m >= 0 ? "+" : ""}${(m.ret1m * 100).toFixed(1)}%)` : "")
+        : "momentum unavailable";
       const insPart = ins
-        ? `insiders ${ins.netWord} (${ins.buyCount} buy / ${ins.sellCount} sell, ${ins.distinctInsiders} insider${ins.distinctInsiders === 1 ? "" : "s"})`
-        : "insider flow not wired in yet";
+        ? `insiders ${ins.netWord} (${ins.buyCount} buy / ${ins.sellCount} sell, ${ins.distinctInsiders} insider${ins.distinctInsiders === 1 ? "" : "s"}, SEC Form 4)`
+        : "no discretionary insider trades in the window";
 
       signals.push({
         symbol: ticker,
@@ -191,7 +175,7 @@ export const smartMoneyMomentum: EquityModel = {
     const summary =
       `Across ${SMART_MONEY_UNIVERSE.length} names the smart-money read ${stance} ` +
       `(net ${breadth >= 0 ? "+" : ""}${breadth}). Every name gets a committed side from the evidence available — ` +
-      `WW-Factor momentum, plus insider net-buying where the SEC EDGAR feed is connected.${noDataLine}`;
+      `real 12-month price momentum plus SEC Form 4 insider buying/selling (90 days, planned sales excluded).${noDataLine}`;
 
     return {
       date: dateISO,

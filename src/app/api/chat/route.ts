@@ -22,6 +22,9 @@ export async function POST(req: Request) {
     // TODO: streamText({ model: "anthropic/claude-sonnet-4.5", system: ...reading, messages })
   }
 
+  if (!reading.sectors.length) {
+    return NextResponse.json({ reply: reading.summary, reading });
+  }
   const top = [...reading.sectors].sort((a, b) => b.sentiment - a.sentiment)[0];
   const bottom = [...reading.sectors].sort((a, b) => a.sentiment - b.sentiment)[0];
   const next = reading.catalysts[0];
@@ -31,10 +34,10 @@ export async function POST(req: Request) {
     `${reading.sentiment > 0 ? "+" : ""}${reading.sentiment}. ` +
     `Strongest cross-sector signal is ${top.sector} (${top.sentiment > 0 ? "+" : ""}${top.sentiment}), ` +
     `weakest is ${bottom.sector} (${bottom.sentiment}). ` +
-    `Nearest catalyst: ${next.event} on ${next.date}. ` +
+    (next ? `Nearest catalyst: ${next.event} on ${next.date}. ` : "") +
     (message
       ? `On "${message}" — my consensus lean is to weight the catalyst path over the current tape; ` +
-        `if the desk disagrees, the crux is whether ${top.sector} leadership holds through ${next.event}.`
+        `if the desk disagrees, the crux is whether ${top.sector} leadership holds${next ? ` through ${next.event}` : ""}.`
       : `Ask me where the desk should lean and I'll frame the crux.`);
 
   return NextResponse.json({ reply, reading });

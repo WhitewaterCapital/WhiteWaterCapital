@@ -14,7 +14,7 @@ export default function StrictusTestumPage() {
       <ModuleNav crumb="Strictus Testum" />
       <main className="mx-auto max-w-5xl px-6 py-8">
         <div className="flex items-baseline gap-3">
-          <p className="font-mono text-sm text-accent">// Strictus Testum</p>
+          <p className="font-mono text-sm text-accent">{"// Strictus Testum"}</p>
           <span className="font-mono text-xs text-muted">the rigorous test</span>
         </div>
         <h1 className="display mt-2 text-3xl sm:text-4xl">Pressure-test the idea.</h1>

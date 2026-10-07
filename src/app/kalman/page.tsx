@@ -22,7 +22,7 @@ export default async function KalmanPage() {
       <ModuleNav crumb="Kalman Pairs" />
       <main className="mx-auto max-w-5xl px-6 py-8">
         <div className="flex items-baseline gap-3">
-          <p className="font-mono text-sm text-accent">// Kalman Pairs</p>
+          <p className="font-mono text-sm text-accent">{"// Kalman Pairs"}</p>
           <span className="font-mono text-xs text-muted">the spread lens</span>
         </div>
         <h1 className="display mt-2 text-3xl sm:text-4xl">Pairs of stocks that have drifted apart.</h1>

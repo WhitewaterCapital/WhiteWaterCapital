@@ -1,17 +1,17 @@
-// SEC EDGAR insider (Form 4) source.
+import "server-only";
+import { promises as fs } from "fs";
+import path from "path";
+
+// SEC EDGAR insider (Form 4) source — REAL DATA.
 //
-// The real implementation would query SEC EDGAR's Form 4 filings at request
-// time to build an open-market insider buy/sell read for a ticker. Until that
-// live feed is wired, this returns a DETERMINISTIC synthetic-demo insider read
-// so the pages that use it (smart-money, earnings) are complete and decisive
-// rather than showing a hollow "not connected" state. The reads are fixed,
-// reproducible, and clearly illustrative — the pages label them as such. They
-// are deliberately not always aligned with momentum: some insiders buy into
-// weakness, some sell into strength, which is exactly the nuance the models
-// are meant to weigh.
+// Reads public/data/insider/latest.json, written by `npm run refresh:insider`
+// (scripts/refresh-insider.mts): open-market Form 4 purchases and sales from
+// SEC EDGAR, 10b5-1 planned sales excluded, buys weighted 3× sales, role-
+// weighted, with an evidence shrink so a single trade can't read as maximal.
+// (This replaced a hard-coded synthetic posture table, 2026-10.)
 //
-// To go live: replace `fetchInsiderTransactions` with a real SEC EDGAR Form 4
-// client (respecting the SEC User-Agent requirement) returning the same shape.
+// Contract: a ticker the refresh didn't cover → "not_found"; no export →
+// "unreachable". Never a fabricated read.
 
 export interface InsiderTransactionsSummary {
   signalTransactionCount: number;
@@ -20,72 +20,65 @@ export interface InsiderTransactionsSummary {
   buyCount: number;
   sellCount: number;
   distinctInsiders: number;
+  buyValueUsd?: number;
+  sellValueUsd?: number;
+  plannedSalesExcluded?: number;
 }
 
 export interface InsiderTransactionsResult {
   status: "ok" | "not_found" | "unreachable";
   message?: string;
   windowDays?: number;
+  asOf?: string;
   provenance?: "synthetic-demo" | "live";
   summary?: InsiderTransactionsSummary;
 }
 
-// Fixed per-ticker insider posture (illustrative). Positive = net buying.
-// Chosen so several names DISAGREE with their momentum, to exercise the
-// models' "signals conflict" handling honestly.
-const POSTURE: Record<string, number> = {
-  NVDA: -32, // insiders selling into a strong run
-  MSFT: 28, // insiders adding alongside momentum
-  AAPL: 14,
-  GOOGL: 10,
-  AMZN: -8,
-  JPM: 22,
-  BAC: 16,
-  GS: -12,
-  XOM: 34, // insiders buying a soft-momentum name
-  CVX: 20,
-  KO: -6,
-  PEP: 4,
-  JNJ: 12,
-  PFE: 30, // heavy insider buying into weakness
-  F: 18,
-  GM: -14,
+type InsiderExport = {
+  as_of: string;
+  window_days: number;
+  provenance: "live";
+  tickers: { ticker: string; error?: string; summary?: InsiderTransactionsSummary }[];
 };
 
-function hash(s: string): number {
-  let h = 2166136261;
-  for (let i = 0; i < s.length; i++) {
-    h ^= s.charCodeAt(i);
-    h = Math.imul(h, 16777619);
+const FILE = path.join(process.cwd(), "public", "data", "insider", "latest.json");
+
+async function load(): Promise<InsiderExport | null> {
+  try {
+    return JSON.parse(await fs.readFile(FILE, "utf8")) as InsiderExport;
+  } catch {
+    return null;
   }
-  return (h >>> 0) / 2 ** 32; // 0..1
 }
 
+// `opts.windowDays` is informational: the refresh uses one fixed window
+// (window_days in the export) and the result reports which one was used.
 export async function fetchInsiderTransactions(
   ticker: string,
-  opts?: { windowDays?: number },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _opts?: { windowDays?: number },
 ): Promise<InsiderTransactionsResult> {
-  const key = ticker.toUpperCase();
-  const score = key in POSTURE ? POSTURE[key] : Math.round((hash(key) - 0.5) * 60);
-  const r = hash(key + "n");
-  const distinctInsiders = 1 + Math.floor(hash(key + "i") * 4); // 1..4
-  // Split a plausible buy/sell count consistent with the net score.
-  const total = 2 + Math.floor(r * 5); // 2..6 signal transactions
-  let buyCount = Math.round((total * (score + 100)) / 200);
-  buyCount = Math.max(0, Math.min(total, buyCount));
-  const sellCount = total - buyCount;
-
+  const data = await load();
+  if (!data) {
+    return {
+      status: "unreachable",
+      message: "insider feed not refreshed yet — run `npm run refresh:insider`",
+    };
+  }
+  const row = data.tickers.find((t) => t.ticker.toUpperCase() === ticker.toUpperCase());
+  if (!row || row.error || !row.summary) {
+    return {
+      status: "not_found",
+      message: row?.error ?? `${ticker} isn't in the insider refresh universe`,
+      windowDays: data.window_days,
+      asOf: data.as_of,
+    };
+  }
   return {
     status: "ok",
-    windowDays: opts?.windowDays,
-    provenance: "synthetic-demo",
-    summary: {
-      signalTransactionCount: total,
-      score,
-      netDirection: Math.sign(score),
-      buyCount,
-      sellCount,
-      distinctInsiders,
-    },
+    windowDays: data.window_days,
+    asOf: data.as_of,
+    provenance: "live",
+    summary: row.summary,
   };
 }

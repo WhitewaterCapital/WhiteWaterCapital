@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from datetime import date
 
-from ie.adapters.prices_tiingo import TiingoClient
+from ie.adapters.prices import price_client
 from ie.config import UNIVERSE
 from ie.pit import bars_to_frame
 from ie.pipeline import PipelineConfig, plan_for_ticker
@@ -19,7 +19,7 @@ from ie.regime.classifier import RegimeModel, build_dataset
 
 
 def main() -> None:
-    client = TiingoClient()
+    client = price_client()
     prices = {t: bars_to_frame(client.fetch_prices(t, start=date(2012, 1, 1)))
               for t in UNIVERSE}
 

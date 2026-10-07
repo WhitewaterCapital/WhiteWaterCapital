@@ -33,7 +33,7 @@ export default function JournalPage() {
       <ModuleNav crumb="Decision journal" />
       <main className="mx-auto max-w-3xl px-6 py-8">
         <div className="flex items-baseline gap-3">
-          <p className="font-mono text-sm text-accent">// Decision Journal</p>
+          <p className="font-mono text-sm text-accent">{"// Decision Journal"}</p>
           <span className="font-mono text-xs text-muted">thesis in, review out</span>
         </div>
         <h1 className="display mt-2 text-3xl sm:text-4xl">Every decision, and how it aged.</h1>

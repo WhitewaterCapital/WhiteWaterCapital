@@ -9,7 +9,8 @@ import type { LevelsModel, TradeIdea, EntryExitPlan } from "../types";
 //   • entry zone   = a volatility-sized pullback (long) / pop (short)
 //   • stop         = beyond the zone by a fixed multiple of daily vol → 1R
 //   • targets      = 1.5R / 3R / 5R scale-outs
-//   • sizing       = risk-budget ÷ stop distance, haircut for spread & vol
+//   • sizing       = risk-budget (1% of book, same as the Python engine's
+//                    SizeConfig) ÷ stop distance, haircut for spread & vol
 // It ABSTAINS honestly when there's no real price to anchor on — never invents
 // a level. (The full OU / Dickey-Fuller engine lives in the separate Python
 // repo and drives the standalone /intra-exitus page; this is the levels layer
@@ -90,13 +91,18 @@ export const intraExitus: LevelsModel = {
 
     // Targets scale out at 1.5R / 3R / 5R the other way.
     const tDir = bias === "long" ? 1 : -1;
-    const targets = [1.5, 3, 5].map((m) => round2(entryMid + tDir * m * R));
+    // Never a target at/below zero (a 5R short on a very volatile name could
+    // otherwise imply a negative price).
+    const targets = [1.5, 3, 5]
+      .map((m) => round2(entryMid + tDir * m * R))
+      .filter((t) => t > 0.01 * last);
 
-    // ── Cost-aware sizing: risk 0.75% of book on the stop, haircut for cost/vol.
+    // ── Cost-aware sizing: risk 1% of book on the stop (matches the engine),
+    //    haircut for cost/vol.
     const stopPct = R / entryMid; // fractional loss if stopped from the zone mid
     const spreadHair = spread == null ? 1 : spread > 120 ? 0.55 : spread > 50 ? 0.8 : 1;
     const volHair = annVol > 0.6 ? 0.6 : annVol > 0.45 ? 0.8 : 1;
-    const rawSize = (0.0075 / stopPct) * 100 * spreadHair * volHair;
+    const rawSize = (0.01 / stopPct) * 100 * spreadHair * volHair;
     const sizingPct = idea.sizePct ?? clamp(Math.round(rawSize * 10) / 10, 0.5, 6);
 
     // ── Confidence + time-stop scale with the evidence and the vol regime. ───
@@ -106,6 +112,15 @@ export const intraExitus: LevelsModel = {
     const days = Math.round(clamp(20 * (0.3 / annVol), 8, 40));
 
     const pctMove = (sigmaD * 100).toFixed(1);
+    // Staleness: levels anchor to the evidence's last close. If that's more
+    // than a week old, say so (and don't call it actionable).
+    const asOf = idea.evidence?.asOf;
+    const ageDays = asOf ? Math.floor((Date.now() - new Date(asOf).getTime()) / 86400_000) : null;
+    const stale = ageDays != null && ageDays > 7;
+    if (stale) confidence = "watch";
+    const staleNote = stale
+      ? ` ⚠ The anchor price is ${ageDays} days old (as of ${asOf}) — re-run the engine before acting.`
+      : "";
     const stopPctStr = (stopPct * 100).toFixed(1);
 
     return {
@@ -121,7 +136,7 @@ export const intraExitus: LevelsModel = {
         `Anchored to the real last close ${last.toFixed(2)} with a daily vol of ~${pctMove}%. ` +
         `${bias === "long" ? "Buy a 1–3 day-vol pullback into" : "Fade a 1–3 day-vol pop into"} ${entryLow}–${entryHigh}; ` +
         `the stop at ${stop} sits ~${stopPctStr}% away (1R) so you're wrong on volatility, not noise. ` +
-        `Targets scale out at 1.5R / 3R / 5R.`,
+        `Targets scale out at 1.5R / 3R / 5R.` + staleNote,
       invalidations: [
         `${bias === "long" ? "A close below" : "A close above"} ${stop} voids the setup (1R breached).`,
         `A gap straight through the ${entryLow}–${entryHigh} zone on a catalyst — don't chase; re-plan off the new price.`,

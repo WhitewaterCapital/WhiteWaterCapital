@@ -1,24 +1,32 @@
+import "server-only";
+import { promises as fs } from "fs";
+import path from "path";
 import type { MacroModel, MacroReading } from "../types";
-import { aiEnabled, seeded, pick } from "../shared";
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Macro Tracker — a MacroModel.
+// Macro Tracker — a MacroModel. REAL DATA (replaced the RNG demo 2026-10).
 //
-// ⚠️  DEMO IMPLEMENTATION. The body of read() below is a stand-in so the UI
-//     works today. Replace it with your real macro model.
-//
-//     Contract:  read(dateISO) → Promise<MacroReading>   (see types.ts)
-//     You get:   the date to produce a reading for.
-//     You return: regime, overall sentiment (-100..100), per-sector reads,
-//                 catalysts, and a background narrative.
-//     Real data/AI: pull your feeds + `if (aiEnabled())` call an LLM here.
-//     Nothing else in the app changes when you swap this out.
+// Reads public/data/macro-tracker/latest.json, written by
+// `npm run refresh:macro` (scripts/refresh-macro.mts):
+//   • per-sector sentiment from the 8 SPDR sector ETFs on real prices —
+//     3-month and 1-month return RELATIVE to SPY plus 50/200-day trend
+//   • market-level gauge from each sector's ABSOLUTE trend + breadth
+//   • regime from SPY's trend, breadth, cyclical-vs-defensive leadership and
+//     the 10-year yield's 1-month change
+//   • catalysts: the Fed's published FOMC dates + the real earnings calendar
+// No export → an honest "not refreshed" reading, never invented numbers.
 // ═══════════════════════════════════════════════════════════════════════════
 
-const SECTORS = [
-  "Technology", "Financials", "Energy", "Healthcare",
-  "Industrials", "Consumer Disc.", "Staples", "Materials",
-];
+const FILE = path.join(process.cwd(), "public", "data", "macro-tracker", "latest.json");
+
+type MacroExportFile = {
+  as_of: string;
+  regime: string;
+  sentiment: number;
+  sectors: { sector: string; sentiment: number; note: string }[];
+  catalysts: { date: string; event: string; importance: "high" | "medium" | "low" }[];
+  summary: string;
+};
 
 export const macroTracker: MacroModel = {
   meta: {
@@ -26,56 +34,37 @@ export const macroTracker: MacroModel = {
     name: "Macro Tracker",
     kind: "macro",
     status: "live",
-    tagline: "Daily cross-sector sentiment, catalysts, and regime read.",
+    tagline: "Daily cross-sector read on real prices — rotation, breadth, rates and the catalyst calendar.",
     description:
-      "Refreshes every day: reads across sectors, tracks the catalyst calendar, writes the background narrative, and scores overall sentiment. The ambient layer the desk starts the day on.",
+      "Scores each of the 8 SPDR sectors on real price trends relative to the S&P 500, reads market breadth and the 10-year yield, and lists the real catalyst calendar (FOMC decisions and upcoming earnings). Refreshed with `npm run refresh:macro`.",
   },
 
   async read(dateISO: string): Promise<MacroReading> {
-    // ─── DEMO BODY — replace everything below with your model ──────────────
-    const rng = seeded(`macro:${dateISO}`);
-    const sectors = SECTORS.map((s) => ({
-      sector: s,
-      sentiment: Math.round((rng() - 0.45) * 160),
-      note: pick(rng, [
-        "Breadth improving under the surface.",
-        "Earnings revisions rolling over.",
-        "Flows positive but momentum stalling.",
-        "Rate-sensitive; watch the long end.",
-        "Defensive bid returning.",
-      ]),
-    }));
-    const overall = Math.round(
-      sectors.reduce((s, x) => s + x.sentiment, 0) / sectors.length,
-    );
-
-    const base = new Date(dateISO);
-    const catalysts = [
-      { offset: 1, event: "CPI print", importance: "high" as const },
-      { offset: 3, event: "FOMC minutes", importance: "high" as const },
-      { offset: 5, event: "Mega-cap earnings", importance: "medium" as const },
-      { offset: 9, event: "Jobs report", importance: "high" as const },
-    ].map((c) => ({
-      date: new Date(base.getTime() + c.offset * 86400000).toISOString().slice(0, 10),
-      event: c.event,
-      importance: c.importance,
-    }));
-
+    let data: MacroExportFile | null = null;
+    try {
+      data = JSON.parse(await fs.readFile(FILE, "utf8")) as MacroExportFile;
+    } catch {
+      data = null;
+    }
+    if (!data) {
+      return {
+        date: dateISO,
+        regime: "Not refreshed",
+        sentiment: 0,
+        sectors: [],
+        catalysts: [],
+        summary: "The macro tracker hasn't been refreshed yet — run `npm run refresh:macro`. Nothing invented in its place.",
+        generatedBy: "Macro Tracker · no data",
+      };
+    }
     return {
-      date: dateISO,
-      regime: pick(rng, [
-        "Late-cycle, easing bias, dispersion rising",
-        "Disinflation holding, soft-landing base case",
-        "Growth scare fading, defensives unwinding",
-      ]),
-      sentiment: overall,
-      sectors,
-      catalysts,
-      summary:
-        "Cross-sector read is " +
-        (overall > 15 ? "constructive" : overall < -15 ? "cautious" : "mixed") +
-        `. Leadership is ${pick(rng, ["narrow", "broadening", "rotating"])}; the tape is trading the ${pick(rng, ["rate path", "earnings cycle", "liquidity backdrop"])} more than fundamentals.`,
-      generatedBy: aiEnabled() ? "Macro Tracker" : "Macro Tracker (sample)",
+      date: data.as_of,
+      regime: data.regime,
+      sentiment: data.sentiment,
+      sectors: data.sectors.map((s) => ({ sector: s.sector, sentiment: s.sentiment, note: s.note })),
+      catalysts: data.catalysts,
+      summary: data.summary,
+      generatedBy: `Macro Tracker · real prices as of ${data.as_of}`,
     };
   },
 };

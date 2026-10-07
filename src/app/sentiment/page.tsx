@@ -20,7 +20,7 @@ export default async function SentimentumPage() {
       <ModuleNav crumb="Sentimentum" />
       <main className="mx-auto max-w-5xl px-6 py-8">
         <div className="flex items-baseline gap-3">
-          <p className="font-mono text-sm text-accent">// Sentimentum</p>
+          <p className="font-mono text-sm text-accent">{"// Sentimentum"}</p>
           <span className="font-mono text-xs text-muted">the regime lens</span>
         </div>
         <h1 className="display mt-2 text-3xl sm:text-4xl">Sentiment, two ways.</h1>

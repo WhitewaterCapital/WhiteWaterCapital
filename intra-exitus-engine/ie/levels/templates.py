@@ -63,6 +63,7 @@ class LevelConfig:
     pullback_atr: float = 0.5    # entry zone half-width around the anchor, in ATRs
     trend_targets_r: tuple[float, ...] = (2.0, 4.0, 6.0)  # R multiples
     max_stop_frac: float = 0.15  # stop farther than this (fraction of price) => too loose to be actionable
+    max_target_move: float = 0.60  # drop R-targets implying a >60% move from entry (fantasy over a swing)
     # shared. expected_r is now EXPECTED R (expectancy = p*R - (1-p)), not a
     # reward:risk ratio, so the actionable bar is "positive edge" (fix #1/#6).
     min_expectancy: float = 0.0  # expected R at/below this => downgrade to "watch"
@@ -111,10 +112,13 @@ def _round(x: float, nd: int = 2) -> float:
     return float(round(x, nd))
 
 
-def abstain_plan(ticker: str, why: str) -> TradePlan:
+def abstain_plan(ticker: str, why: str, regime: str = "high-vol") -> TradePlan:
+    """No levels. `regime` records WHY-context honestly: "high-vol" only when the
+    vol gate fired; template-level abstains pass the regime they were judging
+    (fix 2026-10: every abstain used to be stamped "high-vol")."""
     return TradePlan(
         ticker=ticker,
-        regime="high-vol",
+        regime=regime,
         bias="none",
         confidence="insufficient",
         entry_zone=None,
@@ -132,12 +136,15 @@ def mean_revert_plan(
     price: float,
     ou: OUParams,
     cfg: LevelConfig | None = None,
+    mean_label: str | None = None,
 ) -> TradePlan:
     """Fade a stretch back to the OU mean. `ou` is fit on LOG price; `price` is the
-    latest raw close. Bias is decided by which side of the mean price sits."""
+    latest raw close. Bias is decided by which side of the mean price sits.
+    `mean_label` names what the mean is (default: "its N-day OU mean"); the
+    detrended fallback passes e.g. "its 50-day trend line"."""
     cfg = cfg or LevelConfig()
     if not ou.reverts or not np.isfinite(ou.half_life):
-        return abstain_plan(ticker, "No mean reversion in the window (OU non-reverting).")
+        return abstain_plan(ticker, "No mean reversion in the window (OU non-reverting).", "mean-revert")
     if ou.half_life > cfg.max_half_life:
         return TradePlan(
             ticker=ticker, regime="mean-revert", bias="none", confidence="insufficient",
@@ -166,6 +173,7 @@ def mean_revert_plan(
         return abstain_plan(
             ticker, f"Price is {abs(z):.1f} sigma out — already beyond the "
             f"{cfg.stop_sigma:.0f} sigma stop distance, no room to fade.",
+            "mean-revert",
         )
 
     # Target the mean (the reversion thesis). expected_r is measured to this first
@@ -210,8 +218,9 @@ def mean_revert_plan(
         expected_r=None if expected_r is None else _round(expected_r, 2),
         time_stop=f"Exit if not reverted toward the mean within ~{time_days:.0f} "
                   f"trading days ({cfg.time_stop_half_lives:.0f}x half-life).",
-        rationale=f"Price is {abs(z):.1f} sigma {'above' if z > 0 else 'below'} its "
-                  f"{ou.half_life:.0f}-day OU mean of {mean_price:.2f}; fade back toward it. "
+        rationale=f"Price is {abs(z):.1f} sigma {'above' if z > 0 else 'below'} "
+                  f"{mean_label or f'its {ou.half_life:.0f}-day OU mean'} of {mean_price:.2f} "
+                  f"(half-life ~{ou.half_life:.0f}d); fade back toward it. "
                   f"Stop beyond {cfg.stop_sigma:.0f} sigma so you're wrong on the process, "
                   f"not on noise.",
         invalidations=[
@@ -247,17 +256,17 @@ def trend_plan(
     rather than fade the wrong way into a broken stop."""
     cfg = cfg or LevelConfig()
     if atr <= 0:
-        return abstain_plan(ticker, "No usable ATR — cannot size a trend stop.")
+        return abstain_plan(ticker, "No usable ATR — cannot size a trend stop.", "trend")
 
     tol = 0.5 * atr
     if direction == "up" and price <= swing_low + tol:
         return abstain_plan(
             ticker, "Incoherent: 'uptrend' but price is at fresh swing lows — "
-            "direction and structure disagree.")
+            "direction and structure disagree.", "trend")
     if direction == "down" and price >= swing_high - tol:
         return abstain_plan(
             ticker, "Incoherent: 'downtrend' but price is at fresh swing highs — "
-            "direction and structure disagree.")
+            "direction and structure disagree.", "trend")
 
     if direction == "up":
         bias = "long"
@@ -279,8 +288,12 @@ def trend_plan(
         targets = [_round(entry_ref - r * risk) for r in cfg.trend_targets_r]
         targets = [t for t in targets if t > 0]  # a short can't target a negative price
 
+    # Far R-multiples on a wide stop can imply a near-total collapse (e.g. a 6R
+    # short target at ~5% of price). Keep only targets within max_target_move.
+    targets = [t for t in targets if abs(t / entry_ref - 1.0) <= cfg.max_target_move]
+
     if risk <= 0 or not targets:
-        return abstain_plan(ticker, "Structure and entry overlap — no clean stop.")
+        return abstain_plan(ticker, "Structure and entry overlap — no clean stop.", "trend")
 
     # A stop farther than max_stop_frac of price makes the R-targets fantasy over a
     # swing horizon — keep the levels but downgrade to "watch" and say why.

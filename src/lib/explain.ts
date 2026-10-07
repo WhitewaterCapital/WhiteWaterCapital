@@ -35,6 +35,10 @@ export const TERMS: Record<string, Explained> = {
     def: "Roughly how long it typically takes a stretched spread to close halfway back to normal.",
     why: "It sets your patience: a short half-life means the trade should resolve quickly; a long one means you'd be holding a while.",
   },
+  momentum: {
+    def: "The stock's own return over the last 12 months, skipping the most recent month (the standard '12-1' measure).",
+    why: "Winners tend to keep winning for a while and losers keep losing — one of the most robust patterns in markets. Skipping the last month avoids short-term bounce-backs.",
+  },
   "momentum beta": {
     def: "How strongly a name rides the market's overall momentum factor.",
     why: "A high reading means the stock tends to amplify momentum moves — useful for knowing whether it leads or lags a trend.",

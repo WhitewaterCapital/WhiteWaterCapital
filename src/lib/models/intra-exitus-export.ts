@@ -29,5 +29,7 @@ export interface IntraExitusExport {
   as_of: string;
   universe: string[];
   disclaimer: string;
+  data_provenance?: "live" | "synthetic-demo";
+  price_source?: string;
   plans: IntraExitusPlan[];
 }

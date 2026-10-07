@@ -27,7 +27,7 @@ export default async function WeeklyPage() {
       <ModuleNav crumb="Weekly" />
       <main className="mx-auto max-w-5xl px-6 py-8">
         <div className="flex items-baseline gap-3">
-          <p className="font-mono text-sm text-accent">// Weekly Ranking</p>
+          <p className="font-mono text-sm text-accent">{"// Weekly Ranking"}</p>
           <span className="font-mono text-xs text-muted">the weekly read</span>
         </div>
         <h1 className="display mt-2 text-3xl sm:text-4xl">

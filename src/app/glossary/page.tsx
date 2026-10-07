@@ -15,7 +15,7 @@ export default function GlossaryPage() {
       <ModuleNav crumb="Glossary" />
       <main className="mx-auto max-w-3xl px-6 py-8">
         <div className="flex items-baseline gap-3">
-          <p className="font-mono text-sm text-accent">// Glossary</p>
+          <p className="font-mono text-sm text-accent">{"// Glossary"}</p>
           <span className="font-mono text-xs text-muted">plain English</span>
         </div>
         <h1 className="display mt-2 text-3xl sm:text-4xl">Every term, in plain English.</h1>

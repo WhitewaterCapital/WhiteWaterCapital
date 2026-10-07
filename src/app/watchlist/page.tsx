@@ -16,7 +16,7 @@ export default function WatchlistPage() {
       <ModuleNav crumb="Watchlist" />
       <main className="mx-auto max-w-3xl px-6 py-8">
         <div className="flex items-baseline gap-3">
-          <p className="font-mono text-sm text-accent">// Watchlist</p>
+          <p className="font-mono text-sm text-accent">{"// Watchlist"}</p>
           <span className="font-mono text-xs text-muted">on our radar</span>
         </div>
         <h1 className="display mt-2 text-3xl sm:text-4xl">Names we&apos;re watching.</h1>

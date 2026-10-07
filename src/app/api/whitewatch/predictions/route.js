@@ -122,16 +122,18 @@ function scoreHeadlines(hits) {
   let net = 0;
   let escN = 0;
   let deescN = 0;
+  let escW = 0;
+  let deescW = 0;
   for (const h of hits) {
     const t = (h.title || '').toLowerCase();
     const esc = ESCALATE.some((k) => t.includes(k));
     const deesc = DEESCALATE.some((k) => t.includes(k));
     if (!esc && !deesc) continue;
     const w = THREAT_WEIGHT[h.threat] ?? 1.0;
-    if (esc) { net += w; escN += 1; }
-    if (deesc) { net -= w; deescN += 1; }
+    if (esc) { net += w; escN += 1; escW += w; }
+    if (deesc) { net -= w; deescN += 1; deescW += w; }
   }
-  return { net, escN, deescN };
+  return { net, escN, deescN, escW, deescW };
 }
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, Math.round(v)));
@@ -151,49 +153,68 @@ function watchFor(call) {
 function callZone(c, hits) {
   const count = hits.length;
   const status = (c.status || 'the current situation').toLowerCase();
-  const { net, escN, deescN } = scoreHeadlines(hits);
+  const { net, escN, deescN, escW, deescW } = scoreHeadlines(hits);
 
-  // No fresh matching headline — reason from base rates, keep conviction modest.
+  // CONVICTION — recalibrated 2026-10. The old constants pinned almost every
+  // zone between 50 and 67 regardless of evidence. Now conviction moves with
+  // (a) how ONE-SIDED the coverage is and (b) how MUCH of it there is, and a
+  // quiet zone gets a real base rate instead of a coin flip.
+  //   balance b = (E − D)/(E + D) ∈ [−1, 1]  (E/D = threat-weighted esc/de-esc votes)
+  //   volume  v = 1 − e^(−(E + D)/4)          (≈0.22 at 1 vote, 0.63 at 4, 0.92 at 10)
+  //   directional call: 50 + 45·|b|·v (+5 if it agrees with the threat baseline)
+  //   stable call with evidence: 50 + 35·(1 − |b|)·v  (lots of mixed news = confident "stable")
+  //   no evidence: 7-day persistence base rates — conflicts rarely change state
+  //   inside a week, so "stable"/"irrelevant" is the likely outcome and is
+  //   called with matching confidence (critical 60 esc, high 68 stable,
+  //   market-relevant 72 stable, everything else 80 irrelevant).
+  const E = escW;
+  const D = deescW;
+
   if (count === 0 || (escN === 0 && deescN === 0)) {
     if (c.threat === 'critical') {
       return {
-        call: 'escalating', conviction: 50,
+        call: 'escalating', conviction: 60,
         thesis: `Escalating — no fresh catalyst this week, but an active ${c.threat} conflict; base rate favors continued pressure.`,
         watch: watchFor('escalating'), market: marketFor(c),
       };
     }
     if (c.threat === 'high' || isMarketRelevant(c)) {
       return {
-        call: 'stable', conviction: 52,
+        call: 'stable', conviction: c.threat === 'high' ? 68 : 72,
         thesis: `Stable — no fresh catalyst; ${status} holds at ${c.threat} threat over the 7-day horizon.`,
         watch: watchFor('stable'), market: marketFor(c),
       };
     }
     return {
-      call: 'irrelevant', conviction: 50,
+      call: 'irrelevant', conviction: 80,
       thesis: 'Not market-moving this week — no fresh catalyst and no direct channel to tradable assets in the horizon.',
       watch: watchFor('irrelevant'), market: marketFor(c),
     };
   }
 
-  // Evidence present — direction from net pressure.
+  const bal = E + D > 0 ? (E - D) / (E + D) : 0;
+  const vol = 1 - Math.exp(-(E + D) / 4);
+
+  // Direction: a clear tilt (|b| ≥ 0.25) with real weight behind it (≥ 1.5).
   let call;
-  if (net >= 1.5) call = 'escalating';
-  else if (net <= -1.5) call = 'de-escalating';
+  if (bal >= 0.25 && net >= 1.5) call = 'escalating';
+  else if (bal <= -0.25 && net <= -1.5) call = 'de-escalating';
   else call = 'stable';
 
-  const mag = Math.min(Math.abs(net), 6);
   let conviction;
   let thesis;
   if (call === 'stable') {
-    conviction = clamp(58 + Math.min(count, 6) * 1.5, 50, 72);
+    conviction = clamp(50 + 35 * (1 - Math.abs(bal)) * vol, 50, 88);
     thesis = `Stable — mixed signals across ${count} recent ${count === 1 ? 'headline' : 'headlines'} net roughly flat; ${status} continues at ${c.threat} threat.`;
-  } else if (call === 'escalating') {
-    conviction = clamp(54 + mag * 5 + Math.min(count, 6), 50, 92);
-    thesis = `Escalating — ${count} recent ${count === 1 ? 'headline' : 'headlines'} lean toward strikes/offensive moves, outweighing de-escalation signals; ${c.threat} baseline.`;
   } else {
-    conviction = clamp(54 + mag * 5 + Math.min(count, 6), 50, 92);
-    thesis = `De-escalating — recent headlines carry ceasefire/withdrawal/talks language, easing the ${c.threat} baseline over the horizon.`;
+    const baselineAgrees =
+      (call === 'escalating' && (c.threat === 'critical' || c.threat === 'high')) ||
+      (call === 'de-escalating' && (c.threat === 'low' || c.threat === 'medium'));
+    conviction = clamp(50 + 45 * Math.abs(bal) * vol + (baselineAgrees ? 5 : 0), 50, 95);
+    thesis =
+      call === 'escalating'
+        ? `Escalating — ${escN} of ${count} recent headlines lean toward strikes/offensive moves vs ${deescN} de-escalatory; ${c.threat} baseline.`
+        : `De-escalating — ${deescN} of ${count} recent headlines carry ceasefire/withdrawal/talks language vs ${escN} escalatory, easing the ${c.threat} baseline.`;
   }
 
   return { call, conviction, thesis, watch: watchFor(call), market: marketFor(c) };

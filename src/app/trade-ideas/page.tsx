@@ -151,7 +151,7 @@ export default async function TradeIdeasPage() {
       <ModuleNav crumb="Trade Ideas" />
       <main className="mx-auto max-w-5xl px-6 py-8">
         <div className="flex items-baseline gap-3">
-          <p className="font-mono text-sm text-accent">// Trade Ideas</p>
+          <p className="font-mono text-sm text-accent">{"// Trade Ideas"}</p>
           <span className="font-mono text-xs text-muted">the idea board</span>
         </div>
         <h1 className="display mt-2 text-3xl sm:text-4xl">Names worth a look this week.</h1>

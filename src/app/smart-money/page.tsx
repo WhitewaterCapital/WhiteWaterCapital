@@ -1,6 +1,6 @@
 import { ModuleNav } from "@/components/ModuleNav";
 import { Card, Badge } from "@/components/ui";
-import { Term, HowToRead, DemoNote } from "@/components/Explain";
+import { Term, HowToRead, LiveNote } from "@/components/Explain";
 import { smartMoneyMomentum, SMART_MONEY_UNIVERSE } from "@/lib/models/impl/smart-money-momentum";
 import type { EquityReading, EquitySignal } from "@/lib/models/types";
 
@@ -20,7 +20,7 @@ export default async function SmartMoneyPage() {
       <ModuleNav crumb="Smart Money Momentum" />
       <main className="mx-auto max-w-5xl px-6 py-8">
         <div className="flex items-baseline gap-3">
-          <p className="font-mono text-sm text-accent">// Smart Money Momentum</p>
+          <p className="font-mono text-sm text-accent">{"// Smart Money Momentum"}</p>
           <span className="font-mono text-xs text-muted">the follow read</span>
         </div>
         <h1 className="display mt-2 text-3xl sm:text-4xl">Where the informed money is leaning.</h1>
@@ -28,7 +28,7 @@ export default async function SmartMoneyPage() {
           Two signals that tend to reward following, side by side across {SMART_MONEY_UNIVERSE.length} names
           ({SMART_MONEY_UNIVERSE.join(", ")}): whether{" "}
           <Term k="insider posture">company insiders have been buying or selling</Term> their own stock, and
-          whether the name has <Term k="momentum beta">momentum behind it</Term>. A research read, not a verdict.
+          whether the name has <Term k="momentum">momentum behind it</Term>. A research read, not a verdict.
         </p>
 
         <div className="mt-6">
@@ -49,11 +49,11 @@ export default async function SmartMoneyPage() {
         </div>
 
         <div className="mt-4">
-          <DemoNote>
-            <strong className="font-semibold">Illustrative data.</strong> Momentum and insider figures are
-            synthetic-demo while the live market and SEC EDGAR feeds are connected — the calls show how the model
-            reasons, not real positioning yet.
-          </DemoNote>
+          <LiveNote>
+            <strong className="font-semibold">Live data.</strong> Momentum is each stock&apos;s real 12-month
+            return (daily prices); insider flow is real SEC Form 4 open-market buying and selling over the last 90
+            days, with pre-scheduled 10b5-1 sales excluded. Refresh with <code>npm run refresh:all</code>.
+          </LiveNote>
         </div>
 
         <div className="mt-8">
@@ -79,11 +79,9 @@ function SmartMoneyTable({ data }: { data: EquityReading }) {
         <Card>
           <p className="eyebrow">No names ranked this read</p>
           <p className="mt-2 text-sm text-foreground/80">
-            Every name in the universe is missing at least one of the two real inputs this screen
-            needs — see the coverage note above for exactly which. This is the expected state
-            until WW-Factor&apos;s export covers real tickers (it&apos;s currently synthetic-demo
-            only — see <code>PLATFORM_REBUILD_PLAN.md</code>&apos;s Roadblocks) — not a fabricated
-            empty table.
+            Every name is missing both real inputs (price momentum and insider flow) — the data
+            refresh probably hasn&apos;t run. Run <code>npm run refresh:all</code>. Nothing is
+            fabricated in their place.
           </p>
         </Card>
       ) : (

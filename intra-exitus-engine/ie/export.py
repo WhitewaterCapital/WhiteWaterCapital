@@ -6,7 +6,7 @@ covered ticker through the full pipeline, and writes a contract-compliant JSON t
   * <repo>/public/data/intra-exitus/latest.json   (web-servable)
   * <engine>/exports/latest.json                   (engine-side copy)
 
-Run:  python -m ie.export         (needs TIINGO_API_KEY in .env)
+Run:  python -m ie.export   (Yahoo prices by default; Tiingo if TIINGO_API_KEY is set)
 
 Honesty: the last (in-progress) trading day is dropped so levels anchor on the
 last SETTLED close, never an unsettled intraday bar. A ticker with no clean setup
@@ -20,7 +20,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 
 from ie import __version__ as ENGINE_VERSION  # type: ignore
-from ie.adapters.prices_tiingo import TiingoClient
+from ie.adapters.prices import price_client
 from ie.config import HISTORY_START, UNIVERSE
 from ie.pipeline import PipelineConfig, plan_for_ticker
 from ie.pit import bars_to_frame
@@ -42,7 +42,7 @@ def _drop_unsettled(df):
 
 
 def build_export() -> dict:
-    client = TiingoClient()
+    client = price_client()
     start = date.fromisoformat(HISTORY_START)
     prices = {
         t: _drop_unsettled(bars_to_frame(client.fetch_prices(t, start=start)))
@@ -74,6 +74,8 @@ def build_export() -> dict:
         "as_of": as_of,
         "universe": list(UNIVERSE),
         "disclaimer": DISCLAIMER,
+        "data_provenance": "live",
+        "price_source": client.name,
         "plans": plans,
     }
 

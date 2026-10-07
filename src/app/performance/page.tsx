@@ -78,7 +78,7 @@ export default async function PerformancePage() {
       <ModuleNav crumb="Performance attribution" />
       <main className="mx-auto max-w-5xl px-6 py-8">
         <div className="flex items-baseline gap-3">
-          <p className="font-mono text-sm text-accent">// Performance attribution</p>
+          <p className="font-mono text-sm text-accent">{"// Performance attribution"}</p>
           <span className="font-mono text-xs text-muted">IMP-01</span>
         </div>
         <h1 className="display mt-2 text-3xl sm:text-4xl">Where the return came from.</h1>

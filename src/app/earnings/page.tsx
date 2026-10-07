@@ -28,7 +28,7 @@ export default async function EarningsPage() {
       <ModuleNav crumb="Earnings Move" />
       <main className="mx-auto max-w-5xl px-6 py-8">
         <div className="flex items-baseline gap-3">
-          <p className="font-mono text-sm text-accent">// Earnings Move</p>
+          <p className="font-mono text-sm text-accent">{"// Earnings Move"}</p>
           <span className="font-mono text-xs text-muted">upcoming prints × pre-print positioning</span>
         </div>
         <h1 className="display mt-2 text-3xl sm:text-4xl">Who reports earnings next — and how the desk is positioned going in.</h1>

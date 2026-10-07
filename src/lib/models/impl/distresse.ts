@@ -13,7 +13,8 @@ import {
   valuationRead,
   trendRead,
   riskRead,
-  convictionScore,
+  convictionFromAxes,
+  AXIS_WEIGHTS,
   type Read,
   type Driver,
 } from "../equity-read";
@@ -119,13 +120,32 @@ export const distresse: EvaluatorModel = {
 
     let rating: Rating = "conditional";
     let conviction = 0;
+    let valueTrap = false;
     if (tradeScore != null) {
       // Take a side: anything off the midpoint gets a go/no-go call, with
-      // conviction carrying HOW strong it is. Only a razor-thin tie (48–52)
-      // stays "conditional" — and that's stated as a genuine coin-flip, not a
-      // safe hedge. A weak-but-real edge is still a call, not a shrug.
-      rating = tradeScore >= 52 ? "go" : tradeScore <= 48 ? "no-go" : "conditional";
-      conviction = convictionScore(tradeScore, cov, risk.score);
+      // conviction carrying HOW strong it is. Only a razor-thin tie (49–51)
+      // stays "conditional".
+      rating = tradeScore >= 51 ? "go" : tradeScore <= 49 ? "no-go" : "conditional";
+      // Same conviction curve as the equity read, on axes flipped to THIS side
+      // (for a short, weak health / rich price / broken trend vote FOR you).
+      const flip = (x: number | null) => (x == null ? null : isShort ? 100 - x : x);
+      conviction = convictionFromAxes(
+        [
+          { s: flip(health.score), w: AXIS_WEIGHTS.health },
+          { s: flip(valuation.score), w: AXIS_WEIGHTS.valuation },
+          { s: flip(trend.score), w: AXIS_WEIGHTS.trend },
+        ],
+        cov,
+        risk.score,
+      );
+      // Health gate — same rule as the equity read (fix 2026-10: Distresse
+      // used to skip it, so Sentimentum said "cautious" on a distressed name
+      // while the stress test said "go long"). Cheap + distressed = value trap.
+      if (!isShort && rating === "go" && health.band === "distressed") {
+        rating = "no-go";
+        valueTrap = true;
+        conviction = convictionFromAxes([{ s: health.score == null ? null : 100 - health.score, w: 1 }], health.coverage, risk.score);
+      }
     }
 
     // ── Dimension scorecard (−100 hostile .. +100 supportive to THIS trade) ──
@@ -159,7 +179,9 @@ export const distresse: EvaluatorModel = {
     const tails = tailRisks(health, trend, risk);
 
     // ── Bottom line — blunt, direction-aware, grounded in the numbers. ───────
-    const bottom = bottomLine(idea.ticker, side, rating, health, valuation, trend, tradeScore);
+    const bottom = valueTrap
+      ? `Straight up: pass on the long. It screens ${valuation.band ?? "cheap"} and the tape is ${trend.band ?? "mixed"}, but the balance sheet is distressed — that's a value trap until the fundamentals turn. If you must, it's a small, hard-stopped special situation, not an investment.`
+      : bottomLine(idea.ticker, side, rating, health, valuation, trend, tradeScore);
 
     const regime =
       risk.drivers.find((d) => d.label === "Market beta")?.value != null
@@ -273,7 +295,13 @@ function bottomLine(
   if (rating === "go")
     return `Straight up: this clears the bar as a ${sideWord}. ${cap(h)} health, ${v} valuation and a ${t} trend line up on your side. Size it and define the invalidation.`;
   if (rating === "no-go")
-    return `Straight up: pass on the ${sideWord}. The numbers lean the other way — ${cap(h)} health, ${v} valuation, ${t} trend. ${side === "short" ? "You'd be shorting quality." : "Good name, wrong side or wrong price."}`;
+    return `Straight up: pass on the ${sideWord}. The numbers lean the other way — ${cap(h)} health, ${v} valuation, ${t} trend. ${
+      side === "short"
+        ? "You'd be shorting quality."
+        : h === "robust" || h === "sound"
+          ? "Good business, wrong price or wrong moment."
+          : "The business itself is the problem, not just the price."
+    }`;
   return `Straight up: only with conditions. As a ${sideWord} the evidence is split — ${cap(h)} health but ${v} valuation and a ${t} trend. Wait for a better price or a catalyst, or keep it a half-size probe.`;
 }
 

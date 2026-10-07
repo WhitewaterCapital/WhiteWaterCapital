@@ -12,7 +12,7 @@ export default function ModelRegistryPage() {
     <div>
       <ModuleNav crumb="Model registry" />
       <main className="mx-auto max-w-5xl px-6 py-8">
-        <p className="font-mono text-sm text-accent">// Model registry</p>
+        <p className="font-mono text-sm text-accent">{"// Model registry"}</p>
         <h1 className="display mt-2 text-3xl sm:text-4xl">Where our models sit.</h1>
         <p className="mt-3 max-w-2xl text-muted">
           A hub, not a monolith. Each model plugs into one interface; add your

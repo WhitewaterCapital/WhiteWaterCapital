@@ -9,7 +9,11 @@
     "lint": "eslint",
     "sync:aurora": "node scripts/sync-aurora.mjs",
     "test:flex": "npx -y tsx scripts/test-flex.ts",
-    "ibkr:check": "npx -y tsx --env-file=.env.local scripts/ibkr-check.mts"
+    "ibkr:check": "npx -y tsx --env-file=.env.local scripts/ibkr-check.mts",
+    "refresh:insider": "npx -y tsx scripts/refresh-insider.mts",
+    "refresh:macro": "npx -y tsx scripts/refresh-macro.mts",
+    "refresh:all": "bash scripts/refresh-all.sh",
+    "audit:equity": "npx -y tsx scripts/audit-equity.mts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.0",

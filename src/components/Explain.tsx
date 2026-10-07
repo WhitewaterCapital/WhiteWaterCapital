@@ -77,6 +77,17 @@ export function Takeaway({ children }: { children: ReactNode }) {
  * A soft, plain-language "this is demo data" note — honest without the wall of
  * technical caveats. Use where the underlying feed is synthetic-demo.
  */
+// The counterpart to DemoNote: says plainly that a page runs on real data,
+// and where it comes from / how fresh it is.
+export function LiveNote({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex items-start gap-2 border border-emerald-600/40 bg-emerald-600/10 px-3 py-2 text-xs leading-relaxed text-emerald-800 dark:text-emerald-300/90">
+      <span aria-hidden>●</span>
+      <span>{children}</span>
+    </div>
+  );
+}
+
 export function DemoNote({ children }: { children?: ReactNode }) {
   return (
     <div className="flex items-start gap-2 border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs leading-relaxed text-amber-700 dark:text-amber-300/90">

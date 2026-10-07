@@ -31,7 +31,7 @@ _load_dotenv()
 # --- Covered universe --------------------------------------------------------
 # The names this entry/exit planner covers. Starts aligned with the equity
 # engine's five for convenience. One list — extend it, re-run, re-export.
-UNIVERSE: list[str] = ["AAPL", "MSFT", "NVDA", "KO", "F"]
+UNIVERSE: list[str] = ["AAPL", "MSFT", "NVDA", "JPM", "XOM", "KO", "F"]
 
 # Bars before this date are not requested (keeps the free-tier footprint sane and
 # gives every feature window room to warm up).

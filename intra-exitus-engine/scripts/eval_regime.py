@@ -13,7 +13,7 @@ from datetime import date
 
 import pandas as pd
 
-from ie.adapters.prices_tiingo import TiingoClient
+from ie.adapters.prices import price_client
 from ie.config import UNIVERSE
 from ie.pit import bars_to_frame
 from ie.regime.classifier import RegimeModel, build_dataset, walk_forward_report
@@ -24,7 +24,7 @@ pd.set_option("display.width", 120)
 
 
 def main() -> None:
-    client = TiingoClient()
+    client = price_client()
     prices = {}
     for tk in UNIVERSE:
         prices[tk] = bars_to_frame(client.fetch_prices(tk, start=date(2010, 1, 1)))

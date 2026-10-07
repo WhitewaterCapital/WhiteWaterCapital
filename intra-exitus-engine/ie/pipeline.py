@@ -38,6 +38,7 @@ from .sizing.size import SizeConfig, compute_size
 @dataclass(frozen=True)
 class PipelineConfig:
     ou_window: int = 120         # trailing bars for the OU fit (log-price)
+    detrend_span: int = 50       # EMA span for the detrended-reversion fallback
     swing_window: int = 20       # bars for swing high/low structure
     abstain_prob: float = 0.50   # P(high-vol) at/above this => abstain
     feature: FeatureConfig = FeatureConfig()
@@ -75,14 +76,37 @@ def plan_for_ticker(
     price = float(prices["close"].iloc[-1])
     row = feats.iloc[-1]
 
+    plan = None
     if regime == "mean-revert":
-        log_p = np.log(prices["close"].to_numpy())[-cfg.ou_window:]
+        # 1) Classic OU on the log-price LEVEL. Single stocks are near random
+        #    walks, so this rarely passes Dickey-Fuller over 120 bars...
+        log_p_all = np.log(prices["close"].to_numpy())
+        log_p = log_p_all[-cfg.ou_window:]
         ou = fit_ou(log_p, dt=1.0)
-        plan = mean_revert_plan(ticker, price, ou, cfg.level)
-        entry_ref = None if plan.entry_zone is None else (
-            plan.entry_zone[1] if plan.bias == "short" else plan.entry_zone[0]
-        )
-    else:  # trend
+        mean_label = None
+        if not ou.reverts:
+            # 2) ...so test reversion of the STRETCH from the trend line instead:
+            #    d_t = log P_t - log EMA_t. Same OU + Dickey-Fuller gate, applied to
+            #    the series a range trader actually fades (Bollinger-style). The
+            #    fitted mean is re-anchored to today's trend line.
+            ema = prices["close"].ewm(span=cfg.detrend_span, adjust=False).mean().to_numpy()
+            d = (log_p_all - np.log(ema))[-cfg.ou_window:]
+            ou_d = fit_ou(d, dt=1.0)
+            if ou_d.reverts:
+                from dataclasses import replace as _replace
+                ou = _replace(ou_d, mu=float(np.log(ema[-1]) + ou_d.mu))
+                mean_label = f"its {cfg.detrend_span}-day trend line"
+        if ou.reverts:
+            plan = mean_revert_plan(ticker, price, ou, cfg.level, mean_label=mean_label)
+            entry_ref = None if plan.entry_zone is None else (
+                plan.entry_zone[1] if plan.bias == "short" else plan.entry_zone[0]
+            )
+        else:
+            # 3) No statistically clean range either way: don't stand aside on a
+            #    technicality — read it as a trend instead (below).
+            regime = "trend"
+
+    if plan is None:  # trend (or mean-revert that fell through)
         atr = float(row["atr_14"])
         # Fix #4: compute EMA-21 directly from the price series rather than
         # reconstructing it as price/(1+dist_ema_21) — the reconstruction would

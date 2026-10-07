@@ -1,6 +1,6 @@
 import { ModuleNav } from "@/components/ModuleNav";
 import { Card } from "@/components/ui";
-import { HowToRead, DemoNote } from "@/components/Explain";
+import { HowToRead, DemoNote, LiveNote } from "@/components/Explain";
 import { IntraExitusReader } from "@/components/IntraExitusReader";
 import { getIntraExitusExport } from "@/lib/intra-exitus";
 
@@ -17,7 +17,7 @@ export default async function IntraExitusPage() {
       <ModuleNav crumb="Intra / Exitus" />
       <main className="mx-auto max-w-5xl px-6 py-8">
         <div className="flex items-baseline gap-3">
-          <p className="font-mono text-sm text-accent">// Intra / Exitus</p>
+          <p className="font-mono text-sm text-accent">{"// Intra / Exitus"}</p>
           <span className="font-mono text-xs text-muted">enter · exit</span>
         </div>
         <h1 className="display mt-2 text-3xl sm:text-4xl">
@@ -47,10 +47,18 @@ export default async function IntraExitusPage() {
         </div>
 
         <div className="mt-4">
-          <DemoNote>
-            <strong className="font-semibold">Illustrative levels.</strong> Prices and levels are synthetic-demo
-            until the live feed is connected — they show how a plan is built, not a live setup to trade.
-          </DemoNote>
+          {data?.data_provenance === "live" ? (
+            <LiveNote>
+              <strong className="font-semibold">Live levels.</strong> Built from real daily prices
+              {data.price_source ? ` (${data.price_source})` : ""} as of the {data.as_of} close. Re-run the
+              engine (<code>npm run refresh:all</code>) before acting on a level more than a few days old.
+            </LiveNote>
+          ) : (
+            <DemoNote>
+              <strong className="font-semibold">Illustrative levels.</strong> Prices and levels are synthetic-demo
+              until the live feed is connected — they show how a plan is built, not a live setup to trade.
+            </DemoNote>
+          )}
         </div>
 
         <div className="mt-8">
