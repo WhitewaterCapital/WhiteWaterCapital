@@ -1,7 +1,7 @@
 {
   "schema_version": "0.2.0",
   "engine_version": "0.1.0",
-  "generated_at": "2026-10-13T14:11:18+00:00",
+  "generated_at": "2026-10-13T14:05:17+00:00",
   "as_of": "2026-10-09",
   "model_variant": "mortgage_choice",
   "disclaimer": "Aurora is a structural macro research model (Sustek housing/mortgage DSGE). Outputs are directional scenario analysis for internal decision-support only \u2014 not forecasts, not investment advice. Shock sizes are normalized to a +1% innovation and responses are linearized, so they scale linearly with shock size.",
@@ -870,11 +870,11 @@
     "as_of": "2026-10-09",
     "label": "Restrictive / tightening",
     "scenario_affinity": {
-      "Restrictive / tightening": 0.275,
-      "Expansion": 0.206,
-      "Housing-driven": 0.135,
-      "Demand / valuation boom": 0.168,
-      "Mixed / transitional": 0.216
+      "Restrictive / tightening": 0.288,
+      "Expansion": 0.182,
+      "Housing-driven": 0.141,
+      "Demand / valuation boom": 0.161,
+      "Mixed / transitional": 0.227
     },
     "key_indicators": [
       {
@@ -886,7 +886,7 @@
       {
         "name": "Growth composite (z)",
         "value": null,
-        "z_score": 0.39,
+        "z_score": 0.2,
         "as_of": "2026-10-09"
       },
       {
