@@ -107,6 +107,10 @@ jobs:
             echo "No data changes."
           else
             git commit -m "data: pre-open refresh $(TZ=America/New_York date +%F)"
-            git pull --rebase -q origin main  # the Mac's Aurora job may have pushed meanwhile
+            # Drop everything else the engines wrote (caches, engine-side
+            # copies) — this runner is throwaway — then rebase onto anything
+            # the Mac's Aurora job pushed meanwhile.
+            git stash push --include-untracked -q || true
+            git pull --rebase -q origin main
             git push
           fi
