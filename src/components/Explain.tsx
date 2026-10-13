@@ -44,7 +44,7 @@ export function HowToRead({
   children: ReactNode;
 }) {
   return (
-    <div className="border border-hairline bg-paper/60 p-4 sm:p-5">
+    <div className="rounded-2xl border border-hairline bg-paper/60 p-4 sm:p-5">
       <div className="flex items-center gap-2">
         <span
           aria-hidden
@@ -81,7 +81,7 @@ export function Takeaway({ children }: { children: ReactNode }) {
 // and where it comes from / how fresh it is.
 export function LiveNote({ children }: { children: ReactNode }) {
   return (
-    <div className="flex items-start gap-2 border border-emerald-600/40 bg-emerald-600/10 px-3 py-2 text-xs leading-relaxed text-emerald-800 dark:text-emerald-300/90">
+    <div className="flex items-start gap-2 rounded-xl border border-long/25 bg-long/8 px-3.5 py-2.5 text-xs leading-relaxed text-long">
       <span aria-hidden>●</span>
       <span>{children}</span>
     </div>
@@ -90,7 +90,7 @@ export function LiveNote({ children }: { children: ReactNode }) {
 
 export function DemoNote({ children }: { children?: ReactNode }) {
   return (
-    <div className="flex items-start gap-2 border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs leading-relaxed text-amber-700 dark:text-amber-300/90">
+    <div className="flex items-start gap-2 rounded-xl border border-amber-500/30 bg-amber-500/8 px-3.5 py-2.5 text-xs leading-relaxed text-amber-700 dark:text-amber-300/90">
       <span aria-hidden>●</span>
       <span>
         {children ?? (

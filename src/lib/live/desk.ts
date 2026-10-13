@@ -494,6 +494,7 @@ export async function runDesk(raw: string): Promise<DeskResult | null> {
     quality: s.quality as unknown as TradeEvidence["quality"],
     valuation: s.valuation as unknown as TradeEvidence["valuation"],
     flags: [...s.data_quality.flags, ...(s.valuation?.flags ?? [])],
+    livePrice: a.quote.price,
   };
   const verdict = equityVerdict({ quality: s.quality, valuation: s.valuation, risk: s.risk });
 

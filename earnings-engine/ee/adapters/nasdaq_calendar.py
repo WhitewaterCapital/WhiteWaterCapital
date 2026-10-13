@@ -37,14 +37,26 @@ def _eps(raw: str | None) -> float | None:
 class NasdaqCalendarAdapter:
     name = "nasdaq"
 
+    def __init__(self) -> None:
+        self.skipped: list[str] = []
+
     def _day(self, d: date) -> list[dict]:
+        """One day's calendar, retried; a day that still fails is skipped (so
+        one network blip can't sink the whole 45-day refresh). Days are
+        re-fetched on the next daily run anyway."""
         req = urllib.request.Request(
             _URL.format(d=d.isoformat()),
             headers={"User-Agent": "Mozilla/5.0 (Whitewater research)", "Accept": "application/json"},
         )
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            j = json.loads(resp.read().decode("utf-8"))
-        return ((j.get("data") or {}).get("rows")) or []
+        for attempt in range(3):
+            try:
+                with urllib.request.urlopen(req, timeout=20) as resp:
+                    j = json.loads(resp.read().decode("utf-8"))
+                return ((j.get("data") or {}).get("rows")) or []
+            except Exception:  # noqa: BLE001
+                time.sleep(1.5 * (attempt + 1))
+        self.skipped.append(d.isoformat())
+        return []
 
     def get_earnings(self, universe: list[str], start: date, end: date) -> list[dict]:
         want = {t.upper() for t in universe}

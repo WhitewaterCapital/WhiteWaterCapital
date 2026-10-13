@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
   "engine_version": "0.3.0",
-  "generated_at": "2026-10-07T12:03:40.262698+00:00",
-  "as_of": "2026-10-07",
+  "generated_at": "2026-10-13T14:13:11.946741+00:00",
+  "as_of": "2026-10-13",
   "universe": [
     "AAPL",
     "MSFT",
@@ -28,8 +28,8 @@
       "estimate_source": null,
       "sue": null,
       "sue_abstain_reason": "ALPHA_VANTAGE_API_KEY not set \u2014 no analyst-estimates adapter configured for this run",
-      "revision_direction": "raised",
-      "revision_pct": 371.4285714285715,
+      "revision_direction": "unchanged",
+      "revision_pct": 0.0,
       "revision_abstain_reason": null
     },
     {
@@ -45,25 +45,25 @@
       "estimate_source": null,
       "sue": null,
       "sue_abstain_reason": "ALPHA_VANTAGE_API_KEY not set \u2014 no analyst-estimates adapter configured for this run",
-      "revision_direction": "lowered",
-      "revision_pct": -78.62407862407862,
+      "revision_direction": "unchanged",
+      "revision_pct": 0.0,
       "revision_abstain_reason": null
     },
     {
-      "ticker": "AAPL",
-      "report_date": "2026-10-29",
-      "session": null,
-      "eps_estimate": 1.98,
+      "ticker": "MSFT",
+      "report_date": "2026-10-28",
+      "session": "amc",
+      "eps_estimate": 4.71,
       "eps_actual": null,
       "fiscal_period": "Sep/2026",
       "source": "nasdaq",
-      "n_estimates": 8,
+      "n_estimates": 13,
       "eps_estimate_stdev": null,
       "estimate_source": null,
       "sue": null,
       "sue_abstain_reason": "ALPHA_VANTAGE_API_KEY not set \u2014 no analyst-estimates adapter configured for this run",
-      "revision_direction": "lowered",
-      "revision_pct": -27.73722627737227,
+      "revision_direction": "unchanged",
+      "revision_pct": 0.0,
       "revision_abstain_reason": null
     },
     {
@@ -79,25 +79,25 @@
       "estimate_source": null,
       "sue": null,
       "sue_abstain_reason": "ALPHA_VANTAGE_API_KEY not set \u2014 no analyst-estimates adapter configured for this run",
-      "revision_direction": "lowered",
-      "revision_pct": -9.655172413793093,
+      "revision_direction": "unchanged",
+      "revision_pct": 0.0,
       "revision_abstain_reason": null
     },
     {
-      "ticker": "MSFT",
-      "report_date": "2026-11-04",
-      "session": null,
-      "eps_estimate": 4.71,
+      "ticker": "AAPL",
+      "report_date": "2026-11-02",
+      "session": "amc",
+      "eps_estimate": 1.98,
       "eps_actual": null,
       "fiscal_period": "Sep/2026",
       "source": "nasdaq",
-      "n_estimates": 13,
+      "n_estimates": 8,
       "eps_estimate_stdev": null,
       "estimate_source": null,
       "sue": null,
       "sue_abstain_reason": "ALPHA_VANTAGE_API_KEY not set \u2014 no analyst-estimates adapter configured for this run",
-      "revision_direction": "raised",
-      "revision_pct": 56.99999999999999,
+      "revision_direction": "unchanged",
+      "revision_pct": 0.0,
       "revision_abstain_reason": null
     },
     {
@@ -113,8 +113,8 @@
       "estimate_source": null,
       "sue": null,
       "sue_abstain_reason": "ALPHA_VANTAGE_API_KEY not set \u2014 no analyst-estimates adapter configured for this run",
-      "revision_direction": "lowered",
-      "revision_pct": -36.01036269430051,
+      "revision_direction": "unchanged",
+      "revision_pct": 0.0,
       "revision_abstain_reason": null
     }
   ]

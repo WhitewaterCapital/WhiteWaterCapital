@@ -19,16 +19,22 @@ CLONE="$HOME/.whitewater-refresh/WhiteWaterCapital"
 REMOTE="https://github.com/WhitewaterCapital/WhiteWaterCapital.git"
 log() { echo "[$(date '+%F %T')] $*"; }
 
-# launchd fires at several local times; only proceed at 8 a.m. New York, weekdays.
+# launchd fires every hour on weekdays (and catches up after sleep). Proceed
+# on the FIRST run between 8:00 a.m. and 4 p.m. New York, once per NY day.
+# (Fix 2026-10-13: the old gate required exactly the 8 a.m. hour, so a Mac
+# asleep at 8:30 caught up at 10 a.m. and silently skipped — every day.)
 ny_hour=$(TZ=America/New_York date +%H); ny_dow=$(TZ=America/New_York date +%u)
-if [ "${FORCE:-0}" != "1" ] && { [ "$ny_hour" != "08" ] || [ "$ny_dow" -gt 5 ]; }; then
+if [ "${FORCE:-0}" != "1" ] && { [ "$((10#$ny_hour))" -lt 8 ] || [ "$((10#$ny_hour))" -ge 16 ] || [ "$ny_dow" -gt 5 ]; }; then
+  log "skip: ${ny_hour}h New York (runs 8:00–16:00 on weekdays)"
   exit 0
 fi
 
 # Only once per NY day.
 stamp="$HOME/.whitewater-refresh/last-aurora"
 today=$(TZ=America/New_York date +%F)
-[ "${FORCE:-0}" != "1" ] && [ -f "$stamp" ] && [ "$(cat "$stamp")" = "$today" ] && exit 0
+if [ "${FORCE:-0}" != "1" ] && [ -f "$stamp" ] && [ "$(cat "$stamp")" = "$today" ]; then
+  exit 0 # already refreshed today
+fi
 
 log "Aurora refresh start"
 mkdir -p "$(dirname "$CLONE")"

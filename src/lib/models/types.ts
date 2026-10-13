@@ -33,6 +33,7 @@ export type TradeEvidence = {
   quality?: Record<string, number | null> | null;
   valuation?: Record<string, number | null> | null;
   flags?: string[];
+  livePrice?: number | null; // current market price (plans are judged against it)
 };
 
 export type TradeIdea = {
@@ -108,7 +109,9 @@ export type EntryExitPlan = {
   // --- optional real-levels layer ------------------------------------------
   confidence?: "actionable" | "watch" | "insufficient";
   lastClose?: number | null; // the real anchor the levels are built from
-  riskReward?: string; // e.g. "risk 1R → targets 1.5R / 3R / 5R"
+  riskReward?: string; // e.g. "risk 1R → 2 targets · E[R] +0.21"
+  status?: "in-zone" | "wait" | "better" | "invalidated" | "target-hit" | "none"; // vs the live price
+  statusLabel?: string;
   noSetup?: boolean; // true when there's no real price to place levels on
 };
 

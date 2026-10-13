@@ -21,7 +21,7 @@ export function usable(s: SecurityAnalysis | null): boolean {
 }
 
 export type Resolution =
-  | { status: "ok"; source: "universe" | "engine" | "live"; security: SecurityAnalysis }
+  | { status: "ok"; source: "universe" | "engine" | "live"; security: SecurityAnalysis; livePrice?: number | null }
   | { status: "invalid" | "unavailable"; message: string };
 
 // Universe-only lookup (never shells out). Safe on Vercel. Used to attach
@@ -33,22 +33,23 @@ export async function resolveFromUniverse(ticker: string): Promise<SecurityAnaly
   return findSecurity(published, t) ?? null;
 }
 
-// Full resolution: universe, then the live engine where available.
+// Full resolution — LIVE FIRST (fix 2026-10): the live engine has today's
+// prices; the published universe is a daily snapshot whose prices go stale
+// intraday (and on the live site were weeks old). The universe is only the
+// fallback when a live fetch fails.
 export async function resolveSecurity(ticker: string): Promise<Resolution> {
   const t = ticker.trim().toUpperCase();
   if (!TICKER_RE.test(t)) {
     return { status: "invalid", message: "Enter a valid ticker (letters/numbers)." };
   }
-
+  const live = await analyzeTicker(t);
+  if (live && usable(live.security)) {
+    return { status: "ok", source: "live", security: live.security, livePrice: live.quote.price };
+  }
   const fromUniverse = await resolveFromUniverse(t);
   if (fromUniverse) return { status: "ok", source: "universe", security: fromUniverse };
-
-  const live = await analyzeTicker(t);
-  if (!live || !usable(live.security)) {
-    return {
-      status: "unavailable",
-      message: `No listed stock found for ${t} — check the ticker (or search by company name on the Desk).`,
-    };
-  }
-  return { status: "ok", source: "live", security: live.security };
+  return {
+    status: "unavailable",
+    message: `No listed stock found for ${t} — check the ticker (or search by company name on the Desk).`,
+  };
 }

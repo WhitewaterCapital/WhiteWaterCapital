@@ -122,7 +122,13 @@ export default async function TickerPage({ params }: { params: Promise<{ ticker:
                     <span className="font-medium">Plan ({plan.bias}):</span> enter {money(plan.entryZone![0])}–{money(plan.entryZone![1])}, stop{" "}
                     {money(plan.stop)}, targets {plan.targets.map((t) => money(t)).join(" / ")}
                     {plan.sizingPct != null ? `, size ~${plan.sizingPct}% of the book` : ""}.
-                    <span className="text-muted"> {plan.confidence === "actionable" ? "Actionable." : "Watch — not a live setup yet."}</span>
+                    <span
+                      className={`ml-1 inline-block rounded-full px-2 py-0.5 text-xs ${
+                        plan.confidence === "actionable" ? "bg-long/12 text-long" : "bg-paper text-muted"
+                      }`}
+                    >
+                      {plan.statusLabel ?? (plan.confidence === "actionable" ? "Actionable" : "Watch")}
+                    </span>
                   </p>
                 )}
               </div>

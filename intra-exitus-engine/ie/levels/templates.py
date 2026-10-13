@@ -46,7 +46,7 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from .barrier import expectancy
+from .barrier import expectancy, expectancy_horizon
 from .ou import OUParams
 
 
@@ -61,7 +61,12 @@ class LevelConfig:
     # trend
     atr_buffer: float = 1.5      # stop = structure -/+ this many ATRs (dynamic buffer)
     pullback_atr: float = 0.5    # entry zone half-width around the anchor, in ATRs
-    trend_targets_r: tuple[float, ...] = (2.0, 4.0, 6.0)  # R multiples
+    trend_targets_r: tuple[float, ...] = (1.5, 2.5, 4.0)  # R multiples (were 2/4/6 — see target cap)
+    # Targets must be reachable inside the time stop: a target farther than
+    # target_sigma × (daily vol × √horizon) from entry is a fantasy for a swing
+    # (fix 2026-10: MSFT's 4R/6R targets were +34%/+53% in 6 weeks, a ~4σ+ move).
+    trend_horizon_days: int = 30  # ≈ 6 weeks — the trend template's time stop
+    target_sigma: float = 2.0
     max_stop_frac: float = 0.15  # stop farther than this (fraction of price) => too loose to be actionable
     max_target_move: float = 0.60  # drop R-targets implying a >60% move from entry (fantasy over a swing)
     # shared. expected_r is now EXPECTED R (expectancy = p*R - (1-p)), not a
@@ -201,8 +206,9 @@ def mean_revert_plan(
     a = abs(ou.mu - entry_log)                 # entry -> target (the mean)
     b = abs(entry_log - float(np.log(stop)))   # entry -> stop
     drift_toward_target = ou.theta * a
-    expected_r = expectancy(a, b, drift_toward_target, ou.sigma_resid)
     time_days = cfg.time_stop_half_lives * ou.half_life
+    # Within the time stop (2 half-lives), not unlimited time.
+    expected_r = expectancy_horizon(a, b, drift_toward_target, ou.sigma_resid, max(1, int(round(time_days))))
     confidence = (
         "actionable" if (expected_r is not None and expected_r >= cfg.min_expectancy)
         else "watch"
@@ -288,9 +294,22 @@ def trend_plan(
         targets = [_round(entry_ref - r * risk) for r in cfg.trend_targets_r]
         targets = [t for t in targets if t > 0]  # a short can't target a negative price
 
-    # Far R-multiples on a wide stop can imply a near-total collapse (e.g. a 6R
-    # short target at ~5% of price). Keep only targets within max_target_move.
-    targets = [t for t in targets if abs(t / entry_ref - 1.0) <= cfg.max_target_move]
+    # Keep only targets reachable within the horizon (≤ target_sigma × the
+    # horizon's 1σ move, from per-bar vol in price units). Also never a
+    # target implying >60% move.
+    reach = (
+        cfg.target_sigma * vol_per_bar * float(np.sqrt(cfg.trend_horizon_days))
+        if np.isfinite(vol_per_bar) and vol_per_bar > 0 else float("inf")
+    )
+    targets = [
+        t for t in targets
+        if abs(t - entry_ref) <= reach and abs(t / entry_ref - 1.0) <= cfg.max_target_move
+    ]
+    out_of_reach = not targets and risk > 0
+    if out_of_reach:
+        # Even the first R-target is beyond a realistic 6-week move: the stop
+        # is too wide for the vol. Keep a 1R marker, but don't call it a trade.
+        targets = [_round(entry_ref + (risk if bias == "long" else -risk))]
 
     if risk <= 0 or not targets:
         return abstain_plan(ticker, "Structure and entry overlap — no clean stop.", "trend")
@@ -309,9 +328,14 @@ def trend_plan(
     # constant. Drift toward the target + vol set P(target before stop).
     a = abs(targets[0] - entry_ref)   # entry -> first target
     b = risk                          # entry -> stop
-    expected_r = expectancy(a, b, drift_per_bar, vol_per_bar)
+    # Expectancy WITHIN the time stop (not the unlimited-time closed form).
+    expected_r = expectancy_horizon(a, b, drift_per_bar, vol_per_bar, cfg.trend_horizon_days)
 
-    if expected_r is None:
+    if out_of_reach:
+        confidence = "watch"
+        edge_note = (f" Even a 1.5R target is beyond a realistic {cfg.trend_horizon_days}-day move "
+                     f"(±{reach / entry_ref:.0%}) — stop too wide for this volatility; watch.")
+    elif expected_r is None:
         confidence = "watch"
         edge_note = " Edge (drift/vol) could not be estimated — watch, don't act."
     elif too_loose or expected_r < cfg.min_expectancy:
@@ -329,12 +353,13 @@ def trend_plan(
         stop=stop,
         targets=targets,
         expected_r=None if expected_r is None else _round(expected_r, 2),
-        time_stop="Re-evaluate at the next earnings print, or if the first target "
-                  "isn't tagged within ~6 weeks.",
+        time_stop=f"Exit if the first target isn't tagged within ~{cfg.trend_horizon_days} trading days "
+                  "(~6 weeks), or re-evaluate at the next earnings print.",
         rationale=f"{'Up' if direction == 'up' else 'Down'}trend; enter on a pullback to "
                   f"the {anchor:.2f} anchor with the stop {cfg.atr_buffer:.1f} ATR beyond "
                   f"the recent {'swing low' if direction == 'up' else 'swing high'} "
-                  f"(dynamic buffer). Targets scale at {'/'.join(f'{r:.0f}R' for r in cfg.trend_targets_r)}."
+                  f"(dynamic buffer). Targets at {'/'.join(f'{r:g}R' for r in cfg.trend_targets_r)}, "
+                  f"kept only within a realistic {cfg.trend_horizon_days}-day move (±{reach / entry_ref:.0%})."
                   + loose_note + edge_note,
         invalidations=[
             f"A close beyond {stop} breaks structure and voids the trend setup.",

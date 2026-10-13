@@ -57,11 +57,12 @@
     linear-gradient(135deg, #e9694d 0%, #9aa6a3 100%);
 }
 
-/* Large, light display type in the GSA vein */
+/* Display headlines: the editorial serif, used site-wide */
 .display {
-  font-weight: 450;
-  letter-spacing: -0.02em;
-  line-height: 1.02;
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.04;
 }
 
 html,

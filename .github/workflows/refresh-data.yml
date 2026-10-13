@@ -4,17 +4,21 @@
 # Yahoo prices, Ken French factors, Nasdaq earnings calendar, Fed FOMC dates),
 # commits the new public/data/ exports to main, and Vercel redeploys.
 #
-# GitHub cron is UTC and has no daylight-saving support, so it fires at BOTH
-# 13:00 and 14:00 UTC and the first step only proceeds when it is 9 a.m. in
-# New York (13:00 UTC in summer/EDT, 14:00 UTC in winter/EST).
+# GitHub cron is UTC (no DST) and scheduled runs are often started late, so
+# it fires at several UTC times; the first step proceeds on the first run that
+# lands between 8:00 and 16:00 New York time on a weekday and hasn't already
+# refreshed today (checked against today's "data: pre-open refresh" commit).
+# (Fix 2026-10-13: an exact-hour gate silently skipped late-started runs.)
 # Aurora is NOT refreshed here (it lives in a separate local repo + needs
 # Octave) — run `npm run refresh:all` on the Mac to include it.
 name: Refresh data (pre-open)
 
 on:
   schedule:
-    - cron: "0 13 * * 1-5"
-    - cron: "0 14 * * 1-5"
+    - cron: "5 12 * * 1-5"
+    - cron: "5 13 * * 1-5"
+    - cron: "5 14 * * 1-5"
+    - cron: "5 16 * * 1-5"
   workflow_dispatch: {}
 
 permissions:
@@ -29,21 +33,25 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - name: Only at 9 a.m. New York time (handles DST)
-        id: gate
-        run: |
-          hour=$(TZ=America/New_York date +%H)
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$hour" = "09" ]; then
-            echo "go=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "It's ${hour}:00 in New York — not the pre-open run, skipping."
-            echo "go=false" >> "$GITHUB_OUTPUT"
-          fi
-
       - uses: actions/checkout@v4
-        if: steps.gate.outputs.go == 'true'
         with:
           ref: main
+          fetch-depth: 30
+
+      - name: Once per New York weekday, from 8 a.m.
+        id: gate
+        run: |
+          hour=$((10#$(TZ=America/New_York date +%H)))
+          today=$(TZ=America/New_York date +%F)
+          done_today=$(git log --since="36 hours ago" --format=%s | grep -c "data: pre-open refresh $today" || true)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          elif [ "$hour" -ge 8 ] && [ "$hour" -lt 16 ] && [ "$done_today" = "0" ]; then
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Skip: ${hour}h New York, already refreshed today: ${done_today}."
+            echo "go=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - uses: actions/setup-python@v5
         if: steps.gate.outputs.go == 'true'

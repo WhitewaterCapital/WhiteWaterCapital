@@ -1,7 +1,8 @@
 import { ModuleNav } from "@/components/ModuleNav";
 import { Card } from "@/components/ui";
 import { HowToRead, DemoNote, LiveNote } from "@/components/Explain";
-import { IntraExitusReader } from "@/components/IntraExitusReader";
+import { IntraExitusReader, type LiveQuote } from "@/components/IntraExitusReader";
+import { dailyBars } from "@/lib/live/yahoo";
 import { getIntraExitusExport } from "@/lib/intra-exitus";
 
 // INTRA / EXITUS — entry & exit. Renders the REAL engine output
@@ -11,6 +12,16 @@ export const dynamic = "force-dynamic";
 
 export default async function IntraExitusPage() {
   const data = await getIntraExitusExport();
+  // Live quotes so every plan is judged against TODAY's price, not the
+  // close the levels were built from.
+  const live: Record<string, LiveQuote> = Object.fromEntries(
+    await Promise.all(
+      (data?.plans ?? []).map(async (p) => {
+        const r = await dailyBars(p.ticker, 1);
+        return [p.ticker, { price: r?.quote.price ?? null, change: r?.quote.change ?? null }] as const;
+      }),
+    ),
+  );
 
   return (
     <div>
@@ -49,9 +60,9 @@ export default async function IntraExitusPage() {
         <div className="mt-4">
           {data?.data_provenance === "live" ? (
             <LiveNote>
-              <strong className="font-semibold">Live levels.</strong> Built from real daily prices
-              {data.price_source ? ` (${data.price_source})` : ""} as of the {data.as_of} close. Re-run the
-              engine (<code>npm run refresh:all</code>) before acting on a level more than a few days old.
+              <strong className="font-semibold">Live.</strong> Levels are rebuilt every weekday before the open from
+              real daily prices{data.price_source ? ` (${data.price_source})` : ""}; each plan below is checked
+              against today&apos;s live price. Any other stock: search it on the Desk.
             </LiveNote>
           ) : (
             <DemoNote>
@@ -63,7 +74,7 @@ export default async function IntraExitusPage() {
 
         <div className="mt-8">
           {data ? (
-            <IntraExitusReader data={data} />
+            <IntraExitusReader data={data} live={live} />
           ) : (
             <Card>
               <p className="eyebrow">Not synced yet</p>

@@ -44,6 +44,7 @@ export async function POST(req: Request) {
           ...(sec.data_quality.flags ?? []),
           ...(sec.valuation?.flags ?? []),
         ],
+        livePrice: res.livePrice ?? sec.risk?.last_close ?? null,
       };
     } else {
       evidenceNote = "The engine has data for this name but abstains — insufficient confidence to attach numbers.";

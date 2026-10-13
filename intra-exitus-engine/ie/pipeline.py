@@ -35,6 +35,9 @@ from .regime.classifier import RegimeModel
 from .sizing.size import SizeConfig, compute_size
 
 
+MOMENTUM_PERSISTENCE = 0.25
+
+
 @dataclass(frozen=True)
 class PipelineConfig:
     ou_window: int = 120         # trailing bars for the OU fit (log-price)
@@ -118,7 +121,11 @@ def plan_for_ticker(
         # Per-bar drift (signed toward the trade) and vol, in PRICE units, for the
         # first-passage expectancy (fix #1). Drift from recent momentum; vol from
         # daily realised vol. Weak/adverse trends -> near-zero or negative edge.
-        per_bar_ret = float(row["mom_63"]) / 63.0
+        # Only part of a past trend persists (time-series momentum literature:
+        # a fraction of past drift carries forward). Extrapolating the full
+        # 3-month return as the go-forward drift inflated expectancy (MSFT
+        # +2.0R) — shrink it (fix 2026-10).
+        per_bar_ret = MOMENTUM_PERSISTENCE * float(row["mom_63"]) / 63.0
         drift_per_bar = (per_bar_ret if direction == "up" else -per_bar_ret) * price
         rv = float(row["rv_21"]) if np.isfinite(row["rv_21"]) else float(row["ewma_vol"])
         vol_per_bar = (rv / np.sqrt(cfg.feature.trading_days)) * price
