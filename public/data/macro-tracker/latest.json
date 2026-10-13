@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-10-13T14:09:52.309Z",
+  "generated_at": "2026-10-13T14:28:59.794Z",
   "as_of": "2026-10-13",
   "provenance": "live",
   "source": "Yahoo daily prices (SPDR sector ETFs, SPY, ^TNX); Federal Reserve FOMC calendar; earnings engine",
@@ -82,8 +82,8 @@
       "importance": "high"
     },
     {
-      "date": "2026-10-29",
-      "event": "AAPL earnings",
+      "date": "2026-10-28",
+      "event": "MSFT earnings",
       "importance": "medium"
     },
     {
@@ -92,8 +92,8 @@
       "importance": "medium"
     },
     {
-      "date": "2026-11-04",
-      "event": "MSFT earnings",
+      "date": "2026-11-02",
+      "event": "AAPL earnings",
       "importance": "medium"
     },
     {

@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "engine_version": "0.1.0",
-  "generated_at": "2026-10-13T14:07:38.267033+00:00",
+  "generated_at": "2026-10-13T14:28:03.880850+00:00",
   "as_of": "2026-10-12",
   "universe": [
     "AAPL",
@@ -70,16 +70,16 @@
         "evidence": "strong"
       },
       "kalman": {
-        "mu": 4.392966,
+        "mu": 4.392967,
         "gamma": 0.264746,
         "z_score": 0.5049,
         "innovation_var": 0.00089283,
         "adaptive_noise": {
           "initial_q_trace": 2e-06,
-          "final_q_trace": 0.00010892354537153824,
+          "final_q_trace": 0.00010892351226984818,
           "q_drift_pct": 5346.2,
           "initial_r": 0.001,
-          "final_r": 0.00019954879809545533,
+          "final_r": 0.0001995487803822918,
           "r_drift_pct": -80.0
         }
       },
@@ -105,7 +105,7 @@
         },
         "significance": 0.05,
         "ols_hedge_ratio": 1.139255,
-        "ols_intercept": -0.90977,
+        "ols_intercept": -0.909771,
         "ols_r_squared": 0.585
       },
       "note": "ADF t-stat -2.489 vs. 5% critical value -3.338 (lag=0, n=274 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
@@ -330,7 +330,7 @@
         },
         "significance": 0.05,
         "ols_hedge_ratio": 0.644173,
-        "ols_intercept": 2.490164,
+        "ols_intercept": 2.490163,
         "ols_r_squared": 0.5428
       },
       "spread": {
@@ -345,10 +345,10 @@
         "innovation_var": 0.00108362,
         "adaptive_noise": {
           "initial_q_trace": 2e-06,
-          "final_q_trace": 0.00015257101913306812,
+          "final_q_trace": 0.00015257102877278803,
           "q_drift_pct": 7528.6,
           "initial_r": 0.001,
-          "final_r": 0.00022291205812937238,
+          "final_r": 0.0002229120837727556,
           "r_drift_pct": -77.7
         }
       },
@@ -423,7 +423,7 @@
           "10": -3.0462
         },
         "significance": 0.05,
-        "ols_hedge_ratio": 1.282688,
+        "ols_hedge_ratio": 1.282689,
         "ols_intercept": -0.628811,
         "ols_r_squared": 0.7772
       },
