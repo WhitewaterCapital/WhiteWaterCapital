@@ -99,11 +99,14 @@ jobs:
         run: |
           git config user.name "whitewater-data-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/data engine/exports intra-exitus-engine/exports factor-engine/exports \
-                  weekly-engine/exports kalman-engine/exports earnings-engine/exports earnings-engine/state
+          # The site reads only public/data; the earnings state keeps estimate
+          # history for revision tracking. (Engine-side exports/ folders are
+          # partly gitignored — adding them aborted the step.)
+          git add public/data earnings-engine/state
           if git diff --cached --quiet; then
             echo "No data changes."
           else
             git commit -m "data: pre-open refresh $(TZ=America/New_York date +%F)"
+            git pull --rebase -q origin main  # the Mac's Aurora job may have pushed meanwhile
             git push
           fi
