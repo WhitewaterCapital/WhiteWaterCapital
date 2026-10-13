@@ -63,22 +63,33 @@ async function googleNews(query: string, max = 40): Promise<RawNews[]> {
   }
 }
 
+// GDELT is often slow or unreachable. Results — including failures — are
+// remembered for 15 minutes per query, so one dead source can't add its full
+// timeout to every page view (it was adding ~5 s to every warm load).
+const gdeltMemo = new Map<string, { at: number; items: RawNews[] }>();
 async function gdelt(query: string): Promise<RawNews[]> {
+  const hit = gdeltMemo.get(query);
+  if (hit && Date.now() - hit.at < 15 * 60_000) return hit.items;
+  let items: RawNews[] = [];
   try {
     const res = await fetch(
       `https://api.gdeltproject.org/api/v2/doc/doc?query=${encodeURIComponent(query + " sourcelang:eng")}&mode=artlist&format=json&maxrecords=30&sort=datedesc&timespan=7d`,
-      { headers: { "User-Agent": "Mozilla/5.0" }, next: { revalidate: 900 }, signal: AbortSignal.timeout(8000) },
+      { headers: { "User-Agent": "Mozilla/5.0" }, next: { revalidate: 900 }, signal: AbortSignal.timeout(4000) },
     );
-    if (!res.ok) return [];
-    const j = await res.json();
-    return (j.articles ?? []).map((a: { title: string; url: string; domain: string; seendate?: string }) => {
-      const d = a.seendate;
-      const iso = d && d.length >= 15 ? `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}T${d.slice(9, 11)}:${d.slice(11, 13)}:00Z` : null;
-      return { title: a.title, url: a.url, source: a.domain, publishedAt: iso };
-    });
+    if (res.ok) {
+      const j = await res.json();
+      items = (j.articles ?? []).map((a: { title: string; url: string; domain: string; seendate?: string }) => {
+        const d = a.seendate;
+        const iso = d && d.length >= 15 ? `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}T${d.slice(9, 11)}:${d.slice(11, 13)}:00Z` : null;
+        return { title: a.title, url: a.url, source: a.domain, publishedAt: iso };
+      });
+    }
   } catch {
-    return [];
+    /* unreachable — remembered as empty below */
   }
+  gdeltMemo.set(query, { at: Date.now(), items });
+  if (gdeltMemo.size > 300) gdeltMemo.delete(gdeltMemo.keys().next().value!);
+  return items;
 }
 
 // Quote/chart/profile pages that search feeds return alongside real stories.

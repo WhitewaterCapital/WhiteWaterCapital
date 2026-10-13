@@ -99,7 +99,16 @@ export async function readClub(): Promise<ClubData> {
   // Bounded: a paused/unreachable project must not hang the page.
   const { data, error } = await c.db.rpc("club_read", { p_secret: c.secret }).abortSignal(AbortSignal.timeout(6000));
   if (error || !data) {
-    return sample(`The club database couldn't be reached (${error?.message ?? "no data"}) — showing examples.`);
+    // Plain-English reason, never a raw "TypeError: fetch failed".
+    const m = error?.message ?? "";
+    const why = /fetch failed|timeout|abort|ECONN|ENOTFOUND|network/i.test(m)
+      ? "The club database is offline (the Supabase project is paused or unreachable)"
+      : /not authorised|42501/i.test(m)
+        ? "The club database rejected the server key (CLUB_API_SECRET doesn't match)"
+        : /function .* does not exist|PGRST202|schema cache/i.test(m)
+          ? "The club tables haven't been created yet (migration not applied)"
+          : "The club database couldn't be read";
+    return sample(`${why} — showing example entries until it's back.`);
   }
   const d = data as Omit<ClubData, "isSample">;
   return { isSample: false, proposals: d.proposals ?? [], journal: d.journal ?? [], watchlist: d.watchlist ?? [] };

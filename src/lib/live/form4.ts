@@ -19,9 +19,11 @@ const MAX_FILINGS = 80;
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 let last = 0;
 async function sec(url: string): Promise<Response> {
-  const gap = Date.now() - last;
-  if (gap < 130) await sleep(130 - gap); // ≤ ~8 req/s, under SEC's 10/s
-  last = Date.now();
+  // Reserve the next slot synchronously so concurrent callers queue up
+  // ~125 ms apart (≤ 8 req/s, under SEC's 10/s).
+  const slot = Math.max(Date.now(), last + 125);
+  last = slot;
+  if (slot > Date.now()) await sleep(slot - Date.now());
   for (let attempt = 0; attempt < 3; attempt++) {
     const res = await fetch(url, {
       headers: { "User-Agent": UA, Accept: "application/json, text/xml" },
@@ -115,16 +117,23 @@ export async function insiderFor(ticker: string, cik: number, since: string, max
     .map((f, i) => i)
     .filter((i) => r.form[i] === "4" && r.filingDate[i] >= since)
     .slice(0, maxFilings);
+  // Fetch filings 4 at a time (the shared throttle in sec() still keeps us
+  // under SEC's 10 req/s) — sequential fetching made each page wait ~2–5 s.
   const txns: (Txn & { weight: number })[] = [];
-  for (const i of idx) {
-    const acc = r.accessionNumber[i].replace(/-/g, "");
-    const doc = r.primaryDocument[i].split("/").pop(); // drop the xsl render dir
-    try {
-      const res = await sec(`https://www.sec.gov/Archives/edgar/data/${cik}/${acc}/${doc}`);
-      if (res.ok) txns.push(...parseForm4(await res.text(), cik));
-    } catch {
-      /* one bad filing never sinks the ticker */
-    }
+  for (let k = 0; k < idx.length; k += 4) {
+    const batch = await Promise.all(
+      idx.slice(k, k + 4).map(async (i) => {
+        const acc = r.accessionNumber[i].replace(/-/g, "");
+        const doc = r.primaryDocument[i].split("/").pop(); // drop the xsl render dir
+        try {
+          const res = await sec(`https://www.sec.gov/Archives/edgar/data/${cik}/${acc}/${doc}`);
+          return res.ok ? parseForm4(await res.text(), cik) : [];
+        } catch {
+          return []; // one bad filing never sinks the ticker
+        }
+      }),
+    );
+    for (const b of batch) txns.push(...b);
   }
   const signal = txns.filter((t) => t.date >= since && !t.plan10b51);
   const B = signal.filter((t) => t.code === "P").reduce((a, t) => a + t.value * t.weight, 0);

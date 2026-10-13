@@ -1,7 +1,7 @@
 import "server-only";
 import type { SecurityAnalysis, QualityRead, ValuationRead, Confidence } from "@/lib/models/incepta-export";
 import { dailyBars, type Bar, type Quote } from "./yahoo";
-import { cikFor, companyFacts, submissions, standardize, piotroski, type Fundamentals } from "./sec";
+import { cikFor, fundamentalsFor, submissions, piotroski, type Fundamentals } from "./sec";
 import { riskFeatures } from "./risk";
 import { nasdaqSummary, type NasdaqSummary } from "./nasdaq";
 
@@ -37,8 +37,7 @@ export async function analyzeTicker(raw: string): Promise<LiveAnalysis | null> {
   ]);
   if (!px || px.bars.length < 5) return null; // unknown symbol
 
-  const [cf, subs] = cik ? await Promise.all([companyFacts(cik), submissions(cik)]) : [null, null];
-  const f = cf ? standardize(cf) : null;
+  const [f, subs] = cik ? await Promise.all([fundamentalsFor(cik), submissions(cik)]) : [null, null];
   const flags: string[] = [];
 
   const risk = riskFeatures(px.bars, spy?.bars ?? null);

@@ -16,8 +16,10 @@ import { NextResponse } from 'next/server';
 // per-source comments for exactly what was checked and how.
 export const runtime = 'nodejs';
 
-const USER_AGENT =
-  'Mozilla/5.0 (compatible; WhitewatchAssetBot/1.0; +https://whitewater-management.vercel.app) desk-research-tool';
+// Overpass answers 406 to "…Bot…"/"compatible;" crawler-style agents (found
+// 2026-10-13: every OSM shard was failing). A plain app UA with a contact URL
+// is accepted by Overpass, Wikidata and MRDS alike.
+const USER_AGENT = 'Whitewater/1.0 (+https://whitewater-management.vercel.app; research)';
 
 const ASSET_TYPES = {
   mine: { qid: 'Q820477', label: 'Mine' },
@@ -97,7 +99,9 @@ async function sparqlFetch(query) {
   const url = `${SPARQL_ENDPOINT}?query=${encodeURIComponent(query)}&format=json`;
   const resp = await fetch(url, {
     headers: { 'User-Agent': USER_AGENT, Accept: 'application/sparql-results+json' },
-    signal: AbortSignal.timeout(15000),
+    // Wikidata's own limit is 60s and results are cached 6h — 15s was cutting
+    // off legitimate heavy queries (ports).
+    signal: AbortSignal.timeout(40000),
   });
   if (!resp.ok) throw new Error(`Wikidata query failed: ${resp.status}`);
   return resp.json();
@@ -157,7 +161,14 @@ async function fetchWikidata(key) {
 // Test it against a real deploy before trusting it blindly. It fails soft
 // either way — a bad response here just means that layer shows fewer
 // points, not a broken route (see the try/catch in fetchOsm below).
-const OVERPASS_ENDPOINT = 'https://overpass-api.de/api/interpreter';
+// The public Overpass servers are frequently overloaded (504s / timeouts);
+// try the main instance, then mirrors. OSM is a supplement here, so a total
+// failure just means fewer points, never a broken layer.
+const OVERPASS_ENDPOINTS = [
+  'https://overpass-api.de/api/interpreter',
+  'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
+  'https://overpass.private.coffee/api/interpreter',
+];
 
 const OSM_FILTERS = {
   mine: ['nwr["landuse"="quarry"](area.a);', 'nwr["man_made"="mineshaft"](area.a);'],
@@ -184,14 +195,26 @@ function buildOverpassQuery(type, isoCodes) {
 
 async function fetchOsmShard(type, isoCodes) {
   const query = buildOverpassQuery(type, isoCodes);
-  const resp = await fetch(OVERPASS_ENDPOINT, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': USER_AGENT, Accept: 'application/json' },
-    body: `data=${encodeURIComponent(query)}`,
-    signal: AbortSignal.timeout(22000),
-  });
-  if (!resp.ok) throw new Error(`Overpass query failed: ${resp.status}`);
-  const data = await resp.json();
+  let data = null;
+  let lastErr = '';
+  for (const endpoint of OVERPASS_ENDPOINTS) {
+    try {
+      const resp = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': USER_AGENT, Accept: 'application/json' },
+        body: `data=${encodeURIComponent(query)}`,
+        signal: AbortSignal.timeout(12000),
+      });
+      if (resp.ok) {
+        data = await resp.json();
+        break;
+      }
+      lastErr = `${resp.status} from ${new URL(endpoint).host}`;
+    } catch (e) {
+      lastErr = `${e.message} (${new URL(endpoint).host})`;
+    }
+  }
+  if (!data) throw new Error(`Overpass query failed on every mirror: ${lastErr}`);
   const { label } = ASSET_TYPES[type];
   return (data.elements || [])
     .map((el) => {

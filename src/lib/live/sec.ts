@@ -49,8 +49,35 @@ export const submissions = (cik: number) =>
 type Fact = { end: string; start?: string; val: number; form: string; filed: string; fp?: string; fy?: number };
 type CompanyFacts = { facts: Record<string, Record<string, { units: Record<string, Fact[]> }>> };
 
-export const companyFacts = (cik: number) =>
-  secJson<CompanyFacts>(`https://data.sec.gov/api/xbrl/companyfacts/CIK${pad(cik)}.json`, 12 * 3600);
+// companyfacts files are 2–15 MB — over Next's 2 MB data-cache limit, so they
+// were re-downloaded on EVERY page view (fix 2026-10-13). Fetch uncached and
+// memoise only the small standardized result (see fundamentalsFor below).
+export async function companyFacts(cik: number): Promise<CompanyFacts | null> {
+  try {
+    const res = await fetch(`https://data.sec.gov/api/xbrl/companyfacts/CIK${pad(cik)}.json`, {
+      headers: UA,
+      cache: "no-store",
+      signal: AbortSignal.timeout(20000),
+    });
+    return res.ok ? ((await res.json()) as CompanyFacts) : null;
+  } catch {
+    return null;
+  }
+}
+
+// Standardized fundamentals per CIK, kept in memory for 12h (filings change
+// a few times a year). A few KB per company instead of MBs per request.
+const FUND_TTL = 12 * 3600_000;
+const fundCache = new Map<number, { at: number; f: Fundamentals | null }>();
+export async function fundamentalsFor(cik: number): Promise<Fundamentals | null> {
+  const hit = fundCache.get(cik);
+  if (hit && Date.now() - hit.at < FUND_TTL) return hit.f;
+  const cf = await companyFacts(cik);
+  const f = cf ? standardize(cf) : null;
+  if (cf) fundCache.set(cik, { at: Date.now(), f }); // don't memoise a failed fetch
+  if (fundCache.size > 500) fundCache.delete(fundCache.keys().next().value!);
+  return f;
+}
 
 // ── standardized fields → candidate concepts (us-gaap, then IFRS) ────────────
 // Broader than the Python engine's starter map — that narrowness is why some

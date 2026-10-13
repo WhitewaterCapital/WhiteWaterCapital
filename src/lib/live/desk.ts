@@ -469,7 +469,23 @@ export function deskView(voting: Pick<ModelCard, "weight" | "direction">[]) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-export async function runDesk(raw: string): Promise<DeskResult | null> {
+// A desk run is reused for 3 minutes per ticker (and concurrent requests for
+// the same ticker share one run) — page views, push-backs and refreshes in
+// quick succession no longer redo every fetch. Prices are ≤3 minutes old.
+const DESK_TTL = 3 * 60_000;
+const deskCache = new Map<string, { at: number; p: Promise<DeskResult | null> }>();
+export function runDesk(raw: string): Promise<DeskResult | null> {
+  const key = raw.trim().toUpperCase();
+  const hit = deskCache.get(key);
+  if (hit && Date.now() - hit.at < DESK_TTL) return hit.p;
+  const p = computeDesk(key).catch(() => null);
+  deskCache.set(key, { at: Date.now(), p });
+  p.then((r) => { if (!r) deskCache.delete(key); }); // don't pin a failure
+  if (deskCache.size > 200) deskCache.delete(deskCache.keys().next().value!);
+  return p;
+}
+
+async function computeDesk(raw: string): Promise<DeskResult | null> {
   const a = await analyzeTicker(raw);
   if (!a) return null;
   const s = a.security;
@@ -480,7 +496,7 @@ export async function runDesk(raw: string): Promise<DeskResult | null> {
   const [earn, sectorBars, ins, mt, au, wk] = await Promise.all([
     earningsOutlook(ticker),
     etf !== "SPY" ? dailyBars(etf) : dailyBars("SPY"),
-    a.cik ? insiderFor(ticker, a.cik, since, 40).catch(() => null) : Promise.resolve(null),
+    a.cik ? insiderFor(ticker, a.cik, since, 24).catch(() => null) : Promise.resolve(null),
     readJson<MacroTracker>("macro-tracker/latest.json"),
     readJson<AuroraLite>("aurora/latest.json"),
     readJson<WeeklyExport>("weekly/latest.json"),

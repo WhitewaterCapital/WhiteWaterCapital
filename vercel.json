@@ -1,12 +1,4 @@
 {
-  "crons": [
-    {
-      "path": "/api/cron/snapshot",
-      "schedule": "0 21 * * 1-5"
-    },
-    {
-      "path": "/api/cron/macro",
-      "schedule": "30 11 * * 1-5"
-    }
-  ]
+  "ignoreCommand": "if [ -n \"$VERCEL_PROJECT_PRODUCTION_URL\" ] && [ \"$VERCEL_PROJECT_PRODUCTION_URL\" != \"whitewater-management.vercel.app\" ]; then echo \"Skipping: not the production project ($VERCEL_PROJECT_PRODUCTION_URL)\"; exit 0; fi; exit 1",
+  "crons": []
 }
