@@ -1,76 +1,71 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-10-13T14:28:59.794Z",
-  "as_of": "2026-10-13",
+  "generated_at": "2026-10-14T16:54:45.323Z",
+  "as_of": "2026-10-14",
   "provenance": "live",
   "source": "Yahoo daily prices (SPDR sector ETFs, SPY, ^TNX); Federal Reserve FOMC calendar; earnings engine",
   "regime": "Uptrend · 4/8 sectors positive · defensives leading (risk-off) · 10y yield rising (+26bp in a month)",
-  "sentiment": 16,
+  "sentiment": 15,
   "breadth": 4,
   "sectors": [
     {
       "sector": "Technology",
       "etf": "XLK",
-      "sentiment": 58,
-      "absolute": 82,
-      "note": "XLK leading the market over 3 months (+3.3% vs SPY; 1-month +2.7%), above both its 50- and 200-day averages."
+      "sentiment": 73,
+      "absolute": 89,
+      "note": "XLK leading the market over 3 months (+4.9% vs SPY; 1-month +4.1%), above both its 50- and 200-day averages."
     },
     {
       "sector": "Financials",
       "etf": "XLF",
-      "sentiment": -49,
-      "absolute": -10,
-      "note": "XLF lagging the market over 3 months (-5.4% vs SPY; 1-month -5.6%), above its 200-day but below its 50-day average."
+      "sentiment": -52,
+      "absolute": -16,
+      "note": "XLF lagging the market over 3 months (-6.1% vs SPY; 1-month -6.0%), above its 200-day but below its 50-day average."
     },
     {
       "sector": "Energy",
       "etf": "XLE",
-      "sentiment": 74,
+      "sentiment": 86,
       "absolute": 100,
-      "note": "XLE leading the market over 3 months (+12.8% vs SPY; 1-month -0.1%), above both its 50- and 200-day averages."
+      "note": "XLE leading the market over 3 months (+16.3% vs SPY; 1-month +2.3%), above both its 50- and 200-day averages."
     },
     {
       "sector": "Healthcare",
       "etf": "XLV",
-      "sentiment": 66,
-      "absolute": 94,
-      "note": "XLV leading the market over 3 months (+5.3% vs SPY; 1-month +2.3%), above both its 50- and 200-day averages."
+      "sentiment": 44,
+      "absolute": 86,
+      "note": "XLV leading the market over 3 months (+4.3% vs SPY; 1-month -1.0%), above both its 50- and 200-day averages."
     },
     {
       "sector": "Industrials",
       "etf": "XLI",
-      "sentiment": -92,
+      "sentiment": -87,
       "absolute": -76,
-      "note": "XLI lagging the market over 3 months (-9.8% vs SPY; 1-month -3.7%), below both its 50- and 200-day averages."
+      "note": "XLI lagging the market over 3 months (-9.4% vs SPY; 1-month -3.0%), below both its 50- and 200-day averages."
     },
     {
       "sector": "Consumer Disc.",
       "etf": "XLY",
-      "sentiment": -72,
-      "absolute": -58,
-      "note": "XLY lagging the market over 3 months (-6.7% vs SPY; 1-month -2.5%), below both its 50- and 200-day averages."
+      "sentiment": -75,
+      "absolute": -63,
+      "note": "XLY lagging the market over 3 months (-7.1% vs SPY; 1-month -2.7%), below both its 50- and 200-day averages."
     },
     {
       "sector": "Staples",
       "etf": "XLP",
-      "sentiment": 21,
-      "absolute": 51,
-      "note": "XLP in line with the market over 3 months (-1.9% vs SPY; 1-month -0.2%), above both its 50- and 200-day averages."
+      "sentiment": 11,
+      "absolute": 49,
+      "note": "XLP in line with the market over 3 months (-1.8% vs SPY; 1-month -2.1%), above both its 50- and 200-day averages."
     },
     {
       "sector": "Materials",
       "etf": "XLB",
-      "sentiment": -78,
-      "absolute": -52,
-      "note": "XLB lagging the market over 3 months (-5.7% vs SPY; 1-month -4.6%), below both its 50- and 200-day averages."
+      "sentiment": -68,
+      "absolute": -47,
+      "note": "XLB lagging the market over 3 months (-4.4% vs SPY; 1-month -3.6%), below both its 50- and 200-day averages."
     }
   ],
   "catalysts": [
-    {
-      "date": "2026-10-13",
-      "event": "JPM earnings",
-      "importance": "medium"
-    },
     {
       "date": "2026-10-27",
       "event": "KO earnings",
@@ -107,5 +102,5 @@
       "importance": "high"
     }
   ],
-  "summary": "Market-level read is constructive (+16, 4/8 sectors in absolute uptrends). Relative leaders: Energy and Healthcare; laggards: Materials and Industrials. SPY is +3.8% over 3 months and above both trend lines; participation is selective."
+  "summary": "Market-level read is mixed (+15, 4/8 sectors in absolute uptrends). Relative leaders: Energy and Technology; laggards: Consumer Disc. and Industrials. SPY is +3.3% over 3 months and above both trend lines; participation is selective."
 }

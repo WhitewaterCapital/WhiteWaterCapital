@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
   "engine_version": "0.3.0",
-  "generated_at": "2026-10-13T14:28:17.652222+00:00",
-  "as_of": "2026-10-13",
+  "generated_at": "2026-10-14T16:54:02.936573+00:00",
+  "as_of": "2026-10-14",
   "universe": [
     "AAPL",
     "MSFT",
@@ -15,23 +15,6 @@
   "disclaimer": "Earnings dates/sessions only. NOT a surprise-direction or price-move prediction \u2014 see research/equity-model-research-dossier.md's own 'Earnings-surprise direction' row (Medium confidence, needs analyst estimate data this engine does not fetch) for why that's out of scope here. Any positioning read attached to an event (insider activity, factor momentum) is a separate, already-real signal from elsewhere in this repo, not derived from the calendar data itself. A per-event eps_estimate/eps_estimate_stdev/sue may be attached (see EARNINGS_ESTIMATES_API_KEY_VAR) but SUE itself is null on every event here by construction \u2014 every export from this engine is pre-print, and SUE requires an actual EPS that does not exist yet. A per-event revision_direction/revision_pct (see ee/revisions.py) is also attached \u2014 a REAL day-over-day read of this engine's own consensus-estimate snapshot history, honestly null with a stated reason (revision_abstain_reason) until at least two real runs on two different as_of dates exist for that ticker, which will be the case for most runs early in this log's life.",
   "data_provenance": "live",
   "events": [
-    {
-      "ticker": "JPM",
-      "report_date": "2026-10-13",
-      "session": "bmo",
-      "eps_estimate": 5.94,
-      "eps_actual": null,
-      "fiscal_period": "Sep/2026",
-      "source": "nasdaq",
-      "n_estimates": 6,
-      "eps_estimate_stdev": null,
-      "estimate_source": null,
-      "sue": null,
-      "sue_abstain_reason": "ALPHA_VANTAGE_API_KEY not set \u2014 no analyst-estimates adapter configured for this run",
-      "revision_direction": "unchanged",
-      "revision_pct": 0.0,
-      "revision_abstain_reason": null
-    },
     {
       "ticker": "KO",
       "report_date": "2026-10-27",

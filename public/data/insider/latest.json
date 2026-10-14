@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-10-13T14:28:58.173Z",
-  "as_of": "2026-10-13",
+  "generated_at": "2026-10-14T16:54:43.362Z",
+  "as_of": "2026-10-14",
   "window_days": 90,
   "provenance": "live",
   "source": "SEC EDGAR Form 4 (open-market P/S only; 10b5-1 planned sales excluded)",
@@ -27,7 +27,7 @@
     {
       "ticker": "MSFT",
       "cik": 789019,
-      "form4_filings_scanned": 43,
+      "form4_filings_scanned": 42,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -95,7 +95,7 @@
     {
       "ticker": "META",
       "cik": 1326801,
-      "form4_filings_scanned": 33,
+      "form4_filings_scanned": 32,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -327,7 +327,7 @@
     {
       "ticker": "BAC",
       "cik": 70858,
-      "form4_filings_scanned": 15,
+      "form4_filings_scanned": 16,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
