@@ -1,8 +1,8 @@
 {
   "schema_version": "0.2.0",
   "engine_version": "0.1.0",
-  "generated_at": "2026-10-14T14:19:07+00:00",
-  "as_of": "2026-10-13",
+  "generated_at": "2026-10-15T16:32:40+00:00",
+  "as_of": "2026-10-15",
   "model_variant": "mortgage_choice",
   "disclaimer": "Aurora is a structural macro research model (Sustek housing/mortgage DSGE). Outputs are directional scenario analysis for internal decision-support only \u2014 not forecasts, not investment advice. Shock sizes are normalized to a +1% innovation and responses are linearized, so they scale linearly with shock size.",
   "steady_state": {
@@ -867,14 +867,14 @@
     }
   ],
   "regime": {
-    "as_of": "2026-10-13",
+    "as_of": "2026-10-15",
     "label": "Restrictive / tightening",
     "scenario_affinity": {
-      "Restrictive / tightening": 0.294,
-      "Expansion": 0.181,
-      "Housing-driven": 0.14,
-      "Demand / valuation boom": 0.16,
-      "Mixed / transitional": 0.225
+      "Restrictive / tightening": 0.28,
+      "Expansion": 0.204,
+      "Housing-driven": 0.134,
+      "Demand / valuation boom": 0.167,
+      "Mixed / transitional": 0.215
     },
     "key_indicators": [
       {
@@ -886,20 +886,20 @@
       {
         "name": "Growth composite (z)",
         "value": null,
-        "z_score": 0.2,
-        "as_of": "2026-10-13"
+        "z_score": 0.39,
+        "as_of": "2026-10-15"
       },
       {
         "name": "Inflation composite (z)",
         "value": null,
         "z_score": 0.66,
-        "as_of": "2026-10-13"
+        "as_of": "2026-10-15"
       },
       {
         "name": "10y-2y curve slope",
-        "value": 0.42,
-        "z_score": -0.63,
-        "as_of": "2026-10-13"
+        "value": 0.37,
+        "z_score": -0.69,
+        "as_of": "2026-10-14"
       },
       {
         "name": "Core PCE price index",
@@ -915,21 +915,21 @@
       },
       {
         "name": "BAA-10y credit spread",
-        "value": 1.45,
-        "z_score": -1.27,
-        "as_of": "2026-10-09"
+        "value": 1.46,
+        "z_score": -1.26,
+        "as_of": "2026-10-13"
       },
       {
         "name": "10y Treasury yield",
-        "value": 5.24,
-        "z_score": 2.13,
-        "as_of": "2026-10-09"
+        "value": 5.21,
+        "z_score": 2.1,
+        "as_of": "2026-10-13"
       },
       {
         "name": "30y mortgage rate",
         "value": 7.4,
         "z_score": 2.02,
-        "as_of": "2026-10-08"
+        "as_of": "2026-10-15"
       }
     ],
     "confidence": "low",
@@ -983,7 +983,7 @@
   "nowcast": {
     "horizon_months": 3,
     "method": "PCA(4) + Ridge, walk-forward time-series CV; OOS R^2 vs naive mean",
-    "as_of": "2026-10-13",
+    "as_of": "2026-10-15",
     "factors": [
       {
         "factor": "Mkt-RF",
