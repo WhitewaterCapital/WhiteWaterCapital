@@ -1,7 +1,7 @@
 {
   "schema_version": "0.2.0",
   "engine_version": "0.1.0",
-  "generated_at": "2026-10-15T16:32:40+00:00",
+  "generated_at": "2026-10-16T14:25:33+00:00",
   "as_of": "2026-10-15",
   "model_variant": "mortgage_choice",
   "disclaimer": "Aurora is a structural macro research model (Sustek housing/mortgage DSGE). Outputs are directional scenario analysis for internal decision-support only \u2014 not forecasts, not investment advice. Shock sizes are normalized to a +1% innovation and responses are linearized, so they scale linearly with shock size.",
@@ -868,21 +868,9 @@
   ],
   "regime": {
     "as_of": "2026-10-15",
-    "label": "Restrictive / tightening",
-    "scenario_affinity": {
-      "Restrictive / tightening": 0.28,
-      "Expansion": 0.204,
-      "Housing-driven": 0.134,
-      "Demand / valuation boom": 0.167,
-      "Mixed / transitional": 0.215
-    },
+    "label": null,
+    "scenario_affinity": null,
     "key_indicators": [
-      {
-        "name": "Real policy rate (FF \u2212 core PCE)",
-        "value": 0.74,
-        "z_score": null,
-        "as_of": "2026-09-01"
-      },
       {
         "name": "Growth composite (z)",
         "value": null,
@@ -892,20 +880,14 @@
       {
         "name": "Inflation composite (z)",
         "value": null,
-        "z_score": 0.66,
+        "z_score": 0.61,
         "as_of": "2026-10-15"
       },
       {
         "name": "10y-2y curve slope",
-        "value": 0.37,
-        "z_score": -0.69,
-        "as_of": "2026-10-14"
-      },
-      {
-        "name": "Core PCE price index",
-        "value": 3.008,
-        "z_score": 0.71,
-        "as_of": "2026-08-01"
+        "value": 0.33,
+        "z_score": -0.73,
+        "as_of": "2026-10-15"
       },
       {
         "name": "Case-Shiller home price",
@@ -914,16 +896,10 @@
         "as_of": "2026-07-01"
       },
       {
-        "name": "BAA-10y credit spread",
-        "value": 1.46,
-        "z_score": -1.26,
-        "as_of": "2026-10-13"
-      },
-      {
         "name": "10y Treasury yield",
-        "value": 5.21,
-        "z_score": 2.1,
-        "as_of": "2026-10-13"
+        "value": 5.19,
+        "z_score": 2.09,
+        "as_of": "2026-10-14"
       },
       {
         "name": "30y mortgage rate",
@@ -932,54 +908,12 @@
         "as_of": "2026-10-15"
       }
     ],
-    "confidence": "low",
+    "confidence": "insufficient",
     "flags": [
-      "2 indicator(s) stale (normal for quarterly data)",
-      "regime signal is weak / transitional"
+      "core inputs missing \u2014 not enough data to classify"
     ]
   },
-  "tilt": {
-    "factors": [
-      {
-        "name": "quality",
-        "lean": "overweight",
-        "rationale": "restrictive policy rewards balance-sheet strength"
-      },
-      {
-        "name": "low_volatility",
-        "lean": "overweight",
-        "rationale": "defensive posture into tightening"
-      },
-      {
-        "name": "duration",
-        "lean": "underweight",
-        "rationale": "high/rising real rates penalise long duration"
-      }
-    ],
-    "sectors": [
-      {
-        "name": "utilities",
-        "lean": "overweight",
-        "rationale": "defensive, rate-shock passes"
-      },
-      {
-        "name": "consumer_staples",
-        "lean": "overweight",
-        "rationale": "demand-inelastic"
-      },
-      {
-        "name": "homebuilders_REITs",
-        "lean": "underweight",
-        "rationale": "rate-sensitive, housing softens"
-      },
-      {
-        "name": "long_duration_tech",
-        "lean": "underweight",
-        "rationale": "valuation compresses with real rates"
-      }
-    ],
-    "confidence": "medium"
-  },
+  "tilt": null,
   "nowcast": {
     "horizon_months": 3,
     "method": "PCA(4) + Ridge, walk-forward time-series CV; OOS R^2 vs naive mean",
