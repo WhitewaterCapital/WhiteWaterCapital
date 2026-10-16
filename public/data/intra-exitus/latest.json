@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0.0",
   "engine_version": "0.1.0",
-  "generated_at": "2026-10-15T16:38:54.084911+00:00",
-  "as_of": "2026-10-14",
+  "generated_at": "2026-10-16T16:23:06.672351+00:00",
+  "as_of": "2026-10-15",
   "universe": [
     "AAPL",
     "MSFT",
@@ -22,47 +22,47 @@
       "bias": "long",
       "confidence": "actionable",
       "entryZone": [
-        331.87,
-        338.55
+        332.5,
+        339.15
       ],
-      "stop": 315.79,
+      "stop": 315.84,
       "targets": [
-        372.69
+        374.12
       ],
       "expectedR": 0.06,
-      "sizingPct": 14.87,
+      "sizingPct": 14.55,
       "timeStop": "Exit if the first target isn't tagged within ~30 trading days (~6 weeks), or re-evaluate at the next earnings print.",
-      "rationale": "Uptrend; enter on a pullback to the 335.21 anchor with the stop 1.5 ATR beyond the recent swing low (dynamic buffer). Targets at 1.5R/2.5R/4R, kept only within a realistic 30-day move (\u00b111%).",
+      "rationale": "Uptrend; enter on a pullback to the 335.83 anchor with the stop 1.5 ATR beyond the recent swing low (dynamic buffer). Targets at 1.5R/2.5R/4R, kept only within a realistic 30-day move (\u00b111%).",
       "invalidations": [
-        "A close beyond 315.79 breaks structure and voids the trend setup.",
+        "A close beyond 315.84 breaks structure and voids the trend setup.",
         "Regime flips to high-vol \u2014 halve size or stand aside."
       ],
-      "lastClose": 342.96,
-      "asOf": "2026-10-14"
+      "lastClose": 342.0,
+      "asOf": "2026-10-15"
     },
     {
       "ticker": "MSFT",
       "regime": "trend",
       "bias": "long",
-      "confidence": "actionable",
+      "confidence": "watch",
       "entryZone": [
-        513.41,
-        524.97
+        515.31,
+        526.75
       ],
-      "stop": 473.76,
+      "stop": 473.94,
       "targets": [
-        601.79
+        579.56
       ],
-      "expectedR": 0.39,
-      "sizingPct": 10.25,
+      "expectedR": 0.38,
+      "sizingPct": 9.97,
       "timeStop": "Exit if the first target isn't tagged within ~30 trading days (~6 weeks), or re-evaluate at the next earnings print.",
-      "rationale": "Uptrend; enter on a pullback to the 519.19 anchor with the stop 1.5 ATR beyond the recent swing low (dynamic buffer). Targets at 1.5R/2.5R/4R, kept only within a realistic 30-day move (\u00b115%).",
+      "rationale": "Uptrend; enter on a pullback to the 521.03 anchor with the stop 1.5 ATR beyond the recent swing low (dynamic buffer). Targets at 1.5R/2.5R/4R, kept only within a realistic 30-day move (\u00b114%). Even a 1.5R target is beyond a realistic 30-day move (\u00b114%) \u2014 stop too wide for this volatility; watch.",
       "invalidations": [
-        "A close beyond 473.76 breaks structure and voids the trend setup.",
+        "A close beyond 473.94 breaks structure and voids the trend setup.",
         "Regime flips to high-vol \u2014 halve size or stand aside."
       ],
-      "lastClose": 533.69,
-      "asOf": "2026-10-14"
+      "lastClose": 539.44,
+      "asOf": "2026-10-15"
     },
     {
       "ticker": "NVDA",
@@ -75,12 +75,12 @@
       "expectedR": null,
       "sizingPct": null,
       "timeStop": "\u2014",
-      "rationale": "Only 0.7 sigma from the mean \u2014 inside the 1.5 sigma entry threshold. Wait for a wider stretch.",
+      "rationale": "Only 1.1 sigma from the mean \u2014 inside the 1.5 sigma entry threshold. Wait for a wider stretch.",
       "invalidations": [
         "Re-check when price stretches past 1.5 sigma."
       ],
-      "lastClose": 221.3,
-      "asOf": "2026-10-14"
+      "lastClose": 217.23,
+      "asOf": "2026-10-15"
     },
     {
       "ticker": "JPM",
@@ -88,47 +88,47 @@
       "bias": "short",
       "confidence": "watch",
       "entryZone": [
-        333.43,
-        339.87
+        333.38,
+        339.71
       ],
-      "stop": 362.4,
+      "stop": 362.24,
       "targets": [
-        304.46
+        304.52
       ],
-      "expectedR": 0.03,
-      "sizingPct": 11.51,
+      "expectedR": 0.02,
+      "sizingPct": 11.55,
       "timeStop": "Exit if the first target isn't tagged within ~30 trading days (~6 weeks), or re-evaluate at the next earnings print.",
-      "rationale": "Downtrend; enter on a pullback to the 336.65 anchor with the stop 1.5 ATR beyond the recent swing high (dynamic buffer). Targets at 1.5R/2.5R/4R, kept only within a realistic 30-day move (\u00b112%). Even a 1.5R target is beyond a realistic 30-day move (\u00b112%) \u2014 stop too wide for this volatility; watch.",
+      "rationale": "Downtrend; enter on a pullback to the 336.55 anchor with the stop 1.5 ATR beyond the recent swing high (dynamic buffer). Targets at 1.5R/2.5R/4R, kept only within a realistic 30-day move (\u00b112%). Even a 1.5R target is beyond a realistic 30-day move (\u00b112%) \u2014 stop too wide for this volatility; watch.",
       "invalidations": [
-        "A close beyond 362.4 breaks structure and voids the trend setup.",
+        "A close beyond 362.24 breaks structure and voids the trend setup.",
         "Regime flips to high-vol \u2014 halve size or stand aside."
       ],
-      "lastClose": 335.28,
-      "asOf": "2026-10-14"
+      "lastClose": 335.53,
+      "asOf": "2026-10-15"
     },
     {
       "ticker": "XOM",
       "regime": "trend",
       "bias": "long",
-      "confidence": "actionable",
+      "confidence": "watch",
       "entryZone": [
-        164.7,
-        168.15
+        165.39,
+        168.96
       ],
-      "stop": 150.67,
+      "stop": 150.49,
       "targets": [
-        194.37
+        187.43
       ],
-      "expectedR": 0.25,
-      "sizingPct": 9.62,
+      "expectedR": 0.2,
+      "sizingPct": 9.15,
       "timeStop": "Exit if the first target isn't tagged within ~30 trading days (~6 weeks), or re-evaluate at the next earnings print.",
-      "rationale": "Uptrend; enter on a pullback to the 166.42 anchor with the stop 1.5 ATR beyond the recent swing low (dynamic buffer). Targets at 1.5R/2.5R/4R, kept only within a realistic 30-day move (\u00b117%).",
+      "rationale": "Uptrend; enter on a pullback to the 167.17 anchor with the stop 1.5 ATR beyond the recent swing low (dynamic buffer). Targets at 1.5R/2.5R/4R, kept only within a realistic 30-day move (\u00b114%). Even a 1.5R target is beyond a realistic 30-day move (\u00b114%) \u2014 stop too wide for this volatility; watch.",
       "invalidations": [
-        "A close beyond 150.67 breaks structure and voids the trend setup.",
+        "A close beyond 150.49 breaks structure and voids the trend setup.",
         "Regime flips to high-vol \u2014 halve size or stand aside."
       ],
-      "lastClose": 177.01,
-      "asOf": "2026-10-14"
+      "lastClose": 174.68,
+      "asOf": "2026-10-15"
     },
     {
       "ticker": "KO",
@@ -141,12 +141,12 @@
       "expectedR": null,
       "sizingPct": null,
       "timeStop": "\u2014",
-      "rationale": "Only 1.0 sigma from the mean \u2014 inside the 1.5 sigma entry threshold. Wait for a wider stretch.",
+      "rationale": "Only 0.9 sigma from the mean \u2014 inside the 1.5 sigma entry threshold. Wait for a wider stretch.",
       "invalidations": [
         "Re-check when price stretches past 1.5 sigma."
       ],
-      "lastClose": 91.78,
-      "asOf": "2026-10-14"
+      "lastClose": 92.0,
+      "asOf": "2026-10-15"
     },
     {
       "ticker": "F",
@@ -154,23 +154,23 @@
       "bias": "short",
       "confidence": "watch",
       "entryZone": [
-        12.37,
-        12.68
+        12.35,
+        12.67
       ],
-      "stop": 14.3,
+      "stop": 14.07,
       "targets": [
-        10.44
+        10.63
       ],
-      "expectedR": 0.11,
-      "sizingPct": 6.41,
+      "expectedR": 0.1,
+      "sizingPct": 7.18,
       "timeStop": "Exit if the first target isn't tagged within ~30 trading days (~6 weeks), or re-evaluate at the next earnings print.",
-      "rationale": "Downtrend; enter on a pullback to the 12.53 anchor with the stop 1.5 ATR beyond the recent swing high (dynamic buffer). Targets at 1.5R/2.5R/4R, kept only within a realistic 30-day move (\u00b115%). NOTE: stop is 16% of price (>15%) \u2014 structure is too loose for a clean swing; watch, don't force it. Even a 1.5R target is beyond a realistic 30-day move (\u00b115%) \u2014 stop too wide for this volatility; watch.",
+      "rationale": "Downtrend; enter on a pullback to the 12.51 anchor with the stop 1.5 ATR beyond the recent swing high (dynamic buffer). Targets at 1.5R/2.5R/4R, kept only within a realistic 30-day move (\u00b116%). Even a 1.5R target is beyond a realistic 30-day move (\u00b116%) \u2014 stop too wide for this volatility; watch.",
       "invalidations": [
-        "A close beyond 14.3 breaks structure and voids the trend setup.",
+        "A close beyond 14.07 breaks structure and voids the trend setup.",
         "Regime flips to high-vol \u2014 halve size or stand aside."
       ],
-      "lastClose": 12.05,
-      "asOf": "2026-10-14"
+      "lastClose": 12.31,
+      "asOf": "2026-10-15"
     }
   ]
 }

@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
   "engine_version": "0.3.0",
-  "generated_at": "2026-10-15T16:39:30.258068+00:00",
-  "as_of": "2026-10-15",
+  "generated_at": "2026-10-16T16:23:47.409674+00:00",
+  "as_of": "2026-10-16",
   "universe": [
     "AAPL",
     "MSFT",
@@ -53,7 +53,7 @@
       "ticker": "XOM",
       "report_date": "2026-10-30",
       "session": null,
-      "eps_estimate": 3.93,
+      "eps_estimate": 3.92,
       "eps_actual": null,
       "fiscal_period": "Sep/2026",
       "source": "nasdaq",
@@ -62,8 +62,8 @@
       "estimate_source": null,
       "sue": null,
       "sue_abstain_reason": "ALPHA_VANTAGE_API_KEY not set \u2014 no analyst-estimates adapter configured for this run",
-      "revision_direction": "unchanged",
-      "revision_pct": 0.0,
+      "revision_direction": "lowered",
+      "revision_pct": -0.2544529262086573,
       "revision_abstain_reason": null
     },
     {
@@ -79,25 +79,25 @@
       "estimate_source": null,
       "sue": null,
       "sue_abstain_reason": "ALPHA_VANTAGE_API_KEY not set \u2014 no analyst-estimates adapter configured for this run",
-      "revision_direction": "raised",
-      "revision_pct": 0.5050505050505055,
+      "revision_direction": "unchanged",
+      "revision_pct": 0.0,
       "revision_abstain_reason": null
     },
     {
       "ticker": "NVDA",
       "report_date": "2026-11-18",
       "session": null,
-      "eps_estimate": 2.47,
+      "eps_estimate": 2.48,
       "eps_actual": null,
       "fiscal_period": "Oct/2026",
       "source": "nasdaq",
-      "n_estimates": 13,
+      "n_estimates": 12,
       "eps_estimate_stdev": null,
       "estimate_source": null,
       "sue": null,
       "sue_abstain_reason": "ALPHA_VANTAGE_API_KEY not set \u2014 no analyst-estimates adapter configured for this run",
-      "revision_direction": "unchanged",
-      "revision_pct": 0.0,
+      "revision_direction": "raised",
+      "revision_pct": 0.40485829959513303,
       "revision_abstain_reason": null
     }
   ]
