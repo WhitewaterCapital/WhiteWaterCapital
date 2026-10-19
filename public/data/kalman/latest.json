@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0.0",
   "engine_version": "0.1.0",
-  "generated_at": "2026-10-16T16:23:34.652671+00:00",
-  "as_of": "2026-10-15",
+  "generated_at": "2026-10-19T18:35:32.550329+00:00",
+  "as_of": "2026-10-16",
   "universe": [
     "AAPL",
     "MSFT",
@@ -24,9 +24,9 @@
       "ticker2": "MSFT",
       "available": true,
       "cointegrated": false,
-      "n_obs": 276,
+      "n_obs": 275,
       "cointegration": {
-        "adf_t_stat": -1.4614,
+        "adf_t_stat": -1.3662,
         "adf_lag_used": 0,
         "critical_value_5pct": -3.3377,
         "critical_values": {
@@ -35,11 +35,11 @@
           "10": -3.0462
         },
         "significance": 0.05,
-        "ols_hedge_ratio": 0.078916,
-        "ols_intercept": 5.161794,
-        "ols_r_squared": 0.0086
+        "ols_hedge_ratio": 0.098558,
+        "ols_intercept": 5.044039,
+        "ols_r_squared": 0.0136
       },
-      "note": "ADF t-stat -1.461 vs. 5% critical value -3.338 (lag=0, n=274 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
+      "note": "ADF t-stat -1.366 vs. 5% critical value -3.338 (lag=0, n=273 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
       "score": null,
       "signal": "abstain-not-cointegrated"
     },
@@ -49,9 +49,9 @@
       "ticker2": "NVDA",
       "available": true,
       "cointegrated": true,
-      "n_obs": 276,
+      "n_obs": 275,
       "cointegration": {
-        "adf_t_stat": -3.9267,
+        "adf_t_stat": -3.7216,
         "adf_lag_used": 0,
         "critical_value_5pct": -3.3377,
         "critical_values": {
@@ -60,32 +60,32 @@
           "10": -3.0462
         },
         "significance": 0.05,
-        "ols_hedge_ratio": 0.956809,
-        "ols_intercept": 0.590073,
-        "ols_r_squared": 0.6908
+        "ols_hedge_ratio": 0.951263,
+        "ols_intercept": 0.620511,
+        "ols_r_squared": 0.6886
       },
       "spread": {
-        "z_score": 1.7111,
-        "half_life_days": 6.1,
-        "evidence": "strong"
+        "z_score": 2.0244,
+        "half_life_days": 6.4,
+        "evidence": "marginal"
       },
       "kalman": {
-        "mu": 4.31218,
-        "gamma": 0.282722,
-        "z_score": 0.1953,
-        "innovation_var": 0.00085514,
+        "mu": 4.313859,
+        "gamma": 0.283781,
+        "z_score": 0.3357,
+        "innovation_var": 0.00083064,
         "adaptive_noise": {
           "initial_q_trace": 2e-06,
-          "final_q_trace": 0.00011689383278605449,
-          "q_drift_pct": 5744.7,
+          "final_q_trace": 0.00011606814946782072,
+          "q_drift_pct": 5703.4,
           "initial_r": 0.001,
-          "final_r": 0.00019538486970202567,
-          "r_drift_pct": -80.5
+          "final_r": 0.00019425353488870014,
+          "r_drift_pct": -80.6
         }
       },
-      "score": -42.8,
-      "signal": "lean short AAPL / long NVDA",
-      "note": "Cointegrated, strong evidence (ADF t=-3.927 vs. 5% crit -3.338, 1% crit -3.900, n=276). Spread is +1.71 sd from its cointegrating mean, half-life ~6d -> lean short AAPL / long NVDA. Adaptive Kalman filter: hedge ratio (gamma) +0.2827, one-step innovation z=+0.20. Filter's own noise estimate moved online from its initial guess: Q trace 2.00e-06 -> 1.17e-04, R 1.00e-03 -> 1.95e-04 -- re-estimated from this run's own innovations (Mehra/Akhlaghi covariance matching), not a frozen hand-set hyperparameter. Research read, not a standalone trade order."
+      "score": -50.6,
+      "signal": "short AAPL / long NVDA",
+      "note": "Cointegrated, marginal evidence (ADF t=-3.722 vs. 5% crit -3.338, 1% crit -3.900, n=275). Spread is +2.02 sd from its cointegrating mean, half-life ~6d -> short AAPL / long NVDA. Adaptive Kalman filter: hedge ratio (gamma) +0.2838, one-step innovation z=+0.34. Filter's own noise estimate moved online from its initial guess: Q trace 2.00e-06 -> 1.16e-04, R 1.00e-03 -> 1.94e-04 -- re-estimated from this run's own innovations (Mehra/Akhlaghi covariance matching), not a frozen hand-set hyperparameter. Research read, not a standalone trade order."
     },
     {
       "pair": "AAPL/JPM",
@@ -93,9 +93,9 @@
       "ticker2": "JPM",
       "available": true,
       "cointegrated": false,
-      "n_obs": 276,
+      "n_obs": 275,
       "cointegration": {
-        "adf_t_stat": -2.7119,
+        "adf_t_stat": -2.7438,
         "adf_lag_used": 0,
         "critical_value_5pct": -3.3377,
         "critical_values": {
@@ -104,11 +104,11 @@
           "10": -3.0462
         },
         "significance": 0.05,
-        "ols_hedge_ratio": 1.138429,
-        "ols_intercept": -0.902557,
-        "ols_r_squared": 0.5811
+        "ols_hedge_ratio": 1.133436,
+        "ols_intercept": -0.872408,
+        "ols_r_squared": 0.5855
       },
-      "note": "ADF t-stat -2.712 vs. 5% critical value -3.338 (lag=0, n=274 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
+      "note": "ADF t-stat -2.744 vs. 5% critical value -3.338 (lag=0, n=273 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
       "score": null,
       "signal": "abstain-not-cointegrated"
     },
@@ -118,9 +118,9 @@
       "ticker2": "XOM",
       "available": true,
       "cointegrated": false,
-      "n_obs": 276,
+      "n_obs": 275,
       "cointegration": {
-        "adf_t_stat": -1.7508,
+        "adf_t_stat": -1.7448,
         "adf_lag_used": 0,
         "critical_value_5pct": -3.3377,
         "critical_values": {
@@ -129,11 +129,11 @@
           "10": -3.0462
         },
         "significance": 0.05,
-        "ols_hedge_ratio": 0.405782,
-        "ols_intercept": 3.643385,
-        "ols_r_squared": 0.3449
+        "ols_hedge_ratio": 0.401181,
+        "ols_intercept": 3.667162,
+        "ols_r_squared": 0.3396
       },
-      "note": "ADF t-stat -1.751 vs. 5% critical value -3.338 (lag=0, n=274 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
+      "note": "ADF t-stat -1.745 vs. 5% critical value -3.338 (lag=0, n=273 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
       "score": null,
       "signal": "abstain-not-cointegrated"
     },
@@ -143,9 +143,9 @@
       "ticker2": "KO",
       "available": true,
       "cointegrated": false,
-      "n_obs": 276,
+      "n_obs": 275,
       "cointegration": {
-        "adf_t_stat": -2.5806,
+        "adf_t_stat": -2.539,
         "adf_lag_used": 0,
         "critical_value_5pct": -3.3377,
         "critical_values": {
@@ -154,11 +154,11 @@
           "10": -3.0462
         },
         "significance": 0.05,
-        "ols_hedge_ratio": 0.827467,
-        "ols_intercept": 2.058403,
-        "ols_r_squared": 0.6867
+        "ols_hedge_ratio": 0.82118,
+        "ols_intercept": 2.086245,
+        "ols_r_squared": 0.6854
       },
-      "note": "ADF t-stat -2.581 vs. 5% critical value -3.338 (lag=0, n=274 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
+      "note": "ADF t-stat -2.539 vs. 5% critical value -3.338 (lag=0, n=273 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
       "score": null,
       "signal": "abstain-not-cointegrated"
     },
@@ -168,9 +168,9 @@
       "ticker2": "NVDA",
       "available": true,
       "cointegrated": false,
-      "n_obs": 276,
+      "n_obs": 275,
       "cointegration": {
-        "adf_t_stat": -1.3011,
+        "adf_t_stat": -1.3964,
         "adf_lag_used": 0,
         "critical_value_5pct": -3.3377,
         "critical_values": {
@@ -179,11 +179,11 @@
           "10": -3.0462
         },
         "significance": 0.05,
-        "ols_hedge_ratio": 0.245342,
-        "ols_intercept": 4.810714,
-        "ols_r_squared": 0.0329
+        "ols_hedge_ratio": 0.264825,
+        "ols_intercept": 4.707318,
+        "ols_r_squared": 0.038
       },
-      "note": "ADF t-stat -1.301 vs. 5% critical value -3.338 (lag=0, n=274 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
+      "note": "ADF t-stat -1.396 vs. 5% critical value -3.338 (lag=0, n=273 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
       "score": null,
       "signal": "abstain-not-cointegrated"
     },
@@ -193,9 +193,9 @@
       "ticker2": "JPM",
       "available": true,
       "cointegrated": false,
-      "n_obs": 276,
+      "n_obs": 275,
       "cointegration": {
-        "adf_t_stat": -1.3763,
+        "adf_t_stat": -1.4678,
         "adf_lag_used": 0,
         "critical_value_5pct": -3.3377,
         "critical_values": {
@@ -204,11 +204,11 @@
           "10": -3.0462
         },
         "significance": 0.05,
-        "ols_hedge_ratio": 0.408817,
-        "ols_intercept": 3.755747,
-        "ols_r_squared": 0.0542
+        "ols_hedge_ratio": 0.427406,
+        "ols_intercept": 3.648373,
+        "ols_r_squared": 0.0593
       },
-      "note": "ADF t-stat -1.376 vs. 5% critical value -3.338 (lag=0, n=274 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
+      "note": "ADF t-stat -1.468 vs. 5% critical value -3.338 (lag=0, n=273 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
       "score": null,
       "signal": "abstain-not-cointegrated"
     },
@@ -218,9 +218,9 @@
       "ticker2": "XOM",
       "available": true,
       "cointegrated": false,
-      "n_obs": 276,
+      "n_obs": 275,
       "cointegration": {
-        "adf_t_stat": -0.5837,
+        "adf_t_stat": -0.6947,
         "adf_lag_used": 0,
         "critical_value_5pct": -3.3377,
         "critical_values": {
@@ -229,11 +229,11 @@
           "10": -3.0462
         },
         "significance": 0.05,
-        "ols_hedge_ratio": -0.321519,
-        "ols_intercept": 7.691485,
-        "ols_r_squared": 0.1567
+        "ols_hedge_ratio": -0.307896,
+        "ols_intercept": 7.624947,
+        "ols_r_squared": 0.1425
       },
-      "note": "ADF t-stat -0.584 vs. 5% critical value -3.338 (lag=0, n=274 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
+      "note": "ADF t-stat -0.695 vs. 5% critical value -3.338 (lag=0, n=273 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
       "score": null,
       "signal": "abstain-not-cointegrated"
     },
@@ -243,9 +243,9 @@
       "ticker2": "KO",
       "available": true,
       "cointegrated": false,
-      "n_obs": 276,
+      "n_obs": 275,
       "cointegration": {
-        "adf_t_stat": -0.7936,
+        "adf_t_stat": -0.9046,
         "adf_lag_used": 0,
         "critical_value_5pct": -3.3377,
         "critical_values": {
@@ -254,11 +254,11 @@
           "10": -3.0462
         },
         "significance": 0.05,
-        "ols_hedge_ratio": -0.239585,
-        "ols_intercept": 7.144637,
-        "ols_r_squared": 0.0417
+        "ols_hedge_ratio": -0.215455,
+        "ols_intercept": 7.040287,
+        "ols_r_squared": 0.0336
       },
-      "note": "ADF t-stat -0.794 vs. 5% critical value -3.338 (lag=0, n=274 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
+      "note": "ADF t-stat -0.905 vs. 5% critical value -3.338 (lag=0, n=273 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
       "score": null,
       "signal": "abstain-not-cointegrated"
     },
@@ -268,9 +268,9 @@
       "ticker2": "JPM",
       "available": true,
       "cointegrated": false,
-      "n_obs": 276,
+      "n_obs": 275,
       "cointegration": {
-        "adf_t_stat": -3.077,
+        "adf_t_stat": -3.1805,
         "adf_lag_used": 0,
         "critical_value_5pct": -3.3377,
         "critical_values": {
@@ -279,11 +279,11 @@
           "10": -3.0462
         },
         "significance": 0.05,
-        "ols_hedge_ratio": 0.825607,
-        "ols_intercept": 0.534302,
-        "ols_r_squared": 0.405
+        "ols_hedge_ratio": 0.821737,
+        "ols_intercept": 0.557101,
+        "ols_r_squared": 0.4045
       },
-      "note": "ADF t-stat -3.077 vs. 5% critical value -3.338 (lag=0, n=274 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
+      "note": "ADF t-stat -3.181 vs. 5% critical value -3.338 (lag=0, n=273 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
       "score": null,
       "signal": "abstain-not-cointegrated"
     },
@@ -293,9 +293,9 @@
       "ticker2": "XOM",
       "available": true,
       "cointegrated": false,
-      "n_obs": 276,
+      "n_obs": 275,
       "cointegration": {
-        "adf_t_stat": -2.9494,
+        "adf_t_stat": -2.9771,
         "adf_lag_used": 0,
         "critical_value_5pct": -3.3377,
         "critical_values": {
@@ -304,11 +304,11 @@
           "10": -3.0462
         },
         "significance": 0.05,
-        "ols_hedge_ratio": 0.347454,
-        "ols_intercept": 3.568967,
-        "ols_r_squared": 0.3351
+        "ols_hedge_ratio": 0.345397,
+        "ols_intercept": 3.579258,
+        "ols_r_squared": 0.3308
       },
-      "note": "ADF t-stat -2.949 vs. 5% critical value -3.338 (lag=0, n=274 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
+      "note": "ADF t-stat -2.977 vs. 5% critical value -3.338 (lag=0, n=273 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
       "score": null,
       "signal": "abstain-not-cointegrated"
     },
@@ -318,9 +318,9 @@
       "ticker2": "KO",
       "available": true,
       "cointegrated": true,
-      "n_obs": 276,
+      "n_obs": 275,
       "cointegration": {
-        "adf_t_stat": -3.772,
+        "adf_t_stat": -3.7317,
         "adf_lag_used": 0,
         "critical_value_5pct": -3.3377,
         "critical_values": {
@@ -329,32 +329,32 @@
           "10": -3.0462
         },
         "significance": 0.05,
-        "ols_hedge_ratio": 0.638902,
-        "ols_intercept": 2.513481,
-        "ols_r_squared": 0.5426
+        "ols_hedge_ratio": 0.634778,
+        "ols_intercept": 2.531211,
+        "ols_r_squared": 0.5382
       },
       "spread": {
-        "z_score": -0.3621,
-        "half_life_days": 6.6,
+        "z_score": -0.8048,
+        "half_life_days": 6.7,
         "evidence": "marginal"
       },
       "kalman": {
-        "mu": 5.446419,
-        "gamma": -0.013452,
-        "z_score": -0.7155,
-        "innovation_var": 0.00121751,
+        "mu": 5.477628,
+        "gamma": -0.023694,
+        "z_score": -0.532,
+        "innovation_var": 0.0012439,
         "adaptive_noise": {
           "initial_q_trace": 2e-06,
-          "final_q_trace": 0.0001612654235936492,
-          "q_drift_pct": 7963.3,
+          "final_q_trace": 0.0001634133130239264,
+          "q_drift_pct": 8070.7,
           "initial_r": 0.001,
-          "final_r": 0.00022531931084267704,
-          "r_drift_pct": -77.5
+          "final_r": 0.00022568869448544405,
+          "r_drift_pct": -77.4
         }
       },
-      "score": 9.1,
-      "signal": "flat / near fair value",
-      "note": "Cointegrated, marginal evidence (ADF t=-3.772 vs. 5% crit -3.338, 1% crit -3.900, n=276). Spread is -0.36 sd from its cointegrating mean, half-life ~7d -> flat / near fair value. Adaptive Kalman filter: hedge ratio (gamma) -0.0135, one-step innovation z=-0.72. Filter's own noise estimate moved online from its initial guess: Q trace 2.00e-06 -> 1.61e-04, R 1.00e-03 -> 2.25e-04 -- re-estimated from this run's own innovations (Mehra/Akhlaghi covariance matching), not a frozen hand-set hyperparameter. Research read, not a standalone trade order."
+      "score": 20.1,
+      "signal": "lean long NVDA / short KO",
+      "note": "Cointegrated, marginal evidence (ADF t=-3.732 vs. 5% crit -3.338, 1% crit -3.900, n=275). Spread is -0.80 sd from its cointegrating mean, half-life ~7d -> lean long NVDA / short KO. Adaptive Kalman filter: hedge ratio (gamma) -0.0237, one-step innovation z=-0.53. Filter's own noise estimate moved online from its initial guess: Q trace 2.00e-06 -> 1.63e-04, R 1.00e-03 -> 2.26e-04 -- re-estimated from this run's own innovations (Mehra/Akhlaghi covariance matching), not a frozen hand-set hyperparameter. Research read, not a standalone trade order."
     },
     {
       "pair": "JPM/XOM",
@@ -362,9 +362,9 @@
       "ticker2": "XOM",
       "available": true,
       "cointegrated": false,
-      "n_obs": 276,
+      "n_obs": 275,
       "cointegration": {
-        "adf_t_stat": -1.8709,
+        "adf_t_stat": -1.8522,
         "adf_lag_used": 0,
         "critical_value_5pct": -3.3377,
         "critical_values": {
@@ -373,11 +373,11 @@
           "10": -3.0462
         },
         "significance": 0.05,
-        "ols_hedge_ratio": 0.178073,
-        "ols_intercept": 4.872437,
+        "ols_hedge_ratio": 0.178859,
+        "ols_intercept": 4.868731,
         "ols_r_squared": 0.1481
       },
-      "note": "ADF t-stat -1.871 vs. 5% critical value -3.338 (lag=0, n=274 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
+      "note": "ADF t-stat -1.852 vs. 5% critical value -3.338 (lag=0, n=273 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
       "score": null,
       "signal": "abstain-not-cointegrated"
     },
@@ -387,9 +387,9 @@
       "ticker2": "KO",
       "available": true,
       "cointegrated": false,
-      "n_obs": 276,
+      "n_obs": 275,
       "cointegration": {
-        "adf_t_stat": -2.5025,
+        "adf_t_stat": -2.5275,
         "adf_lag_used": 0,
         "critical_value_5pct": -3.3377,
         "critical_values": {
@@ -398,11 +398,11 @@
           "10": -3.0462
         },
         "significance": 0.05,
-        "ols_hedge_ratio": 0.444949,
-        "ols_intercept": 3.822351,
-        "ols_r_squared": 0.4429
+        "ols_hedge_ratio": 0.446122,
+        "ols_intercept": 3.817067,
+        "ols_r_squared": 0.4438
       },
-      "note": "ADF t-stat -2.503 vs. 5% critical value -3.338 (lag=0, n=274 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
+      "note": "ADF t-stat -2.527 vs. 5% critical value -3.338 (lag=0, n=273 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
       "score": null,
       "signal": "abstain-not-cointegrated"
     },
@@ -412,9 +412,9 @@
       "ticker2": "KO",
       "available": true,
       "cointegrated": false,
-      "n_obs": 276,
+      "n_obs": 275,
       "cointegration": {
-        "adf_t_stat": -2.4631,
+        "adf_t_stat": -2.4286,
         "adf_lag_used": 0,
         "critical_value_5pct": -3.3377,
         "critical_values": {
@@ -423,11 +423,11 @@
           "10": -3.0462
         },
         "significance": 0.05,
-        "ols_hedge_ratio": 1.274909,
-        "ols_intercept": -0.59447,
-        "ols_r_squared": 0.7783
+        "ols_hedge_ratio": 1.269986,
+        "ols_intercept": -0.572889,
+        "ols_r_squared": 0.777
       },
-      "note": "ADF t-stat -2.463 vs. 5% critical value -3.338 (lag=0, n=274 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
+      "note": "ADF t-stat -2.429 vs. 5% critical value -3.338 (lag=0, n=273 in the auxiliary regression, MacKinnon 2010 asymptotic N=2 critical values \u2014 see module docstring for the finite-sample-approximation caveat): unit-root null NOT rejected \u2014 no statistical evidence this pair's OLS residual spread is stationary; abstaining rather than forcing a mean-reversion signal onto an untested relationship.",
       "score": null,
       "signal": "abstain-not-cointegrated"
     }

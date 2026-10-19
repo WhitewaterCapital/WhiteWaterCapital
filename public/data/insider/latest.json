@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-10-16T16:24:27.194Z",
-  "as_of": "2026-10-16",
+  "generated_at": "2026-10-19T18:36:31.968Z",
+  "as_of": "2026-10-19",
   "window_days": 90,
   "provenance": "live",
   "source": "SEC EDGAR Form 4 (open-market P/S only; 10b5-1 planned sales excluded)",
@@ -105,7 +105,7 @@
         "distinctInsiders": 0,
         "buyValueUsd": 0,
         "sellValueUsd": 0,
-        "plannedSalesExcluded": 54
+        "plannedSalesExcluded": 49
       },
       "transactions": []
     },
@@ -252,7 +252,7 @@
     {
       "ticker": "PFE",
       "cik": 78003,
-      "form4_filings_scanned": 16,
+      "form4_filings_scanned": 17,
       "summary": {
         "signalTransactionCount": 4,
         "score": 72,
@@ -310,7 +310,7 @@
     {
       "ticker": "F",
       "cik": 37996,
-      "form4_filings_scanned": 13,
+      "form4_filings_scanned": 14,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -344,7 +344,7 @@
     {
       "ticker": "GS",
       "cik": 886982,
-      "form4_filings_scanned": 4,
+      "form4_filings_scanned": 8,
       "summary": {
         "signalTransactionCount": 1,
         "score": -28,
@@ -400,7 +400,7 @@
     {
       "ticker": "PEP",
       "cik": 77476,
-      "form4_filings_scanned": 15,
+      "form4_filings_scanned": 16,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
