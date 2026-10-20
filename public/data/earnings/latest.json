@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
   "engine_version": "0.3.0",
-  "generated_at": "2026-10-19T18:35:48.735451+00:00",
-  "as_of": "2026-10-19",
+  "generated_at": "2026-10-20T16:38:04.599878+00:00",
+  "as_of": "2026-10-20",
   "universe": [
     "AAPL",
     "MSFT",
@@ -79,8 +79,8 @@
       "estimate_source": null,
       "sue": null,
       "sue_abstain_reason": "ALPHA_VANTAGE_API_KEY not set \u2014 no analyst-estimates adapter configured for this run",
-      "revision_direction": "raised",
-      "revision_pct": 0.5025125628140708,
+      "revision_direction": "unchanged",
+      "revision_pct": 0.0,
       "revision_abstain_reason": null
     },
     {
@@ -96,8 +96,8 @@
       "estimate_source": null,
       "sue": null,
       "sue_abstain_reason": "ALPHA_VANTAGE_API_KEY not set \u2014 no analyst-estimates adapter configured for this run",
-      "revision_direction": "raised",
-      "revision_pct": 0.40322580645162226,
+      "revision_direction": "unchanged",
+      "revision_pct": 0.0,
       "revision_abstain_reason": null
     }
   ]

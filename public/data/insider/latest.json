@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-10-19T18:36:31.968Z",
-  "as_of": "2026-10-19",
+  "generated_at": "2026-10-20T16:38:44.738Z",
+  "as_of": "2026-10-20",
   "window_days": 90,
   "provenance": "live",
   "source": "SEC EDGAR Form 4 (open-market P/S only; 10b5-1 planned sales excluded)",
@@ -10,7 +10,7 @@
     {
       "ticker": "AAPL",
       "cik": 320193,
-      "form4_filings_scanned": 21,
+      "form4_filings_scanned": 23,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -20,7 +20,7 @@
         "distinctInsiders": 0,
         "buyValueUsd": 0,
         "sellValueUsd": 0,
-        "plannedSalesExcluded": 10
+        "plannedSalesExcluded": 13
       },
       "transactions": []
     },
@@ -61,7 +61,7 @@
     {
       "ticker": "GOOGL",
       "cik": 1652044,
-      "form4_filings_scanned": 44,
+      "form4_filings_scanned": 43,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -174,7 +174,7 @@
     {
       "ticker": "JNJ",
       "cik": 200406,
-      "form4_filings_scanned": 9,
+      "form4_filings_scanned": 8,
       "summary": {
         "signalTransactionCount": 6,
         "score": -86,
@@ -327,7 +327,7 @@
     {
       "ticker": "BAC",
       "cik": 70858,
-      "form4_filings_scanned": 16,
+      "form4_filings_scanned": 17,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
