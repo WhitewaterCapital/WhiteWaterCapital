@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
   "engine_version": "0.3.0",
-  "generated_at": "2026-10-20T16:38:04.599878+00:00",
-  "as_of": "2026-10-20",
+  "generated_at": "2026-10-21T16:57:15.276825+00:00",
+  "as_of": "2026-10-21",
   "universe": [
     "AAPL",
     "MSFT",
@@ -53,17 +53,17 @@
       "ticker": "XOM",
       "report_date": "2026-10-30",
       "session": "bmo",
-      "eps_estimate": 3.92,
+      "eps_estimate": 3.93,
       "eps_actual": null,
       "fiscal_period": "Sep/2026",
       "source": "nasdaq",
-      "n_estimates": 6,
+      "n_estimates": 7,
       "eps_estimate_stdev": null,
       "estimate_source": null,
       "sue": null,
       "sue_abstain_reason": "ALPHA_VANTAGE_API_KEY not set \u2014 no analyst-estimates adapter configured for this run",
-      "revision_direction": "unchanged",
-      "revision_pct": 0.0,
+      "revision_direction": "raised",
+      "revision_pct": 0.2551020408163324,
       "revision_abstain_reason": null
     },
     {
