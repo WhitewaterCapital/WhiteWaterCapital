@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-10-23T16:49:20.967Z",
-  "as_of": "2026-10-23",
+  "generated_at": "2026-10-26T18:35:08.362Z",
+  "as_of": "2026-10-26",
   "window_days": 90,
   "provenance": "live",
   "source": "SEC EDGAR Form 4 (open-market P/S only; 10b5-1 planned sales excluded)",
@@ -61,7 +61,7 @@
     {
       "ticker": "GOOGL",
       "cik": 1652044,
-      "form4_filings_scanned": 42,
+      "form4_filings_scanned": 41,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -105,7 +105,7 @@
         "distinctInsiders": 0,
         "buyValueUsd": 0,
         "sellValueUsd": 0,
-        "plannedSalesExcluded": 54
+        "plannedSalesExcluded": 49
       },
       "transactions": []
     },
@@ -327,7 +327,7 @@
     {
       "ticker": "BAC",
       "cik": 70858,
-      "form4_filings_scanned": 22,
+      "form4_filings_scanned": 25,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -400,7 +400,7 @@
     {
       "ticker": "PEP",
       "cik": 77476,
-      "form4_filings_scanned": 16,
+      "form4_filings_scanned": 17,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -427,7 +427,7 @@
         "distinctInsiders": 0,
         "buyValueUsd": 0,
         "sellValueUsd": 0,
-        "plannedSalesExcluded": 3
+        "plannedSalesExcluded": 2
       },
       "transactions": []
     }
