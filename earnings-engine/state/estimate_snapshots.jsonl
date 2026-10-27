@@ -13,6 +13,7 @@
 {"ticker": "AAPL", "eps_estimate": 2.0, "as_of_date": "2026-10-22"}
 {"ticker": "AAPL", "eps_estimate": 2.0, "as_of_date": "2026-10-23"}
 {"ticker": "AAPL", "eps_estimate": 2.0, "as_of_date": "2026-10-26"}
+{"ticker": "AAPL", "eps_estimate": 1.98, "as_of_date": "2026-10-27"}
 {"ticker": "JPM", "eps_estimate": 1.23, "as_of_date": "2026-09-10"}
 {"ticker": "JPM", "eps_estimate": 4.43, "as_of_date": "2026-09-11"}
 {"ticker": "JPM", "eps_estimate": 2.53, "as_of_date": "2026-09-12"}
@@ -34,6 +35,7 @@
 {"ticker": "KO", "eps_estimate": 0.87, "as_of_date": "2026-10-22"}
 {"ticker": "KO", "eps_estimate": 0.87, "as_of_date": "2026-10-23"}
 {"ticker": "KO", "eps_estimate": 0.87, "as_of_date": "2026-10-26"}
+{"ticker": "KO", "eps_estimate": 0.87, "as_of_date": "2026-10-27"}
 {"ticker": "MSFT", "eps_estimate": 4.33, "as_of_date": "2026-09-10"}
 {"ticker": "MSFT", "eps_estimate": 2.71, "as_of_date": "2026-09-11"}
 {"ticker": "MSFT", "eps_estimate": 2.62, "as_of_date": "2026-09-12"}
@@ -49,6 +51,7 @@
 {"ticker": "MSFT", "eps_estimate": 4.71, "as_of_date": "2026-10-22"}
 {"ticker": "MSFT", "eps_estimate": 4.71, "as_of_date": "2026-10-23"}
 {"ticker": "MSFT", "eps_estimate": 4.71, "as_of_date": "2026-10-26"}
+{"ticker": "MSFT", "eps_estimate": 4.71, "as_of_date": "2026-10-27"}
 {"ticker": "NVDA", "eps_estimate": 4.35, "as_of_date": "2026-09-10"}
 {"ticker": "NVDA", "eps_estimate": 3.42, "as_of_date": "2026-09-11"}
 {"ticker": "NVDA", "eps_estimate": 4.07, "as_of_date": "2026-09-12"}
@@ -64,6 +67,7 @@
 {"ticker": "NVDA", "eps_estimate": 2.49, "as_of_date": "2026-10-22"}
 {"ticker": "NVDA", "eps_estimate": 2.49, "as_of_date": "2026-10-23"}
 {"ticker": "NVDA", "eps_estimate": 2.49, "as_of_date": "2026-10-26"}
+{"ticker": "NVDA", "eps_estimate": 2.49, "as_of_date": "2026-10-27"}
 {"ticker": "XOM", "eps_estimate": 2.58, "as_of_date": "2026-09-10"}
 {"ticker": "XOM", "eps_estimate": 2.57, "as_of_date": "2026-09-11"}
 {"ticker": "XOM", "eps_estimate": 0.57, "as_of_date": "2026-09-12"}
@@ -79,3 +83,4 @@
 {"ticker": "XOM", "eps_estimate": 3.96, "as_of_date": "2026-10-22"}
 {"ticker": "XOM", "eps_estimate": 3.96, "as_of_date": "2026-10-23"}
 {"ticker": "XOM", "eps_estimate": 3.9, "as_of_date": "2026-10-26"}
+{"ticker": "XOM", "eps_estimate": 3.9, "as_of_date": "2026-10-27"}
