@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-10-27T17:47:23.517Z",
-  "as_of": "2026-10-27",
+  "generated_at": "2026-10-28T18:11:35.543Z",
+  "as_of": "2026-10-28",
   "window_days": 90,
   "provenance": "live",
   "source": "SEC EDGAR Form 4 (open-market P/S only; 10b5-1 planned sales excluded)",
@@ -61,7 +61,7 @@
     {
       "ticker": "GOOGL",
       "cik": 1652044,
-      "form4_filings_scanned": 35,
+      "form4_filings_scanned": 39,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -95,7 +95,7 @@
     {
       "ticker": "META",
       "cik": 1326801,
-      "form4_filings_scanned": 33,
+      "form4_filings_scanned": 32,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -146,7 +146,7 @@
     {
       "ticker": "KO",
       "cik": 21344,
-      "form4_filings_scanned": 7,
+      "form4_filings_scanned": 6,
       "summary": {
         "signalTransactionCount": 1,
         "score": -28,
@@ -344,7 +344,7 @@
     {
       "ticker": "GS",
       "cik": 886982,
-      "form4_filings_scanned": 9,
+      "form4_filings_scanned": 14,
       "summary": {
         "signalTransactionCount": 1,
         "score": -28,
@@ -400,7 +400,7 @@
     {
       "ticker": "PEP",
       "cik": 77476,
-      "form4_filings_scanned": 17,
+      "form4_filings_scanned": 16,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -417,7 +417,7 @@
     {
       "ticker": "GM",
       "cik": 1467858,
-      "form4_filings_scanned": 6,
+      "form4_filings_scanned": 2,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
