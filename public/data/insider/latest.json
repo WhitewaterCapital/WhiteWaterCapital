@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-10-28T18:11:35.543Z",
-  "as_of": "2026-10-28",
+  "generated_at": "2026-10-29T18:17:44.355Z",
+  "as_of": "2026-10-29",
   "window_days": 90,
   "provenance": "live",
   "source": "SEC EDGAR Form 4 (open-market P/S only; 10b5-1 planned sales excluded)",
@@ -61,7 +61,7 @@
     {
       "ticker": "GOOGL",
       "cik": 1652044,
-      "form4_filings_scanned": 39,
+      "form4_filings_scanned": 38,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -71,7 +71,7 @@
         "distinctInsiders": 0,
         "buyValueUsd": 0,
         "sellValueUsd": 0,
-        "plannedSalesExcluded": 3
+        "plannedSalesExcluded": 2
       },
       "transactions": []
     },
@@ -95,7 +95,7 @@
     {
       "ticker": "META",
       "cik": 1326801,
-      "form4_filings_scanned": 32,
+      "form4_filings_scanned": 34,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -105,7 +105,7 @@
         "distinctInsiders": 0,
         "buyValueUsd": 0,
         "sellValueUsd": 0,
-        "plannedSalesExcluded": 49
+        "plannedSalesExcluded": 55
       },
       "transactions": []
     },
@@ -146,7 +146,7 @@
     {
       "ticker": "KO",
       "cik": 21344,
-      "form4_filings_scanned": 6,
+      "form4_filings_scanned": 5,
       "summary": {
         "signalTransactionCount": 1,
         "score": -28,
