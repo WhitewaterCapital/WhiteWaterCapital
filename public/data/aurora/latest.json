@@ -1,8 +1,8 @@
 {
   "schema_version": "0.2.0",
   "engine_version": "0.1.0",
-  "generated_at": "2026-10-28T15:06:52+00:00",
-  "as_of": "2026-10-27",
+  "generated_at": "2026-10-30T14:45:53+00:00",
+  "as_of": "2026-10-29",
   "model_variant": "mortgage_choice",
   "disclaimer": "Aurora is a structural macro research model (Sustek housing/mortgage DSGE). Outputs are directional scenario analysis for internal decision-support only \u2014 not forecasts, not investment advice. Shock sizes are normalized to a +1% innovation and responses are linearized, so they scale linearly with shock size.",
   "steady_state": {
@@ -867,45 +867,45 @@
     }
   ],
   "regime": {
-    "as_of": "2026-10-27",
+    "as_of": "2026-10-29",
     "label": "Restrictive / tightening",
     "scenario_affinity": {
-      "Restrictive / tightening": 0.292,
-      "Expansion": 0.177,
-      "Housing-driven": 0.155,
-      "Demand / valuation boom": 0.156,
-      "Mixed / transitional": 0.22
+      "Restrictive / tightening": 0.269,
+      "Expansion": 0.178,
+      "Housing-driven": 0.159,
+      "Demand / valuation boom": 0.169,
+      "Mixed / transitional": 0.225
     },
     "key_indicators": [
       {
         "name": "Real policy rate (FF \u2212 core PCE)",
-        "value": 0.74,
+        "value": 0.63,
         "z_score": null,
         "as_of": "2026-09-01"
       },
       {
         "name": "Growth composite (z)",
         "value": null,
-        "z_score": 0.2,
-        "as_of": "2026-10-27"
+        "z_score": 0.18,
+        "as_of": "2026-10-29"
       },
       {
         "name": "Inflation composite (z)",
         "value": null,
         "z_score": 0.71,
-        "as_of": "2026-10-27"
+        "as_of": "2026-10-29"
       },
       {
         "name": "10y-2y curve slope",
-        "value": 0.29,
-        "z_score": -0.77,
-        "as_of": "2026-10-27"
+        "value": 0.37,
+        "z_score": -0.69,
+        "as_of": "2026-10-29"
       },
       {
         "name": "Core PCE price index",
-        "value": 3.008,
-        "z_score": 0.71,
-        "as_of": "2026-08-01"
+        "value": 3.121,
+        "z_score": 0.81,
+        "as_of": "2026-09-01"
       },
       {
         "name": "Case-Shiller home price",
@@ -915,21 +915,15 @@
       },
       {
         "name": "BAA-10y credit spread",
-        "value": 1.45,
-        "z_score": -1.27,
-        "as_of": "2026-10-26"
+        "value": 1.43,
+        "z_score": -1.29,
+        "as_of": "2026-10-28"
       },
       {
         "name": "10y Treasury yield",
-        "value": 5.0,
-        "z_score": 1.91,
-        "as_of": "2026-10-26"
-      },
-      {
-        "name": "30y mortgage rate",
-        "value": 7.32,
-        "z_score": 1.95,
-        "as_of": "2026-10-22"
+        "value": 5.05,
+        "z_score": 1.96,
+        "as_of": "2026-10-28"
       }
     ],
     "confidence": "low",
@@ -983,7 +977,7 @@
   "nowcast": {
     "horizon_months": 3,
     "method": "PCA(4) + Ridge, walk-forward time-series CV; OOS R^2 vs naive mean",
-    "as_of": "2026-10-27",
+    "as_of": "2026-10-29",
     "factors": [
       {
         "factor": "Mkt-RF",
@@ -1041,7 +1035,7 @@
       },
       {
         "factor": "RMW",
-        "expected_return": 1.199,
+        "expected_return": 1.334,
         "oos_r2": 0.0107,
         "hit_rate": 0.563,
         "fold_oos_r2": [
