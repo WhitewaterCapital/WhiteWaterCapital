@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-10-29T18:17:44.355Z",
-  "as_of": "2026-10-29",
+  "generated_at": "2026-10-30T17:56:37.135Z",
+  "as_of": "2026-10-30",
   "window_days": 90,
   "provenance": "live",
   "source": "SEC EDGAR Form 4 (open-market P/S only; 10b5-1 planned sales excluded)",
@@ -10,7 +10,7 @@
     {
       "ticker": "AAPL",
       "cik": 320193,
-      "form4_filings_scanned": 24,
+      "form4_filings_scanned": 25,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -20,7 +20,7 @@
         "distinctInsiders": 0,
         "buyValueUsd": 0,
         "sellValueUsd": 0,
-        "plannedSalesExcluded": 14
+        "plannedSalesExcluded": 15
       },
       "transactions": []
     },
@@ -105,7 +105,7 @@
         "distinctInsiders": 0,
         "buyValueUsd": 0,
         "sellValueUsd": 0,
-        "plannedSalesExcluded": 55
+        "plannedSalesExcluded": 54
       },
       "transactions": []
     },
@@ -327,7 +327,7 @@
     {
       "ticker": "BAC",
       "cik": 70858,
-      "form4_filings_scanned": 24,
+      "form4_filings_scanned": 25,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -344,7 +344,7 @@
     {
       "ticker": "GS",
       "cik": 886982,
-      "form4_filings_scanned": 14,
+      "form4_filings_scanned": 15,
       "summary": {
         "signalTransactionCount": 1,
         "score": -28,
@@ -417,7 +417,7 @@
     {
       "ticker": "GM",
       "cik": 1467858,
-      "form4_filings_scanned": 2,
+      "form4_filings_scanned": 1,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,

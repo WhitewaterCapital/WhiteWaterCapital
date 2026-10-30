@@ -16,6 +16,7 @@
 {"ticker": "AAPL", "eps_estimate": 1.98, "as_of_date": "2026-10-27"}
 {"ticker": "AAPL", "eps_estimate": 1.98, "as_of_date": "2026-10-28"}
 {"ticker": "AAPL", "eps_estimate": 1.98, "as_of_date": "2026-10-29"}
+{"ticker": "AAPL", "eps_estimate": 1.98, "as_of_date": "2026-10-30"}
 {"ticker": "JPM", "eps_estimate": 1.23, "as_of_date": "2026-09-10"}
 {"ticker": "JPM", "eps_estimate": 4.43, "as_of_date": "2026-09-11"}
 {"ticker": "JPM", "eps_estimate": 2.53, "as_of_date": "2026-09-12"}
@@ -73,6 +74,7 @@
 {"ticker": "NVDA", "eps_estimate": 2.49, "as_of_date": "2026-10-27"}
 {"ticker": "NVDA", "eps_estimate": 2.49, "as_of_date": "2026-10-28"}
 {"ticker": "NVDA", "eps_estimate": 2.49, "as_of_date": "2026-10-29"}
+{"ticker": "NVDA", "eps_estimate": 2.49, "as_of_date": "2026-10-30"}
 {"ticker": "XOM", "eps_estimate": 2.58, "as_of_date": "2026-09-10"}
 {"ticker": "XOM", "eps_estimate": 2.57, "as_of_date": "2026-09-11"}
 {"ticker": "XOM", "eps_estimate": 0.57, "as_of_date": "2026-09-12"}
@@ -91,3 +93,4 @@
 {"ticker": "XOM", "eps_estimate": 3.9, "as_of_date": "2026-10-27"}
 {"ticker": "XOM", "eps_estimate": 3.9, "as_of_date": "2026-10-28"}
 {"ticker": "XOM", "eps_estimate": 3.9, "as_of_date": "2026-10-29"}
+{"ticker": "XOM", "eps_estimate": 3.9, "as_of_date": "2026-10-30"}

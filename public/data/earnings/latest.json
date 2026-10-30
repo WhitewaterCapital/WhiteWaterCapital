@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
   "engine_version": "0.3.0",
-  "generated_at": "2026-10-29T18:17:03.195815+00:00",
-  "as_of": "2026-10-29",
+  "generated_at": "2026-10-30T17:55:55.075693+00:00",
+  "as_of": "2026-10-30",
   "universe": [
     "AAPL",
     "MSFT",
@@ -51,8 +51,8 @@
     },
     {
       "ticker": "NVDA",
-      "report_date": "2026-11-18",
-      "session": null,
+      "report_date": "2026-11-17",
+      "session": "amc",
       "eps_estimate": 2.49,
       "eps_actual": null,
       "fiscal_period": "Oct/2026",
