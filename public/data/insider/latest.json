@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-10-30T17:56:37.135Z",
-  "as_of": "2026-10-30",
+  "generated_at": "2026-11-03T19:22:01.415Z",
+  "as_of": "2026-11-03",
   "window_days": 90,
   "provenance": "live",
   "source": "SEC EDGAR Form 4 (open-market P/S only; 10b5-1 planned sales excluded)",
@@ -61,7 +61,7 @@
     {
       "ticker": "GOOGL",
       "cik": 1652044,
-      "form4_filings_scanned": 38,
+      "form4_filings_scanned": 39,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -71,7 +71,7 @@
         "distinctInsiders": 0,
         "buyValueUsd": 0,
         "sellValueUsd": 0,
-        "plannedSalesExcluded": 2
+        "plannedSalesExcluded": 3
       },
       "transactions": []
     },
@@ -88,14 +88,14 @@
         "distinctInsiders": 0,
         "buyValueUsd": 0,
         "sellValueUsd": 0,
-        "plannedSalesExcluded": 5
+        "plannedSalesExcluded": 4
       },
       "transactions": []
     },
     {
       "ticker": "META",
       "cik": 1326801,
-      "form4_filings_scanned": 34,
+      "form4_filings_scanned": 32,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -105,7 +105,7 @@
         "distinctInsiders": 0,
         "buyValueUsd": 0,
         "sellValueUsd": 0,
-        "plannedSalesExcluded": 54
+        "plannedSalesExcluded": 53
       },
       "transactions": []
     },
@@ -146,7 +146,7 @@
     {
       "ticker": "KO",
       "cik": 21344,
-      "form4_filings_scanned": 5,
+      "form4_filings_scanned": 4,
       "summary": {
         "signalTransactionCount": 1,
         "score": -28,
@@ -346,28 +346,17 @@
       "cik": 886982,
       "form4_filings_scanned": 15,
       "summary": {
-        "signalTransactionCount": 1,
-        "score": -28,
-        "netDirection": -1,
+        "signalTransactionCount": 0,
+        "score": 0,
+        "netDirection": 0,
         "buyCount": 0,
-        "sellCount": 1,
-        "distinctInsiders": 1,
+        "sellCount": 0,
+        "distinctInsiders": 0,
         "buyValueUsd": 0,
-        "sellValueUsd": 9493,
+        "sellValueUsd": 0,
         "plannedSalesExcluded": 0
       },
-      "transactions": [
-        {
-          "date": "2026-08-04",
-          "insider": "LESLIE ERICKA T",
-          "role": "Chief Administrative Officer",
-          "code": "S",
-          "shares": 9,
-          "price": 1054.77,
-          "value": 9493,
-          "plan10b51": false
-        }
-      ]
+      "transactions": []
     },
     {
       "ticker": "CVX",
@@ -417,7 +406,7 @@
     {
       "ticker": "GM",
       "cik": 1467858,
-      "form4_filings_scanned": 1,
+      "form4_filings_scanned": 0,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
