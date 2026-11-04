@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-11-03T19:22:01.415Z",
-  "as_of": "2026-11-03",
+  "generated_at": "2026-11-04T19:38:11.462Z",
+  "as_of": "2026-11-04",
   "window_days": 90,
   "provenance": "live",
   "source": "SEC EDGAR Form 4 (open-market P/S only; 10b5-1 planned sales excluded)",
@@ -27,7 +27,7 @@
     {
       "ticker": "MSFT",
       "cik": 789019,
-      "form4_filings_scanned": 44,
+      "form4_filings_scanned": 43,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -78,7 +78,7 @@
     {
       "ticker": "AMZN",
       "cik": 1018724,
-      "form4_filings_scanned": 15,
+      "form4_filings_scanned": 13,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -95,7 +95,7 @@
     {
       "ticker": "META",
       "cik": 1326801,
-      "form4_filings_scanned": 32,
+      "form4_filings_scanned": 31,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -146,7 +146,7 @@
     {
       "ticker": "KO",
       "cik": 21344,
-      "form4_filings_scanned": 4,
+      "form4_filings_scanned": 5,
       "summary": {
         "signalTransactionCount": 1,
         "score": -28,
@@ -252,16 +252,16 @@
     {
       "ticker": "PFE",
       "cik": 78003,
-      "form4_filings_scanned": 17,
+      "form4_filings_scanned": 15,
       "summary": {
-        "signalTransactionCount": 4,
-        "score": 72,
+        "signalTransactionCount": 1,
+        "score": 28,
         "netDirection": 1,
-        "buyCount": 3,
-        "sellCount": 1,
-        "distinctInsiders": 4,
-        "buyValueUsd": 2960110,
-        "sellValueUsd": 83261,
+        "buyCount": 1,
+        "sellCount": 0,
+        "distinctInsiders": 1,
+        "buyValueUsd": 1000920,
+        "sellValueUsd": 0,
         "plannedSalesExcluded": 0
       },
       "transactions": [
@@ -273,36 +273,6 @@
           "shares": 38000,
           "price": 26.34,
           "value": 1000920,
-          "plan10b51": false
-        },
-        {
-          "date": "2026-08-05",
-          "insider": "DAMICO JENNIFER B.",
-          "role": "SVP & Controller",
-          "code": "S",
-          "shares": 3278,
-          "price": 25.4,
-          "value": 83261,
-          "plan10b51": false
-        },
-        {
-          "date": "2026-08-05",
-          "insider": "BLAYLOCK RONALD E",
-          "role": "Director",
-          "code": "P",
-          "shares": 39231,
-          "price": 25.46,
-          "value": 998821,
-          "plan10b51": false
-        },
-        {
-          "date": "2026-08-05",
-          "insider": "Buckley Mortimer J",
-          "role": "Director",
-          "code": "P",
-          "shares": 37632,
-          "price": 25.52,
-          "value": 960369,
           "plan10b51": false
         }
       ]
@@ -327,7 +297,7 @@
     {
       "ticker": "BAC",
       "cik": 70858,
-      "form4_filings_scanned": 25,
+      "form4_filings_scanned": 27,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -361,7 +331,7 @@
     {
       "ticker": "CVX",
       "cik": 93410,
-      "form4_filings_scanned": 10,
+      "form4_filings_scanned": 9,
       "summary": {
         "signalTransactionCount": 1,
         "score": -28,
@@ -389,7 +359,7 @@
     {
       "ticker": "PEP",
       "cik": 77476,
-      "form4_filings_scanned": 16,
+      "form4_filings_scanned": 15,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
