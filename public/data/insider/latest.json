@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-11-04T19:38:11.462Z",
-  "as_of": "2026-11-04",
+  "generated_at": "2026-11-05T19:46:17.729Z",
+  "as_of": "2026-11-05",
   "window_days": 90,
   "provenance": "live",
   "source": "SEC EDGAR Form 4 (open-market P/S only; 10b5-1 planned sales excluded)",
@@ -27,7 +27,7 @@
     {
       "ticker": "MSFT",
       "cik": 789019,
-      "form4_filings_scanned": 43,
+      "form4_filings_scanned": 42,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -61,7 +61,7 @@
     {
       "ticker": "GOOGL",
       "cik": 1652044,
-      "form4_filings_scanned": 39,
+      "form4_filings_scanned": 38,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -78,7 +78,7 @@
     {
       "ticker": "AMZN",
       "cik": 1018724,
-      "form4_filings_scanned": 13,
+      "form4_filings_scanned": 14,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -88,14 +88,14 @@
         "distinctInsiders": 0,
         "buyValueUsd": 0,
         "sellValueUsd": 0,
-        "plannedSalesExcluded": 4
+        "plannedSalesExcluded": 5
       },
       "transactions": []
     },
     {
       "ticker": "META",
       "cik": 1326801,
-      "form4_filings_scanned": 31,
+      "form4_filings_scanned": 32,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -105,7 +105,7 @@
         "distinctInsiders": 0,
         "buyValueUsd": 0,
         "sellValueUsd": 0,
-        "plannedSalesExcluded": 53
+        "plannedSalesExcluded": 58
       },
       "transactions": []
     },
@@ -176,14 +176,14 @@
       "cik": 200406,
       "form4_filings_scanned": 8,
       "summary": {
-        "signalTransactionCount": 6,
-        "score": -86,
+        "signalTransactionCount": 4,
+        "score": -74,
         "netDirection": -1,
         "buyCount": 0,
-        "sellCount": 6,
-        "distinctInsiders": 3,
+        "sellCount": 4,
+        "distinctInsiders": 2,
         "buyValueUsd": 0,
-        "sellValueUsd": 45521326,
+        "sellValueUsd": 41430367,
         "plannedSalesExcluded": 0
       },
       "transactions": [
@@ -226,33 +226,13 @@
           "price": 261,
           "value": 26704215,
           "plan10b51": false
-        },
-        {
-          "date": "2026-08-06",
-          "insider": "Forminard Elizabeth",
-          "role": "EVP, Chief Legal Officer",
-          "code": "S",
-          "shares": 9344,
-          "price": 257.755,
-          "value": 2408463,
-          "plan10b51": false
-        },
-        {
-          "date": "2026-08-06",
-          "insider": "Forminard Elizabeth",
-          "role": "EVP, Chief Legal Officer",
-          "code": "S",
-          "shares": 6574,
-          "price": 255.932,
-          "value": 1682497,
-          "plan10b51": false
         }
       ]
     },
     {
       "ticker": "PFE",
       "cik": 78003,
-      "form4_filings_scanned": 15,
+      "form4_filings_scanned": 14,
       "summary": {
         "signalTransactionCount": 1,
         "score": 28,
@@ -297,7 +277,7 @@
     {
       "ticker": "BAC",
       "cik": 70858,
-      "form4_filings_scanned": 27,
+      "form4_filings_scanned": 26,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -314,7 +294,7 @@
     {
       "ticker": "GS",
       "cik": 886982,
-      "form4_filings_scanned": 15,
+      "form4_filings_scanned": 14,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -331,7 +311,7 @@
     {
       "ticker": "CVX",
       "cik": 93410,
-      "form4_filings_scanned": 9,
+      "form4_filings_scanned": 10,
       "summary": {
         "signalTransactionCount": 1,
         "score": -28,
