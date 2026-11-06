@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "engine_version": "0.1.0",
-  "generated_at": "2026-11-05T19:44:58.257522+00:00",
+  "generated_at": "2026-11-06T19:08:21.440508+00:00",
   "as_of": "2026-09-30",
   "universe": [
     "AAPL",
@@ -79,7 +79,7 @@
         },
         {
           "factor": "Mom",
-          "beta": 0.0179,
+          "beta": 0.0178,
           "se": 0.0782,
           "t_stat": 0.23,
           "significant": false
@@ -213,7 +213,7 @@
         },
         {
           "factor": "SMB",
-          "beta": -0.0516,
+          "beta": -0.0517,
           "se": 0.1535,
           "t_stat": -0.34,
           "significant": false

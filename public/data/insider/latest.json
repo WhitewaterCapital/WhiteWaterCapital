@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-11-05T19:46:17.729Z",
-  "as_of": "2026-11-05",
+  "generated_at": "2026-11-06T19:09:49.022Z",
+  "as_of": "2026-11-06",
   "window_days": 90,
   "provenance": "live",
   "source": "SEC EDGAR Form 4 (open-market P/S only; 10b5-1 planned sales excluded)",
@@ -10,7 +10,7 @@
     {
       "ticker": "AAPL",
       "cik": 320193,
-      "form4_filings_scanned": 25,
+      "form4_filings_scanned": 26,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -20,7 +20,7 @@
         "distinctInsiders": 0,
         "buyValueUsd": 0,
         "sellValueUsd": 0,
-        "plannedSalesExcluded": 15
+        "plannedSalesExcluded": 16
       },
       "transactions": []
     },
@@ -44,7 +44,7 @@
     {
       "ticker": "NVDA",
       "cik": 1045810,
-      "form4_filings_scanned": 16,
+      "form4_filings_scanned": 15,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -146,7 +146,7 @@
     {
       "ticker": "KO",
       "cik": 21344,
-      "form4_filings_scanned": 5,
+      "form4_filings_scanned": 4,
       "summary": {
         "signalTransactionCount": 1,
         "score": -28,
@@ -174,7 +174,7 @@
     {
       "ticker": "JNJ",
       "cik": 200406,
-      "form4_filings_scanned": 8,
+      "form4_filings_scanned": 6,
       "summary": {
         "signalTransactionCount": 4,
         "score": -74,
@@ -277,7 +277,7 @@
     {
       "ticker": "BAC",
       "cik": 70858,
-      "form4_filings_scanned": 26,
+      "form4_filings_scanned": 27,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -311,7 +311,7 @@
     {
       "ticker": "CVX",
       "cik": 93410,
-      "form4_filings_scanned": 10,
+      "form4_filings_scanned": 9,
       "summary": {
         "signalTransactionCount": 1,
         "score": -28,
@@ -339,7 +339,7 @@
     {
       "ticker": "PEP",
       "cik": 77476,
-      "form4_filings_scanned": 15,
+      "form4_filings_scanned": 14,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
