@@ -1,8 +1,8 @@
 {
   "schema_version": "0.2.0",
   "engine_version": "0.1.0",
-  "generated_at": "2026-11-05T14:12:52+00:00",
-  "as_of": "2026-11-04",
+  "generated_at": "2026-11-06T14:48:52+00:00",
+  "as_of": "2026-11-05",
   "model_variant": "mortgage_choice",
   "disclaimer": "Aurora is a structural macro research model (Sustek housing/mortgage DSGE). Outputs are directional scenario analysis for internal decision-support only \u2014 not forecasts, not investment advice. Shock sizes are normalized to a +1% innovation and responses are linearized, so they scale linearly with shock size.",
   "steady_state": {
@@ -867,7 +867,7 @@
     }
   ],
   "regime": {
-    "as_of": "2026-11-04",
+    "as_of": "2026-11-05",
     "label": "Restrictive / tightening",
     "scenario_affinity": {
       "Restrictive / tightening": 0.296,
@@ -887,19 +887,19 @@
         "name": "Growth composite (z)",
         "value": null,
         "z_score": 0.18,
-        "as_of": "2026-11-04"
+        "as_of": "2026-11-05"
       },
       {
         "name": "Inflation composite (z)",
         "value": null,
         "z_score": 0.71,
-        "as_of": "2026-11-04"
+        "as_of": "2026-11-05"
       },
       {
         "name": "10y-2y curve slope",
-        "value": 0.32,
-        "z_score": -0.74,
-        "as_of": "2026-11-04"
+        "value": 0.38,
+        "z_score": -0.68,
+        "as_of": "2026-11-05"
       },
       {
         "name": "Core PCE price index",
@@ -915,15 +915,21 @@
       },
       {
         "name": "BAA-10y credit spread",
-        "value": 1.54,
-        "z_score": -1.15,
-        "as_of": "2026-11-03"
+        "value": 1.52,
+        "z_score": -1.18,
+        "as_of": "2026-11-04"
       },
       {
         "name": "10y Treasury yield",
-        "value": 4.95,
-        "z_score": 1.86,
-        "as_of": "2026-11-03"
+        "value": 4.9,
+        "z_score": 1.82,
+        "as_of": "2026-11-04"
+      },
+      {
+        "name": "30y mortgage rate",
+        "value": 7.18,
+        "z_score": 1.84,
+        "as_of": "2026-11-05"
       }
     ],
     "confidence": "low",
@@ -977,7 +983,7 @@
   "nowcast": {
     "horizon_months": 3,
     "method": "PCA(4) + Ridge, walk-forward time-series CV; OOS R^2 vs naive mean",
-    "as_of": "2026-11-04",
+    "as_of": "2026-11-05",
     "factors": [
       {
         "factor": "Mkt-RF",
