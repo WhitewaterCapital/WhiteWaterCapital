@@ -1,7 +1,7 @@
 {
   "schema_version": "0.2.0",
   "engine_version": "0.1.0",
-  "generated_at": "2026-11-06T14:48:52+00:00",
+  "generated_at": "2026-11-09T15:20:10+00:00",
   "as_of": "2026-11-05",
   "model_variant": "mortgage_choice",
   "disclaimer": "Aurora is a structural macro research model (Sustek housing/mortgage DSGE). Outputs are directional scenario analysis for internal decision-support only \u2014 not forecasts, not investment advice. Shock sizes are normalized to a +1% innovation and responses are linearized, so they scale linearly with shock size.",
@@ -870,11 +870,11 @@
     "as_of": "2026-11-05",
     "label": "Restrictive / tightening",
     "scenario_affinity": {
-      "Restrictive / tightening": 0.296,
-      "Expansion": 0.174,
-      "Housing-driven": 0.156,
-      "Demand / valuation boom": 0.153,
-      "Mixed / transitional": 0.22
+      "Restrictive / tightening": 0.293,
+      "Expansion": 0.18,
+      "Housing-driven": 0.154,
+      "Demand / valuation boom": 0.155,
+      "Mixed / transitional": 0.218
     },
     "key_indicators": [
       {
@@ -886,19 +886,13 @@
       {
         "name": "Growth composite (z)",
         "value": null,
-        "z_score": 0.18,
+        "z_score": 0.23,
         "as_of": "2026-11-05"
       },
       {
         "name": "Inflation composite (z)",
         "value": null,
         "z_score": 0.71,
-        "as_of": "2026-11-05"
-      },
-      {
-        "name": "10y-2y curve slope",
-        "value": 0.38,
-        "z_score": -0.68,
         "as_of": "2026-11-05"
       },
       {
@@ -915,15 +909,15 @@
       },
       {
         "name": "BAA-10y credit spread",
-        "value": 1.52,
-        "z_score": -1.18,
-        "as_of": "2026-11-04"
+        "value": 1.57,
+        "z_score": -1.12,
+        "as_of": "2026-11-05"
       },
       {
         "name": "10y Treasury yield",
-        "value": 4.9,
-        "z_score": 1.82,
-        "as_of": "2026-11-04"
+        "value": 4.84,
+        "z_score": 1.76,
+        "as_of": "2026-11-05"
       },
       {
         "name": "30y mortgage rate",
@@ -1041,7 +1035,7 @@
       },
       {
         "factor": "RMW",
-        "expected_return": 1.334,
+        "expected_return": 1.333,
         "oos_r2": 0.0107,
         "hit_rate": 0.563,
         "fold_oos_r2": [
