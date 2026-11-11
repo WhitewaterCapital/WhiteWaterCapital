@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-11-10T19:37:45.357Z",
-  "as_of": "2026-11-10",
+  "generated_at": "2026-11-11T19:33:05.625Z",
+  "as_of": "2026-11-11",
   "window_days": 90,
   "provenance": "live",
   "source": "SEC EDGAR Form 4 (open-market P/S only; 10b5-1 planned sales excluded)",
@@ -27,7 +27,7 @@
     {
       "ticker": "MSFT",
       "cik": 789019,
-      "form4_filings_scanned": 43,
+      "form4_filings_scanned": 44,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -44,7 +44,7 @@
     {
       "ticker": "NVDA",
       "cik": 1045810,
-      "form4_filings_scanned": 16,
+      "form4_filings_scanned": 15,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -95,7 +95,7 @@
     {
       "ticker": "META",
       "cik": 1326801,
-      "form4_filings_scanned": 33,
+      "form4_filings_scanned": 32,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -221,30 +221,19 @@
     {
       "ticker": "PFE",
       "cik": 78003,
-      "form4_filings_scanned": 14,
+      "form4_filings_scanned": 13,
       "summary": {
-        "signalTransactionCount": 1,
-        "score": 28,
-        "netDirection": 1,
-        "buyCount": 1,
+        "signalTransactionCount": 0,
+        "score": 0,
+        "netDirection": 0,
+        "buyCount": 0,
         "sellCount": 0,
-        "distinctInsiders": 1,
-        "buyValueUsd": 1000920,
+        "distinctInsiders": 0,
+        "buyValueUsd": 0,
         "sellValueUsd": 0,
         "plannedSalesExcluded": 0
       },
-      "transactions": [
-        {
-          "date": "2026-08-12",
-          "insider": "BOURLA ALBERT",
-          "role": "Chairman & CEO",
-          "code": "P",
-          "shares": 38000,
-          "price": 26.34,
-          "value": 1000920,
-          "plan10b51": false
-        }
-      ]
+      "transactions": []
     },
     {
       "ticker": "F",
@@ -266,7 +255,7 @@
     {
       "ticker": "BAC",
       "cik": 70858,
-      "form4_filings_scanned": 29,
+      "form4_filings_scanned": 28,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
