@@ -1,7 +1,7 @@
 {
   "schema_version": "0.2.0",
   "engine_version": "0.1.0",
-  "generated_at": "2026-11-11T13:37:02+00:00",
+  "generated_at": "2026-11-12T13:59:14+00:00",
   "as_of": "2026-11-10",
   "model_variant": "mortgage_choice",
   "disclaimer": "Aurora is a structural macro research model (Sustek housing/mortgage DSGE). Outputs are directional scenario analysis for internal decision-support only \u2014 not forecasts, not investment advice. Shock sizes are normalized to a +1% innovation and responses are linearized, so they scale linearly with shock size.",
