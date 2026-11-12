@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-11-11T19:33:05.625Z",
-  "as_of": "2026-11-11",
+  "generated_at": "2026-11-12T19:45:55.569Z",
+  "as_of": "2026-11-12",
   "window_days": 90,
   "provenance": "live",
   "source": "SEC EDGAR Form 4 (open-market P/S only; 10b5-1 planned sales excluded)",
@@ -10,7 +10,7 @@
     {
       "ticker": "AAPL",
       "cik": 320193,
-      "form4_filings_scanned": 26,
+      "form4_filings_scanned": 25,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -165,14 +165,14 @@
       "cik": 200406,
       "form4_filings_scanned": 6,
       "summary": {
-        "signalTransactionCount": 4,
-        "score": -74,
+        "signalTransactionCount": 2,
+        "score": -49,
         "netDirection": -1,
         "buyCount": 0,
-        "sellCount": 4,
-        "distinctInsiders": 2,
+        "sellCount": 2,
+        "distinctInsiders": 1,
         "buyValueUsd": 0,
-        "sellValueUsd": 41430367,
+        "sellValueUsd": 9230440,
         "plannedSalesExcluded": 0
       },
       "transactions": [
@@ -194,26 +194,6 @@
           "shares": 22527,
           "price": 274.74,
           "value": 6189068,
-          "plan10b51": false
-        },
-        {
-          "date": "2026-08-13",
-          "insider": "Duato Joaquin",
-          "role": "CEO and Chairman of the Board",
-          "code": "S",
-          "shares": 20976,
-          "price": 262,
-          "value": 5495712,
-          "plan10b51": false
-        },
-        {
-          "date": "2026-08-13",
-          "insider": "Duato Joaquin",
-          "role": "CEO and Chairman of the Board",
-          "code": "S",
-          "shares": 102315,
-          "price": 261,
-          "value": 26704215,
           "plan10b51": false
         }
       ]
@@ -272,7 +252,7 @@
     {
       "ticker": "GS",
       "cik": 886982,
-      "form4_filings_scanned": 13,
+      "form4_filings_scanned": 12,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -289,7 +269,7 @@
     {
       "ticker": "CVX",
       "cik": 93410,
-      "form4_filings_scanned": 9,
+      "form4_filings_scanned": 8,
       "summary": {
         "signalTransactionCount": 1,
         "score": -28,
