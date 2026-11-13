@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-11-12T19:45:55.569Z",
-  "as_of": "2026-11-12",
+  "generated_at": "2026-11-13T19:28:05.659Z",
+  "as_of": "2026-11-13",
   "window_days": 90,
   "provenance": "live",
   "source": "SEC EDGAR Form 4 (open-market P/S only; 10b5-1 planned sales excluded)",
@@ -10,7 +10,7 @@
     {
       "ticker": "AAPL",
       "cik": 320193,
-      "form4_filings_scanned": 25,
+      "form4_filings_scanned": 26,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -20,26 +20,37 @@
         "distinctInsiders": 0,
         "buyValueUsd": 0,
         "sellValueUsd": 0,
-        "plannedSalesExcluded": 15
+        "plannedSalesExcluded": 16
       },
       "transactions": []
     },
     {
       "ticker": "MSFT",
       "cik": 789019,
-      "form4_filings_scanned": 44,
+      "form4_filings_scanned": 45,
       "summary": {
-        "signalTransactionCount": 0,
-        "score": 0,
-        "netDirection": 0,
+        "signalTransactionCount": 1,
+        "score": -28,
+        "netDirection": -1,
         "buyCount": 0,
-        "sellCount": 0,
-        "distinctInsiders": 0,
+        "sellCount": 1,
+        "distinctInsiders": 1,
         "buyValueUsd": 0,
-        "sellValueUsd": 0,
+        "sellValueUsd": 2655000,
         "plannedSalesExcluded": 0
       },
-      "transactions": []
+      "transactions": [
+        {
+          "date": "2026-11-10",
+          "insider": "Numoto Takeshi",
+          "role": "EVP, Chief Marketing Officer",
+          "code": "S",
+          "shares": 5000,
+          "price": 531,
+          "value": 2655000,
+          "plan10b51": false
+        }
+      ]
     },
     {
       "ticker": "NVDA",
@@ -78,7 +89,7 @@
     {
       "ticker": "AMZN",
       "cik": 1018724,
-      "form4_filings_scanned": 13,
+      "form4_filings_scanned": 14,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -95,7 +106,7 @@
     {
       "ticker": "META",
       "cik": 1326801,
-      "form4_filings_scanned": 32,
+      "form4_filings_scanned": 34,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -105,7 +116,7 @@
         "distinctInsiders": 0,
         "buyValueUsd": 0,
         "sellValueUsd": 0,
-        "plannedSalesExcluded": 51
+        "plannedSalesExcluded": 56
       },
       "transactions": []
     },
@@ -163,7 +174,7 @@
     {
       "ticker": "JNJ",
       "cik": 200406,
-      "form4_filings_scanned": 6,
+      "form4_filings_scanned": 5,
       "summary": {
         "signalTransactionCount": 2,
         "score": -49,
@@ -269,7 +280,7 @@
     {
       "ticker": "CVX",
       "cik": 93410,
-      "form4_filings_scanned": 8,
+      "form4_filings_scanned": 9,
       "summary": {
         "signalTransactionCount": 1,
         "score": -28,
@@ -297,7 +308,7 @@
     {
       "ticker": "PEP",
       "cik": 77476,
-      "form4_filings_scanned": 14,
+      "form4_filings_scanned": 15,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
