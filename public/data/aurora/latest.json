@@ -1,8 +1,8 @@
 {
   "schema_version": "0.2.0",
   "engine_version": "0.1.0",
-  "generated_at": "2026-11-13T14:15:00+00:00",
-  "as_of": "2026-11-12",
+  "generated_at": "2026-11-16T14:49:57+00:00",
+  "as_of": "2026-11-13",
   "model_variant": "mortgage_choice",
   "disclaimer": "Aurora is a structural macro research model (Sustek housing/mortgage DSGE). Outputs are directional scenario analysis for internal decision-support only \u2014 not forecasts, not investment advice. Shock sizes are normalized to a +1% innovation and responses are linearized, so they scale linearly with shock size.",
   "steady_state": {
@@ -867,7 +867,7 @@
     }
   ],
   "regime": {
-    "as_of": "2026-11-12",
+    "as_of": "2026-11-13",
     "label": "Restrictive / tightening",
     "scenario_affinity": {
       "Restrictive / tightening": 0.303,
@@ -887,19 +887,19 @@
         "name": "Growth composite (z)",
         "value": null,
         "z_score": 0.23,
-        "as_of": "2026-11-12"
+        "as_of": "2026-11-13"
       },
       {
         "name": "Inflation composite (z)",
         "value": null,
         "z_score": 0.81,
-        "as_of": "2026-11-12"
+        "as_of": "2026-11-13"
       },
       {
         "name": "10y-2y curve slope",
-        "value": 0.24,
-        "z_score": -0.83,
-        "as_of": "2026-11-12"
+        "value": 0.27,
+        "z_score": -0.79,
+        "as_of": "2026-11-13"
       },
       {
         "name": "Core PCE price index",
@@ -915,15 +915,15 @@
       },
       {
         "name": "BAA-10y credit spread",
-        "value": 1.51,
-        "z_score": -1.19,
-        "as_of": "2026-11-10"
+        "value": 1.48,
+        "z_score": -1.23,
+        "as_of": "2026-11-12"
       },
       {
         "name": "10y Treasury yield",
-        "value": 4.98,
-        "z_score": 1.89,
-        "as_of": "2026-11-10"
+        "value": 5.1,
+        "z_score": 2.0,
+        "as_of": "2026-11-12"
       },
       {
         "name": "30y mortgage rate",
@@ -983,7 +983,7 @@
   "nowcast": {
     "horizon_months": 3,
     "method": "PCA(4) + Ridge, walk-forward time-series CV; OOS R^2 vs naive mean",
-    "as_of": "2026-11-12",
+    "as_of": "2026-11-13",
     "factors": [
       {
         "factor": "Mkt-RF",
