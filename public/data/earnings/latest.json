@@ -1,8 +1,8 @@
 {
   "schema_version": "1.2.0",
   "engine_version": "0.3.0",
-  "generated_at": "2026-11-13T19:27:24.029756+00:00",
-  "as_of": "2026-11-13",
+  "generated_at": "2026-11-17T20:41:28.791861+00:00",
+  "as_of": "2026-11-17",
   "universe": [
     "AAPL",
     "MSFT",
@@ -23,7 +23,7 @@
       "eps_actual": null,
       "fiscal_period": "Oct/2026",
       "source": "nasdaq",
-      "n_estimates": 13,
+      "n_estimates": 14,
       "eps_estimate_stdev": null,
       "estimate_source": null,
       "sue": null,
