@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-11-17T20:42:07.073Z",
-  "as_of": "2026-11-17",
+  "generated_at": "2026-11-18T20:16:32.559Z",
+  "as_of": "2026-11-18",
   "window_days": 90,
   "provenance": "live",
   "source": "SEC EDGAR Form 4 (open-market P/S only; 10b5-1 planned sales excluded)",
@@ -89,7 +89,7 @@
     {
       "ticker": "AMZN",
       "cik": 1018724,
-      "form4_filings_scanned": 15,
+      "form4_filings_scanned": 20,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -106,7 +106,7 @@
     {
       "ticker": "META",
       "cik": 1326801,
-      "form4_filings_scanned": 22,
+      "form4_filings_scanned": 34,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -116,7 +116,7 @@
         "distinctInsiders": 0,
         "buyValueUsd": 0,
         "sellValueUsd": 0,
-        "plannedSalesExcluded": 51
+        "plannedSalesExcluded": 56
       },
       "transactions": []
     },
@@ -157,19 +157,39 @@
     {
       "ticker": "KO",
       "cik": 21344,
-      "form4_filings_scanned": 5,
+      "form4_filings_scanned": 7,
       "summary": {
-        "signalTransactionCount": 1,
-        "score": -28,
+        "signalTransactionCount": 3,
+        "score": -63,
         "netDirection": -1,
         "buyCount": 0,
-        "sellCount": 1,
-        "distinctInsiders": 1,
+        "sellCount": 3,
+        "distinctInsiders": 2,
         "buyValueUsd": 0,
-        "sellValueUsd": 1470000,
+        "sellValueUsd": 2377669,
         "plannedSalesExcluded": 0
       },
       "transactions": [
+        {
+          "date": "2026-11-16",
+          "insider": "Douglas Monica Howard",
+          "role": "Executive Vice President",
+          "code": "S",
+          "shares": 3782,
+          "price": 100.14,
+          "value": 378729,
+          "plan10b51": false
+        },
+        {
+          "date": "2026-11-16",
+          "insider": "Douglas Monica Howard",
+          "role": "Executive Vice President",
+          "code": "S",
+          "shares": 5282,
+          "price": 100.14,
+          "value": 528939,
+          "plan10b51": false
+        },
         {
           "date": "2026-11-12",
           "insider": "QUAN NANCY",
@@ -250,7 +270,7 @@
     {
       "ticker": "F",
       "cik": 37996,
-      "form4_filings_scanned": 14,
+      "form4_filings_scanned": 15,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -267,7 +287,7 @@
     {
       "ticker": "BAC",
       "cik": 70858,
-      "form4_filings_scanned": 28,
+      "form4_filings_scanned": 29,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -301,7 +321,7 @@
     {
       "ticker": "CVX",
       "cik": 93410,
-      "form4_filings_scanned": 9,
+      "form4_filings_scanned": 7,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
