@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-11-18T20:16:32.559Z",
-  "as_of": "2026-11-18",
+  "generated_at": "2026-11-19T20:19:29.383Z",
+  "as_of": "2026-11-19",
   "window_days": 90,
   "provenance": "live",
   "source": "SEC EDGAR Form 4 (open-market P/S only; 10b5-1 planned sales excluded)",
@@ -106,7 +106,7 @@
     {
       "ticker": "META",
       "cik": 1326801,
-      "form4_filings_scanned": 34,
+      "form4_filings_scanned": 31,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -287,7 +287,7 @@
     {
       "ticker": "BAC",
       "cik": 70858,
-      "form4_filings_scanned": 29,
+      "form4_filings_scanned": 28,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -321,7 +321,7 @@
     {
       "ticker": "CVX",
       "cik": 93410,
-      "form4_filings_scanned": 7,
+      "form4_filings_scanned": 6,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
