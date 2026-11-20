@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-11-19T20:19:29.383Z",
-  "as_of": "2026-11-19",
+  "generated_at": "2026-11-20T19:51:47.803Z",
+  "as_of": "2026-11-20",
   "window_days": 90,
   "provenance": "live",
   "source": "SEC EDGAR Form 4 (open-market P/S only; 10b5-1 planned sales excluded)",
@@ -10,7 +10,7 @@
     {
       "ticker": "AAPL",
       "cik": 320193,
-      "form4_filings_scanned": 26,
+      "form4_filings_scanned": 27,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -20,7 +20,7 @@
         "distinctInsiders": 0,
         "buyValueUsd": 0,
         "sellValueUsd": 0,
-        "plannedSalesExcluded": 15
+        "plannedSalesExcluded": 16
       },
       "transactions": []
     },
@@ -99,14 +99,14 @@
         "distinctInsiders": 0,
         "buyValueUsd": 0,
         "sellValueUsd": 0,
-        "plannedSalesExcluded": 5
+        "plannedSalesExcluded": 4
       },
       "transactions": []
     },
     {
       "ticker": "META",
       "cik": 1326801,
-      "form4_filings_scanned": 31,
+      "form4_filings_scanned": 34,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
@@ -116,7 +116,7 @@
         "distinctInsiders": 0,
         "buyValueUsd": 0,
         "sellValueUsd": 0,
-        "plannedSalesExcluded": 56
+        "plannedSalesExcluded": 59
       },
       "transactions": []
     },
@@ -157,7 +157,7 @@
     {
       "ticker": "KO",
       "cik": 21344,
-      "form4_filings_scanned": 7,
+      "form4_filings_scanned": 6,
       "summary": {
         "signalTransactionCount": 3,
         "score": -63,
@@ -287,7 +287,7 @@
     {
       "ticker": "BAC",
       "cik": 70858,
-      "form4_filings_scanned": 28,
+      "form4_filings_scanned": 33,
       "summary": {
         "signalTransactionCount": 0,
         "score": 0,
