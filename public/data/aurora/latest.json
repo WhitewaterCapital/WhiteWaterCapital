@@ -1,8 +1,8 @@
 {
   "schema_version": "0.2.0",
   "engine_version": "0.1.0",
-  "generated_at": "2026-11-23T14:30:12+00:00",
-  "as_of": "2026-11-20",
+  "generated_at": "2026-11-25T14:35:52+00:00",
+  "as_of": "2026-11-24",
   "model_variant": "mortgage_choice",
   "disclaimer": "Aurora is a structural macro research model (Sustek housing/mortgage DSGE). Outputs are directional scenario analysis for internal decision-support only \u2014 not forecasts, not investment advice. Shock sizes are normalized to a +1% innovation and responses are linearized, so they scale linearly with shock size.",
   "steady_state": {
@@ -867,63 +867,63 @@
     }
   ],
   "regime": {
-    "as_of": "2026-11-20",
+    "as_of": "2026-11-24",
     "label": "Restrictive / tightening",
     "scenario_affinity": {
-      "Restrictive / tightening": 0.326,
-      "Expansion": 0.158,
-      "Housing-driven": 0.133,
-      "Demand / valuation boom": 0.149,
-      "Mixed / transitional": 0.235
+      "Restrictive / tightening": 0.28,
+      "Expansion": 0.191,
+      "Housing-driven": 0.127,
+      "Demand / valuation boom": 0.177,
+      "Mixed / transitional": 0.225
     },
     "key_indicators": [
       {
         "name": "Real policy rate (FF \u2212 core PCE)",
-        "value": 0.76,
+        "value": 0.62,
         "z_score": null,
         "as_of": "2026-10-01"
       },
       {
         "name": "Growth composite (z)",
         "value": null,
-        "z_score": -0.04,
-        "as_of": "2026-11-20"
+        "z_score": 0.26,
+        "as_of": "2026-11-24"
       },
       {
         "name": "Inflation composite (z)",
         "value": null,
-        "z_score": 0.81,
-        "as_of": "2026-11-20"
+        "z_score": 0.86,
+        "as_of": "2026-11-24"
       },
       {
         "name": "10y-2y curve slope",
-        "value": 0.29,
-        "z_score": -0.77,
-        "as_of": "2026-11-20"
+        "value": 0.28,
+        "z_score": -0.78,
+        "as_of": "2026-11-24"
       },
       {
         "name": "Core PCE price index",
-        "value": 3.121,
-        "z_score": 0.81,
-        "as_of": "2026-09-01"
+        "value": 3.261,
+        "z_score": 0.93,
+        "as_of": "2026-10-01"
       },
       {
         "name": "Case-Shiller home price",
         "value": 2.091,
         "z_score": -0.17,
-        "as_of": "2026-08-01"
+        "as_of": "2026-09-01"
       },
       {
         "name": "BAA-10y credit spread",
-        "value": 1.56,
-        "z_score": -1.13,
-        "as_of": "2026-11-19"
+        "value": 1.59,
+        "z_score": -1.09,
+        "as_of": "2026-11-23"
       },
       {
         "name": "10y Treasury yield",
-        "value": 5.04,
-        "z_score": 1.94,
-        "as_of": "2026-11-19"
+        "value": 4.92,
+        "z_score": 1.83,
+        "as_of": "2026-11-23"
       },
       {
         "name": "30y mortgage rate",
@@ -932,9 +932,9 @@
         "as_of": "2026-11-19"
       }
     ],
-    "confidence": "medium",
+    "confidence": "low",
     "flags": [
-      "2 indicator(s) stale (normal for quarterly data)",
+      "1 indicator(s) stale (normal for quarterly data)",
       "regime signal is weak / transitional"
     ]
   },
@@ -983,7 +983,7 @@
   "nowcast": {
     "horizon_months": 3,
     "method": "PCA(4) + Ridge, walk-forward time-series CV; OOS R^2 vs naive mean",
-    "as_of": "2026-11-20",
+    "as_of": "2026-11-24",
     "factors": [
       {
         "factor": "Mkt-RF",
@@ -1010,7 +1010,7 @@
         "hit_rate": 0.52,
         "fold_oos_r2": [
           0.1752,
-          -0.769,
+          -0.7689,
           -0.2205,
           -0.0565,
           0.0525,
@@ -1041,7 +1041,7 @@
       },
       {
         "factor": "RMW",
-        "expected_return": 1.344,
+        "expected_return": 1.341,
         "oos_r2": 0.0107,
         "hit_rate": 0.563,
         "fold_oos_r2": [
@@ -1078,10 +1078,10 @@
       {
         "factor": "Mom",
         "expected_return": null,
-        "oos_r2": -0.0132,
+        "oos_r2": -0.0131,
         "hit_rate": 0.563,
         "fold_oos_r2": [
-          -0.0344,
+          -0.0343,
           0.0372,
           -0.5813,
           0.0592,
