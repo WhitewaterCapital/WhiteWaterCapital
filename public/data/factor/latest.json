@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "engine_version": "0.1.0",
-  "generated_at": "2026-11-20T19:50:22.504947+00:00",
+  "generated_at": "2026-11-27T20:56:27.059481+00:00",
   "as_of": "2026-09-30",
   "universe": [
     "AAPL",
@@ -34,324 +34,324 @@
   "exposures": [
     {
       "ticker": "AAPL",
-      "n_obs": 252,
+      "n_obs": 248,
       "confidence": "ok",
       "abstain_reason": null,
-      "alpha_daily": 0.000677,
-      "alpha_annualized": 0.186,
-      "r2": 0.3734,
-      "condition_number": 76478.9,
+      "alpha_daily": 0.000687,
+      "alpha_annualized": 0.1891,
+      "r2": 0.3775,
+      "condition_number": 76115.3,
       "betas": [
         {
           "factor": "Mkt-RF",
-          "beta": 1.2171,
-          "se": 0.1227,
-          "t_stat": 9.92,
+          "beta": 1.2287,
+          "se": 0.1236,
+          "t_stat": 9.94,
           "significant": true
         },
         {
           "factor": "SMB",
-          "beta": -0.3225,
-          "se": 0.162,
-          "t_stat": -1.99,
+          "beta": -0.3385,
+          "se": 0.1634,
+          "t_stat": -2.07,
           "significant": true
         },
         {
           "factor": "HML",
-          "beta": -0.491,
-          "se": 0.151,
-          "t_stat": -3.25,
+          "beta": -0.5021,
+          "se": 0.1526,
+          "t_stat": -3.29,
           "significant": true
         },
         {
           "factor": "RMW",
-          "beta": 0.3164,
-          "se": 0.1327,
-          "t_stat": 2.38,
+          "beta": 0.327,
+          "se": 0.134,
+          "t_stat": 2.44,
           "significant": true
         },
         {
           "factor": "CMA",
-          "beta": 1.5585,
-          "se": 0.1897,
-          "t_stat": 8.22,
+          "beta": 1.5764,
+          "se": 0.1912,
+          "t_stat": 8.24,
           "significant": true
         },
         {
           "factor": "Mom",
-          "beta": 0.0178,
-          "se": 0.0782,
-          "t_stat": 0.23,
+          "beta": 0.0177,
+          "se": 0.0795,
+          "t_stat": 0.22,
           "significant": false
         }
       ]
     },
     {
       "ticker": "MSFT",
-      "n_obs": 252,
+      "n_obs": 248,
       "confidence": "ok",
       "abstain_reason": null,
-      "alpha_daily": 0.000371,
-      "alpha_annualized": 0.0981,
-      "r2": 0.4783,
-      "condition_number": 76478.9,
+      "alpha_daily": 0.000514,
+      "alpha_annualized": 0.1382,
+      "r2": 0.4826,
+      "condition_number": 76115.3,
       "betas": [
         {
           "factor": "Mkt-RF",
-          "beta": 0.9105,
-          "se": 0.1488,
-          "t_stat": 6.12,
+          "beta": 0.9132,
+          "se": 0.1497,
+          "t_stat": 6.1,
           "significant": true
         },
         {
           "factor": "SMB",
-          "beta": -0.6885,
-          "se": 0.1964,
-          "t_stat": -3.51,
+          "beta": -0.6958,
+          "se": 0.1979,
+          "t_stat": -3.52,
           "significant": true
         },
         {
           "factor": "HML",
-          "beta": -0.2856,
-          "se": 0.1831,
-          "t_stat": -1.56,
+          "beta": -0.2932,
+          "se": 0.1848,
+          "t_stat": -1.59,
           "significant": false
         },
         {
           "factor": "RMW",
-          "beta": -0.2394,
-          "se": 0.1609,
-          "t_stat": -1.49,
+          "beta": -0.2577,
+          "se": 0.1623,
+          "t_stat": -1.59,
           "significant": false
         },
         {
           "factor": "CMA",
-          "beta": -1.0426,
-          "se": 0.23,
-          "t_stat": -4.53,
+          "beta": -1.0353,
+          "se": 0.2316,
+          "t_stat": -4.47,
           "significant": true
         },
         {
           "factor": "Mom",
-          "beta": -0.8874,
-          "se": 0.0948,
-          "t_stat": -9.36,
+          "beta": -0.9052,
+          "se": 0.0963,
+          "t_stat": -9.4,
           "significant": true
         }
       ]
     },
     {
       "ticker": "NVDA",
-      "n_obs": 252,
+      "n_obs": 248,
       "confidence": "ok",
       "abstain_reason": null,
-      "alpha_daily": 0.000701,
-      "alpha_annualized": 0.1933,
-      "r2": 0.5923,
-      "condition_number": 76478.9,
+      "alpha_daily": 0.000509,
+      "alpha_annualized": 0.1367,
+      "r2": 0.5952,
+      "condition_number": 76115.3,
       "betas": [
         {
           "factor": "Mkt-RF",
-          "beta": 1.4268,
-          "se": 0.1516,
-          "t_stat": 9.41,
+          "beta": 1.4157,
+          "se": 0.1524,
+          "t_stat": 9.29,
           "significant": true
         },
         {
           "factor": "SMB",
-          "beta": -0.2965,
-          "se": 0.2003,
-          "t_stat": -1.48,
+          "beta": -0.2846,
+          "se": 0.2014,
+          "t_stat": -1.41,
           "significant": false
         },
         {
           "factor": "HML",
-          "beta": -0.2383,
-          "se": 0.1866,
-          "t_stat": -1.28,
+          "beta": -0.2159,
+          "se": 0.1881,
+          "t_stat": -1.15,
           "significant": false
         },
         {
           "factor": "RMW",
-          "beta": 0.559,
-          "se": 0.164,
+          "beta": 0.5633,
+          "se": 0.1652,
           "t_stat": 3.41,
           "significant": true
         },
         {
           "factor": "CMA",
-          "beta": -1.1622,
-          "se": 0.2344,
-          "t_stat": -4.96,
+          "beta": -1.1867,
+          "se": 0.2357,
+          "t_stat": -5.03,
           "significant": true
         },
         {
           "factor": "Mom",
-          "beta": 0.5091,
-          "se": 0.0967,
-          "t_stat": 5.27,
+          "beta": 0.5235,
+          "se": 0.098,
+          "t_stat": 5.34,
           "significant": true
         }
       ]
     },
     {
       "ticker": "JPM",
-      "n_obs": 252,
+      "n_obs": 248,
       "confidence": "ok",
       "abstain_reason": null,
-      "alpha_daily": -0.000466,
-      "alpha_annualized": -0.1108,
-      "r2": 0.3286,
-      "condition_number": 76478.9,
+      "alpha_daily": -0.000389,
+      "alpha_annualized": -0.0934,
+      "r2": 0.3305,
+      "condition_number": 76115.3,
       "betas": [
         {
           "factor": "Mkt-RF",
-          "beta": 1.0741,
-          "se": 0.1163,
-          "t_stat": 9.24,
+          "beta": 1.0794,
+          "se": 0.1169,
+          "t_stat": 9.23,
           "significant": true
         },
         {
           "factor": "SMB",
-          "beta": -0.0517,
-          "se": 0.1535,
-          "t_stat": -0.34,
+          "beta": -0.0642,
+          "se": 0.1545,
+          "t_stat": -0.42,
           "significant": false
         },
         {
           "factor": "HML",
-          "beta": 0.7875,
-          "se": 0.1431,
-          "t_stat": 5.5,
+          "beta": 0.7836,
+          "se": 0.1443,
+          "t_stat": 5.43,
           "significant": true
         },
         {
           "factor": "RMW",
-          "beta": 0.0994,
-          "se": 0.1258,
-          "t_stat": 0.79,
+          "beta": 0.0869,
+          "se": 0.1268,
+          "t_stat": 0.69,
           "significant": false
         },
         {
           "factor": "CMA",
-          "beta": -0.1348,
-          "se": 0.1797,
-          "t_stat": -0.75,
+          "beta": -0.1275,
+          "se": 0.1808,
+          "t_stat": -0.71,
           "significant": false
         },
         {
           "factor": "Mom",
-          "beta": -0.004,
-          "se": 0.0741,
-          "t_stat": -0.05,
+          "beta": -0.0179,
+          "se": 0.0752,
+          "t_stat": -0.24,
           "significant": false
         }
       ]
     },
     {
       "ticker": "XOM",
-      "n_obs": 252,
+      "n_obs": 248,
       "confidence": "ok",
       "abstain_reason": null,
-      "alpha_daily": 0.001345,
-      "alpha_annualized": 0.4032,
-      "r2": 0.1538,
-      "condition_number": 76478.9,
+      "alpha_daily": 0.001383,
+      "alpha_annualized": 0.4166,
+      "r2": 0.1528,
+      "condition_number": 76115.3,
       "betas": [
         {
           "factor": "Mkt-RF",
-          "beta": -0.251,
-          "se": 0.1505,
-          "t_stat": -1.67,
+          "beta": -0.2416,
+          "se": 0.1516,
+          "t_stat": -1.59,
           "significant": false
         },
         {
           "factor": "SMB",
-          "beta": -0.3983,
-          "se": 0.1987,
-          "t_stat": -2.0,
+          "beta": -0.4181,
+          "se": 0.2003,
+          "t_stat": -2.09,
           "significant": true
         },
         {
           "factor": "HML",
-          "beta": 0.6012,
-          "se": 0.1852,
-          "t_stat": 3.25,
+          "beta": 0.5788,
+          "se": 0.187,
+          "t_stat": 3.1,
           "significant": true
         },
         {
           "factor": "RMW",
-          "beta": -0.0782,
-          "se": 0.1628,
-          "t_stat": -0.48,
+          "beta": -0.0718,
+          "se": 0.1643,
+          "t_stat": -0.44,
           "significant": false
         },
         {
           "factor": "CMA",
-          "beta": 0.2416,
-          "se": 0.2326,
-          "t_stat": 1.04,
+          "beta": 0.2661,
+          "se": 0.2344,
+          "t_stat": 1.14,
           "significant": false
         },
         {
           "factor": "Mom",
-          "beta": -0.008,
-          "se": 0.0959,
-          "t_stat": -0.08,
+          "beta": -0.0094,
+          "se": 0.0975,
+          "t_stat": -0.1,
           "significant": false
         }
       ]
     },
     {
       "ticker": "KO",
-      "n_obs": 252,
+      "n_obs": 248,
       "confidence": "ok",
       "abstain_reason": null,
-      "alpha_daily": 0.001248,
-      "alpha_annualized": 0.3693,
-      "r2": 0.2419,
-      "condition_number": 76478.9,
+      "alpha_daily": 0.001256,
+      "alpha_annualized": 0.3721,
+      "r2": 0.24,
+      "condition_number": 76115.3,
       "betas": [
         {
           "factor": "Mkt-RF",
-          "beta": 0.2208,
-          "se": 0.103,
-          "t_stat": 2.14,
+          "beta": 0.2177,
+          "se": 0.1039,
+          "t_stat": 2.09,
           "significant": true
         },
         {
           "factor": "SMB",
-          "beta": 0.1416,
-          "se": 0.136,
+          "beta": 0.1423,
+          "se": 0.1373,
           "t_stat": 1.04,
           "significant": false
         },
         {
           "factor": "HML",
-          "beta": 0.0098,
-          "se": 0.1267,
-          "t_stat": 0.08,
+          "beta": 0.0006,
+          "se": 0.1282,
+          "t_stat": 0.01,
           "significant": false
         },
         {
           "factor": "RMW",
-          "beta": 0.4589,
-          "se": 0.1114,
-          "t_stat": 4.12,
+          "beta": 0.4594,
+          "se": 0.1127,
+          "t_stat": 4.08,
           "significant": true
         },
         {
           "factor": "CMA",
-          "beta": 0.4572,
-          "se": 0.1592,
+          "beta": 0.4614,
+          "se": 0.1607,
           "t_stat": 2.87,
           "significant": true
         },
         {
           "factor": "Mom",
-          "beta": -0.1119,
-          "se": 0.0656,
-          "t_stat": -1.71,
+          "beta": -0.109,
+          "se": 0.0668,
+          "t_stat": -1.63,
           "significant": false
         }
       ]
